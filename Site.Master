@@ -1,0 +1,218 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="VMS_1.Site" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>VMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="wwwroot/css/bootstrap.min.css" />
+    <script src="wwwroot/js/jquery.min.js"></script>
+    <script src="wwwroot/js/bootstrap.min.js"></script>
+
+    <%--   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>--%>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            position: relative;
+            background-color: #3498db;
+            color: #000;
+        }
+
+        .dark-theme {
+            color: #fff;
+        }
+
+        .form-control {
+            width: 100%;
+            max-width: none;
+        }
+
+        .table {
+            color: #000;
+        }
+
+            .table.dark-theme {
+                color: #fff;
+            }
+
+        .theme-selector {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            background-color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .theme-selector label {
+                margin-right: 5px;
+            }
+
+            .theme-selector select {
+                padding: 5px;
+                border-radius: 4px;
+            }
+
+        .container {
+            margin-top: 50px;
+            max-width: 1500px;
+        }
+
+        .dark-theme-text {
+            color: #fff;
+        }
+
+        .heading {
+            color: #000;
+        }
+
+            .heading.dark-theme {
+                color: #fff;
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+            <a class="navbar-brand" href="Dashboard.aspx">Victualling Management System</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modules
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="IssueMaster.aspx">Issue Master</a>
+                            <a class="dropdown-item" href="ItemReceipt.aspx">Item Receipt</a>
+                            <a class="dropdown-item" href="ItemMaster.aspx">Item Master</a>
+                            <a class="dropdown-item" href="RationScale.aspx">Ration Scale</a>
+                            <a class="dropdown-item" href="Strength.aspx">Strength</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Extra Issue
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="Divers_ExtraIssue.aspx">Divers</a>
+                            <a class="dropdown-item" href="PestControl_ExtraIssue.aspx">Pest Control</a>
+                            <a class="dropdown-item" href="LeadPoisioning_ExtraIssue.aspx">Lead Poisioning</a>
+                            <a class="dropdown-item" href="LimeandSugar_ExtraIssue.aspx">Lime And Sugar</a>
+                            <a class="dropdown-item" href="LimeFresh_ExtraIssue.aspx">Lime Fresh</a>
+                            <a class="dropdown-item" href="MilkSugarandTea_ExtraIssue.aspx">Milk, Sugar and Tea</a>
+                            <a class="dropdown-item" href="RationIssueOnPayment.aspx">Ration Issue On Payment</a>
+                            <a class="dropdown-item" href="OtherShips.aspx">Other Ships</a>
+                            <a class="dropdown-item" href="Patients.aspx">Patients</a>
+                            <a class="dropdown-item" href="Wastage.aspx">Wastage</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Report Generate
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="ReportsGenerate.aspx">Reports</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <%
+                        if (IsUserLoggedIn() && IsUserInRole("Admin"))
+                        {
+                    %>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="Users.aspx">User List</a>
+                        </div>
+                    </li>
+                    <%
+                        }
+                    %>
+                </ul>
+
+                <ul class="navbar-nav">
+                    <%
+                        if (IsUserLoggedIn())
+                        {
+                            if (IsUserInRole("Admin"))
+                            {
+                    %>
+                    <li>
+                        <span>Admin</span>
+                    </li>
+                    <%
+                        }
+                        else if (IsUserInRole("User"))
+                        {
+                    %>
+                    <li>
+                        <span>User</span>
+                    </li>
+                    <%
+                        }
+                        else if (IsUserInRole("Logistic Officer"))
+                        {
+                    %>
+                    <li>
+                        <span>Logistic Officer</span>
+                    </li>
+                    <%
+                            }
+                        }
+                        else if (IsUserInRole("Co"))
+                        {
+                    %>
+                    <li>
+                        <span>Co</span>
+                    </li>
+                    <%
+                        }%>
+                </ul>
+
+
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                </div>
+                <a class="btn" href="~/LOGIN.aspx?m=logout" runat="server">Logout
+                </a>
+                <div <%--class="theme-selector"--%> style="margin-left: auto;">
+                    <%--<label for="ddlTheme">Choose Theme:</label>--%>
+                    <select id="ddlTheme" onchange="setTheme(this.value)" class="form-control">
+                        <option value="blue">Blue</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+        </asp:ContentPlaceHolder>
+    </main>
+
+    <%
+        bool IsUserLoggedIn()
+        {
+            // Check if the user is logged in
+            return HttpContext.Current.Session["Role"] != null;
+        }
+
+        bool IsUserInRole(string role)
+        {
+            // Check if the user is in the specified role
+            return HttpContext.Current.Session["Role"] != null && HttpContext.Current.Session["Role"].ToString() == role;
+        }
+    %>
+</body>
+</html>
+
