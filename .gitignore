@@ -6,7 +6,6 @@
 *.xml
 *.dylib
 *.pdb
-*.exe
 *.rsp
 *.targets
 *.force
