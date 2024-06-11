@@ -27,7 +27,7 @@ namespace VMS_1
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "SELECT name, rank, Designation, NudId, Role FROM usermaster";
+                string query = "SELECT name, rank, Designation, NudId, Role FROM usermaster WHERE NudId <> 'admin'";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
                 conn.Open();

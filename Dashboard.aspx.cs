@@ -825,7 +825,7 @@ namespace VMS_1
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory", conn);
+                    SqlDataAdapter dataAdapter = new SqlDataAdapter("select * from ExtraIssueCategory", conn);
                     dataAdapter.Fill(strengthData);
                 }
 
@@ -1047,7 +1047,7 @@ namespace VMS_1
 
                     worksheet.Cells[$"A{currentRow}"].Value = 2;
                     worksheet.Cells[$"B{currentRow}"].Value = "SUGAR";
-                    worksheet.Cells[$"C{currentRow}"].Value = totalSugarTeaMilkSugar;
+                    worksheet.Cells[$"C{currentRow}"].Value = totalSugarTeaMilkSugar + totalSugarLimeAndSugar;
                     worksheet.Cells[$"D{currentRow}"].Value = "";
 
                     worksheet.Cells[$"E{currentRow}"].Value = 5;
@@ -1059,7 +1059,7 @@ namespace VMS_1
 
                     worksheet.Cells[$"A{currentRow}"].Value = 3;
                     worksheet.Cells[$"B{currentRow}"].Value = "MILK FRESH";
-                    worksheet.Cells[$"C{currentRow}"].Value = totalMilkTeaMilkSugar;
+                    worksheet.Cells[$"C{currentRow}"].Value = totalMilkTeaMilkSugar + totalMilkPestControl + totalMilkLeadPoisoning;
                     worksheet.Cells[$"D{currentRow}"].Value = "";
 
                     //worksheet.Cells[$"C{currentRow}:D{currentRow}"].Merge = true;
@@ -1107,7 +1107,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("Select * from ExtraIssueCategory", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("Select * from ExtraIssueCategory order by Date ASC", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

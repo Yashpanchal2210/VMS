@@ -34,3 +34,4 @@ packages/Microsoft.ML.OnnxRuntime.1.16.0/runtimes/ios/native/onnxruntime.xcframe
 *.lib
 packages/Microsoft.ML.OnnxRuntime.Managed.1.16.0/ORT_icon_for_light_bg.png
 .vs/VMS_1/v17/.suo
+.vs/VMS_1/v17/.suo
