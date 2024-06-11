@@ -76,6 +76,13 @@
             <asp:GridView ID="GridViewOfficersSheet" runat="server" CssClass="table table-bordered table-striped">
             </asp:GridView>
         </div>
+
+        <div class="container mt-3">
+            <h2>Extra Issue</h2>
+            <asp:Button ID="Button3" runat="server" Text="Export to Excel" OnClick="ExportExtraIssueButton_Click" CssClass="btn btn-primary" />
+            <asp:GridView ID="GridViewExtraIssue" runat="server" CssClass="table table-bordered table-striped">
+            </asp:GridView>
+        </div>
     </form>
 
 
