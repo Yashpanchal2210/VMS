@@ -349,8 +349,10 @@
     <Content Include="ReportsGenerate.aspx" />
     <Content Include="ResetPassword.aspx" />
     <Content Include="Strength.aspx" />
+    <Content Include="UnapprovedUsers.aspx" />
     <Content Include="UserRegister.aspx" />
     <Content Include="Users.aspx" />
+    <Content Include="UserUpdate.aspx" />
     <Content Include="Wastage.aspx" />
     <Content Include="Web.config" />
     <Content Include="wwwroot\css\bootstrap.min.css" />
@@ -507,6 +509,13 @@
     <Compile Include="Strength.aspx.designer.cs">
       <DependentUpon>Strength.aspx</DependentUpon>
     </Compile>
+    <Compile Include="UnapprovedUsers.aspx.cs">
+      <DependentUpon>UnapprovedUsers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UnapprovedUsers.aspx.designer.cs">
+      <DependentUpon>UnapprovedUsers.aspx</DependentUpon>
+    </Compile>
     <Compile Include="UserRegister.aspx.cs">
       <DependentUpon>UserRegister.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -520,6 +529,13 @@
     </Compile>
     <Compile Include="Users.aspx.designer.cs">
       <DependentUpon>Users.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserUpdate.aspx.cs">
+      <DependentUpon>UserUpdate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserUpdate.aspx.designer.cs">
+      <DependentUpon>UserUpdate.aspx</DependentUpon>
     </Compile>
     <Compile Include="Wastage.aspx.cs">
       <DependentUpon>Wastage.aspx</DependentUpon>

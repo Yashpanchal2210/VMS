@@ -138,7 +138,8 @@
         </div>
         <asp:Button ID="btnLogin" runat="server" Text="Login" CssClass="btn-login" OnClick="btnLogin_Click" OnClientClick="return validateLogin();" />
         <a href="ForgetPassword.aspx" class="forgot-password">Forgot Password?</a>
-        <asp:Label ID="ErrorLabel" runat="server" Visible="False"></asp:Label>
+        <br />
+        <asp:Label ID="ErrorLabel" runat="server" Visible="False" CssClass="alert-danger"></asp:Label>
         <a href="UserRegister.aspx" class="register-link">Don't have an account? Register here.</a>
     </form>
 

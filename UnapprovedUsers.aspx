@@ -1,71 +1,67 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="Users.aspx.cs" Inherits="VMS_1.Users" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="UnapprovedUsers.aspx.cs" Inherits="VMS_1.UnapprovedUsers" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
-        <h2 class="mt-4">Users List</h2>
+        <h2 class="mt-4">Unapproved Users List</h2>
 
         <form id="usersForm" runat="server">
-            <asp:GridView ID="GridViewUser" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewUser_RowEditing" OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowDeleting="GridViewUser_RowDeleting" OnRowUpdating="GridViewUser_RowUpdating" Width="100%">
-                <columns>
+            <asp:GridView ID="GridViewUser" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowCommand="GridViewUser_RowCommand" Width="100%">
+                <Columns>
                     <asp:TemplateField HeaderText="Name">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblName" runat="server" Text='<%# Eval("name") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:TextBox ID="txtName" runat="server" Text='<%# Bind("name") %>'></asp:TextBox>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Rank">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblRank" runat="server" Text='<%# Eval("rank") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:TextBox ID="txtRank" runat="server" Text='<%# Bind("rank") %>'></asp:TextBox>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Designation">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblDesignation" runat="server" Text='<%# Eval("designation") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:TextBox ID="txtDesignation" runat="server" Text='<%# Bind("designation") %>'></asp:TextBox>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Nuid">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblNuid" runat="server" Text='<%# Eval("NudId") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:TextBox ID="txtNuid" runat="server" Text='<%# Bind("NudId") %>'></asp:TextBox>
-                        </edititemtemplate>
-                    </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Password">
-                        <itemtemplate>
-                            <asp:Label ID="lblPassword" runat="server" Text="****"></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
-                            <asp:TextBox ID="txtPassword" runat="server" Text='<%# Bind("Password") %>'></asp:TextBox>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Role">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblRole" runat="server" Text='<%# Eval("role") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control">
                                 <asp:ListItem Text="User" Value="User"></asp:ListItem>
                                 <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
                                 <asp:ListItem Text="Logistic Officer" Value="Logistic Officer"></asp:ListItem>
                                 <asp:ListItem Text="CO" Value="CO"></asp:ListItem>
                             </asp:DropDownList>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
-                    <asp:CommandField ShowEditButton="True" HeaderText="Action" ShowDeleteButton="True" ControlStyle-CssClass="btn" ButtonType="Link" />
-                </columns>
+                    <asp:TemplateField HeaderText="Approval">
+                        <ItemTemplate>
+                            <asp:Button ID="btnApprove" runat="server" Text="Approve" CommandName="Approve" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-success" />
+                            <asp:Button ID="btnReject" runat="server" Text="Reject" CommandName="Reject" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-danger" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
             </asp:GridView>
         </form>
     </div>
-
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -94,4 +90,3 @@
         }
     </script>
 </asp:Content>
-

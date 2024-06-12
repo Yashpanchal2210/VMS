@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -30,24 +31,26 @@ namespace VMS_1
             string password = Password.Text;
             string role;
             string name;
+            string nuid;
 
-            if (ValidateUser(username, password, out role, out name))
+            if (ValidateUser(username, password, out role, out name, out nuid))
             {
                 Session["UserName"] = name;
                 Session["Role"] = role;
+                Session["NudId"] = nuid;
                 FormsAuthentication.SetAuthCookie(username, false);
                 Response.Redirect("Dashboard.aspx");
             }
             else
             {
-                // If user is not valid, display error message
                 ErrorLabel.Visible = true;
-                ErrorLabel.Text = "Invalid username or password";
+                ErrorLabel.ForeColor = Color.Red;
+                ErrorLabel.Text = "Invalid username or password Or You are not approved yet";
                 UserName.Focus();
             }
         }
 
-        private bool ValidateUser(string username, string password, out string role, out string name)
+        private bool ValidateUser(string username, string password, out string role, out string name, out string nuid)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
             string query = "SELECT COUNT(*) FROM usermaster WHERE NudId = @Username AND Password = @Password";
@@ -63,42 +66,74 @@ namespace VMS_1
 
                 if (count > 0)
                 {
-                    role = null;
-                    name = null;
-
-                    string roleQuery = "SELECT Role FROM usermaster WHERE NudId = @Username AND Password = @Password";
-                    string nameQuery = "SELECT name FROM usermaster WHERE NudId = @Username AND Password = @Password";
-
-                    using (SqlCommand roleCmd = new SqlCommand(roleQuery, con))
-                    using (SqlCommand nameCmd = new SqlCommand(nameQuery, con))
+                    string approvalQuery = "SELECT IsApproved FROM usermaster WHERE NudId = @Username AND Password = @Password";
+                    using (SqlCommand approvalCmd = new SqlCommand(approvalQuery, con))
                     {
-                        roleCmd.Parameters.AddWithValue("@Username", username);
-                        roleCmd.Parameters.AddWithValue("@Password", password);
+                        approvalCmd.Parameters.AddWithValue("@Username", username);
+                        approvalCmd.Parameters.AddWithValue("@Password", password);
 
-                        object roleObj = roleCmd.ExecuteScalar();
-                        if (roleObj != null)
+                        object isApprovedObj = approvalCmd.ExecuteScalar();
+                        if (isApprovedObj != null && isApprovedObj != DBNull.Value && Convert.ToBoolean(isApprovedObj) == true)
                         {
-                            role = roleObj.ToString();
+                            role = null;
+                            name = null;
+                            nuid = null;
+
+                            string roleQuery = "SELECT Role FROM usermaster WHERE NudId = @Username AND Password = @Password";
+                            string nameQuery = "SELECT name FROM usermaster WHERE NudId = @Username AND Password = @Password";
+                            string nuidQuery = "SELECT NudId FROM usermaster WHERE NudId = @Username AND Password = @Password";
+
+                            using (SqlCommand roleCmd = new SqlCommand(roleQuery, con))
+                            using (SqlCommand nudidCmd = new SqlCommand(nuidQuery, con))
+                            using (SqlCommand nameCmd = new SqlCommand(nameQuery, con))
+                            {
+                                roleCmd.Parameters.AddWithValue("@Username", username);
+                                roleCmd.Parameters.AddWithValue("@Password", password);
+
+                                object roleObj = roleCmd.ExecuteScalar();
+                                if (roleObj != null)
+                                {
+                                    role = roleObj.ToString();
+                                }
+
+                                nameCmd.Parameters.AddWithValue("@Username", username);
+                                nameCmd.Parameters.AddWithValue("@Password", password);
+
+                                object nameObj = nameCmd.ExecuteScalar();
+                                if (nameObj != null)
+                                {
+                                    name = nameObj.ToString();
+                                }
+
+                                nudidCmd.Parameters.AddWithValue("@Username", username);
+                                nudidCmd.Parameters.AddWithValue("@Password", password);
+
+                                object nudidObj = nudidCmd.ExecuteScalar();
+                                if (nudidObj != null)
+                                {
+                                    nuid = nudidObj.ToString();
+                                }
+
+                                return true;
+                            }
                         }
-
-                        nameCmd.Parameters.AddWithValue("@Username", username);
-                        nameCmd.Parameters.AddWithValue("@Password", password);
-
-                        object nameObj = nameCmd.ExecuteScalar();
-                        if (nameObj != null)
+                        else
                         {
-                            name = nameObj.ToString();
+                            role = null;
+                            name = null;
+                            nuid = null;
+                            return false;
                         }
-
-                        return true;
                     }
                 }
             }
 
             role = null;
             name = null;
+            nuid = null;
             return false;
         }
+
 
 
 

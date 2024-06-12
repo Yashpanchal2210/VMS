@@ -1,11 +1,11 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="Users.aspx.cs" Inherits="VMS_1.Users" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="UserUpdate.aspx.cs" Inherits="VMS_1.UserUpdate" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
-        <h2 class="mt-4">Users List</h2>
+        <h2 class="mt-4">Update Profile</h2>
 
         <form id="usersForm" runat="server">
-            <asp:GridView ID="GridViewUser" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewUser_RowEditing" OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowDeleting="GridViewUser_RowDeleting" OnRowUpdating="GridViewUser_RowUpdating" Width="100%">
+            <asp:GridView ID="GridViewUser" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewUser_RowEditing" OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowUpdating="GridViewUser_RowUpdating" Width="100%">
                 <columns>
                     <asp:TemplateField HeaderText="Name">
                         <itemtemplate>
@@ -47,20 +47,7 @@
                             <asp:TextBox ID="txtPassword" runat="server" Text='<%# Bind("Password") %>'></asp:TextBox>
                         </edititemtemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Role">
-                        <itemtemplate>
-                            <asp:Label ID="lblRole" runat="server" Text='<%# Eval("role") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
-                            <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control">
-                                <asp:ListItem Text="User" Value="User"></asp:ListItem>
-                                <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                <asp:ListItem Text="Logistic Officer" Value="Logistic Officer"></asp:ListItem>
-                                <asp:ListItem Text="CO" Value="CO"></asp:ListItem>
-                            </asp:DropDownList>
-                        </edititemtemplate>
-                    </asp:TemplateField>
-                    <asp:CommandField ShowEditButton="True" HeaderText="Action" ShowDeleteButton="True" ControlStyle-CssClass="btn" ButtonType="Link" />
+                    <asp:CommandField ShowEditButton="True" HeaderText="Action" ControlStyle-CssClass="btn" ButtonType="Link" />
                 </columns>
             </asp:GridView>
         </form>
@@ -94,4 +81,3 @@
         }
     </script>
 </asp:Content>
-

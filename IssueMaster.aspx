@@ -3,7 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
 
-        <h2 class="mt-4">Issue Module - Officers</h2>
+        <h2 class="mt-4">Daily Issue Register</h2>
 
         <form id="issueForm" runat="server">
             <div>

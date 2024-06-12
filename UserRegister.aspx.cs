@@ -37,7 +37,7 @@ namespace VMS_1
                 }
 
                 // Insert new user record
-                SqlCommand cmd = new SqlCommand("INSERT INTO usermaster(Name, Rank, Designation, NudId, Password,SecretQuestion, Answer, Role) VALUES(@Name, @Rank, @Designation, @NudID, @Password, @SecretQuestion, @Answer, @Role)", con);
+                SqlCommand cmd = new SqlCommand("INSERT INTO usermaster(Name, Rank, Designation, NudId, Password,SecretQuestion, Answer, Role, IsApproved) VALUES(@Name, @Rank, @Designation, @NudID, @Password, @SecretQuestion, @Answer, @Role, @IsApproved)", con);
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.AddWithValue("@Name", Name.Text);
                 cmd.Parameters.AddWithValue("@Rank", Rank.SelectedValue);
@@ -47,6 +47,7 @@ namespace VMS_1
                 cmd.Parameters.AddWithValue("@SecretQuestion", SecretQuestion.SelectedValue);
                 cmd.Parameters.AddWithValue("@Role", Role.SelectedValue);
                 cmd.Parameters.AddWithValue("@Answer", Answer.Text);
+                cmd.Parameters.AddWithValue("@IsApproved", 0);
                 if (cmd.ExecuteNonQuery() == 1)
                 {
                     Label1.Visible = true;
