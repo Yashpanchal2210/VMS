@@ -127,7 +127,7 @@
             VICTUALLING MANAGEMENT SYSTEM
         </div>
         <div class="form-group">
-            <label for="UserName">Username:</label>
+            <label for="UserName">NUD ID:</label>
             <asp:TextBox ID="UserName" runat="server" placeholder="NUD ID"></asp:TextBox>
             <div id="usernameAlert" class="alert"></div>
         </div>

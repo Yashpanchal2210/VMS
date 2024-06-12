@@ -49,6 +49,14 @@
                             <asp:TextBox ID="txtNuid" runat="server" Text='<%# Bind("NudId") %>'></asp:TextBox>
                         </EditItemTemplate>
                     </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Password">
+                        <ItemTemplate>
+                            <asp:Label ID="lblPassword" runat="server" Text='<%# Eval("Password") %>'></asp:Label>
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:TextBox ID="txtPassword" runat="server" Text='<%# Bind("Password") %>'></asp:TextBox>
+                        </EditItemTemplate>
+                    </asp:TemplateField>
                     <asp:TemplateField HeaderText="Role">
                         <ItemTemplate>
                             <asp:Label ID="lblRole" runat="server" Text='<%# Eval("role") %>'></asp:Label>

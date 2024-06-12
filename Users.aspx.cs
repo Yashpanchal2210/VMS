@@ -27,7 +27,7 @@ namespace VMS_1
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "SELECT name, rank, Designation, NudId, Role FROM usermaster WHERE NudId <> 'admin'";
+                string query = "SELECT name, rank, Designation, NudId, Password, Role FROM usermaster WHERE NudId <> 'admin'";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
                 conn.Open();
@@ -86,7 +86,7 @@ namespace VMS_1
                     string rank = ((TextBox)row.FindControl("txtRank")).Text;
                     string designation = ((TextBox)row.FindControl("txtDesignation")).Text;
                     string nuid = ((TextBox)row.FindControl("txtNuid")).Text;
-                    //string password = ((TextBox)row.FindControl("txtPassword")).Text;
+                    string password = ((TextBox)row.FindControl("txtPassword")).Text;
                     //string secretQuestion = ((TextBox)row.FindControl("txtSecretQuestion")).Text;
                     //string answer = ((TextBox)row.FindControl("txtAnswer")).Text;
                     DropDownList ddlRole = (DropDownList)row.FindControl("ddlRole");
@@ -94,12 +94,12 @@ namespace VMS_1
 
                     using (SqlConnection conn = new SqlConnection(connStr))
                     {
-                        string query = "UPDATE usermaster SET rank = @Rank, Designation = @Designation, name = @Name, Role = @Role WHERE NudId = @NudId";
+                        string query = "UPDATE usermaster SET rank = @Rank, Designation = @Designation, name = @Name, Password = @Password, Role = @Role WHERE NudId = @NudId";
                         SqlCommand cmd = new SqlCommand(query, conn);
                         cmd.Parameters.AddWithValue("@Rank", rank);
                         cmd.Parameters.AddWithValue("@Designation", designation);
                         cmd.Parameters.AddWithValue("@NudId", nuid);
-                        //cmd.Parameters.AddWithValue("@Password", password);
+                        cmd.Parameters.AddWithValue("@Password", password);
                         //cmd.Parameters.AddWithValue("@SecretQuestion", secretQuestion);
                         //cmd.Parameters.AddWithValue("@Answer", answer);
                         cmd.Parameters.AddWithValue("@Role", role);

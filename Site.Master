@@ -78,15 +78,20 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-primary">
-            <a class="navbar-brand" href="Dashboard.aspx">Victualling Management System</a>
+        <nav class="navbar navbar-expand-lg navbar-light bg-success" style="justify-content:center;">
+            <a class="navbar-brand text-white" style="font-size:30px; font-weight:500;">Victulling Management System</a>
+        </nav>
+    </header>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#1c7bdc;">
+            <a class="navbar-brand text-white" href="Dashboard.aspx">Home</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modules
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modules
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="IssueMaster.aspx">Issue Master</a>
@@ -99,7 +104,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Extra Issue
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Extra Issue
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="Divers_ExtraIssue.aspx">Divers</a>
@@ -117,7 +122,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Report Generate
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Report Generate
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="ReportsGenerate.aspx">Reports</a>
@@ -130,9 +135,9 @@
                         {
                     %>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
+                        <a class="nav-link dropdown-toggle dark-theme-text text-white font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="Users.aspx">User List</a>
+                            <a class="dropdown-item " href="Users.aspx">User List</a>
                         </div>
                     </li>
                     <%
@@ -140,49 +145,9 @@
                     %>
                 </ul>
 
-                <ul class="navbar-nav">
-                    <%
-                        if (IsUserLoggedIn())
-                        {
-                            if (IsUserInRole("Admin"))
-                            {
-                    %>
-                    <li>
-                        <span>Admin</span>
-                    </li>
-                    <%
-                        }
-                        else if (IsUserInRole("User"))
-                        {
-                    %>
-                    <li>
-                        <span>User</span>
-                    </li>
-                    <%
-                        }
-                        else if (IsUserInRole("Logistic Officer"))
-                        {
-                    %>
-                    <li>
-                        <span>Logistic Officer</span>
-                    </li>
-                    <%
-                            }
-                        }
-                        else if (IsUserInRole("Co"))
-                        {
-                    %>
-                    <li>
-                        <span>Co</span>
-                    </li>
-                    <%
-                        }%>
-                </ul>
-
-
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 </div>
-                <a class="btn" href="~/LOGIN.aspx?m=logout" runat="server">Logout
+                <a class="btn text-white" href="~/LOGIN.aspx?m=logout" runat="server">Logout
                 </a>
                 <div <%--class="theme-selector"--%> style="margin-left: auto;">
                     <%--<label for="ddlTheme">Choose Theme:</label>--%>

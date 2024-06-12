@@ -9,45 +9,67 @@
                 <asp:LinkButton ID="DashboardButton" runat="server" Text="Go to Dashboard" CssClass="btn btn-info" PostBackUrl="~/Dashboard.aspx"></asp:LinkButton>
             </div>--%>
             <div class="table-responsive">
-                <table class="table" id="myTable">
+                <table class="table" id="myTable" style="width: 1440px">
                     <thead>
                         <tr>
-                            <th class="heading date">Date</th>
-                            <th class="heading veg-officer">Veg Officer</th>
-                            <th class="heading non-veg-officer">Non-Veg Officer</th>
-                            <th class="heading rik-officer">RIK Officer</th>
-                            <th class="heading veg-staff">Veg Staff</th>
-                            <th class="heading non-veg-staff">Non-Veg Staff</th>
-                            <th class="heading rik-staff">RIK Staff</th>
-                            <th class="heading non-entitled-officer">Non-Entitled Officer</th>
-                            <th class="heading non-entitled-staff">Non-Entitled Staff</th>
-                            <th class="heading civilian">Civilian</th>
-                            <th>Action</th>
+                            <th class="heading date" style="width: 123px"></th>
+                            <th class="heading veg-officer" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Officer</th>
+                            <th class="heading rik-officer" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Officer RIK</th>
+                            <th class="heading veg-staff" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sailor</th>
+                            <th class="heading veg-staff" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sailor RIK</th>
+                            <th class="heading veg-staff" colspan="2">&nbsp;Non Entitled Officer</th>
+                            <th class="heading veg-staff" colspan="2">&nbsp; Non Entitled Sailor</th>
+                            <th class="heading veg-staff" colspan="2"></th>
+                        </tr>
+                        <tr>
+                            <th class="heading date" style="width: 123px">Date</th>
+                            <th class="heading veg-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading non-veg-officer" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading rik-officer" style="width: 123px"> &nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading rik-officer" style="width: 123px"> &nbsp;&nbsp; NonVeg</th>
+                            <th class="heading veg-staff" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading non-veg-staff" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading rik-staff" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading rik-staff" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading non-entitled-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading non-entitled-officer" style="width: 147px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading non-entitled-staff" style="width: 124px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading non-entitled-staff" style="width: 124px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading civilian" style="width: 124px">&nbsp;&nbsp; Civilian</th>
+                            <th style="width: 124px">&nbsp;&nbsp; Action</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" runat="server">
                         <tr>
-                            <td>
-                                <input type="date" class="form-control" name="date" required /></td>
-                            <td>
-                                <input type="number" class="form-control" name="vegOfficer" required min="0" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="nonVegOfficer" required min="0" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="rikOfficer" required min="0" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="vegStaff" required min="0" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="nonVegStaff" required min="0" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="rikStaff" required min="0" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="nonEntitledOfficer" required min="0" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="nonEntitledStaff" required min="0" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="civilian" required min="0" /></td>
-                            <td>
+                            <td style="width: 123px">
+                                <input type="date" class="form-control" name="date" required style="width: 98%" /></td>
+                            <td style="width: 123px">
+                                <input type="text" class="form-control" name="VegOfficer" required min="0" /></td>
+                            <td style="width: 123px">
+                                <input type="number" class="form-control" name="NonVegOfficer" required min="0" /></td>
+                            <td style="width: 123px">
+                                <input type="number" class="form-control" name="VegrikOfficer" required min="0" /></td>
+                            <td style="width: 123px">
+                                <input type="number" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
+                            <td style="width: 123px">
+                                <input type="number" class="form-control" name="vegSailor" required min="0" /></td>
+                            <td style="width: 123px">
+                                <input type="number" class="form-control" name="nonVegSailor" required min="0" /></td>
+                            <td style="width: 123px">
+                                <input type="number" class="form-control" name="VegSailorRik" required min="0" /></td>
+                            <td style="width: 123px">
+                                <input type="number" class="form-control" name="NonVegSailorRik" required min="0" /></td>
+                            <td style="width: 123px">
+                                <input type="number" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
+                            <td style="width: 147px">
+                                <input type="number" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
+                            <td style="width: 124px">
+                                <input type="number" class="form-control" name="VegNonEntitledSailor" required min="0" /></td>
+                            <td style="width: 124px">
+                                <input type="number" class="form-control" name="NonVegNonEntitledSailor" required min="0" /></td>
+                            <td style="width: 124px">
+                                <input type="number" class="form-control" name="Civilian" required min="0" style="width: 96%" /></td>
+                            <td style="width: 124px">
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
                         </tr>
                     </tbody>
@@ -103,15 +125,19 @@
             var tableBody = document.getElementById("MainContent_tableBody");
             var newRow = document.createElement("tr");
             newRow.innerHTML = `<td><input type="date" class="form-control" name="date" required /></td>
-                                <td><input type="number" class="form-control" name="vegOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="nonVegOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="rikOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="vegStaff" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="nonVegStaff" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="rikStaff" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="nonEntitledOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="nonEntitledStaff" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="civilian" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="VegOfficer" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="NonVegOfficer" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="VegRikOfficer" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="VegSailor" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="NonVegSailor" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="VegSailorRik" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="NonVegSailorRik" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="VegNonEntitledsailor" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="NonVegNonEntitledsailor" required min="0" /></td>  
+                                <td><input type="number" class="form-control" name="Civilian" required min="0" /></td>
                                 <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
         }

@@ -16,9 +16,11 @@
                 <table class="table" id="myTable">
                     <thead>
                         <tr>
-                            <th class="heading name">Item Name</th>
+                            <th class="heading name">Item Category</th>
                             <th class="heading officerScale">Officer Scale (in Kg)</th>
                             <th class="heading sailorScale">Sailor Scale (in Kg)</th>
+                            <th class="heading">Officer Veg</th>
+                            <th class="heading">OfficerNonVeg</th>
 
                         </tr>
                     </thead>
@@ -30,7 +32,10 @@
                                 <input type="number" class="form-control" name="officerScale" required min="0" step="0.001" /></td>
                             <td>
                                 <input type="number" class="form-control" name="sailorScale" required min="0" step="0.001" /></td>
-
+                            <td>
+                                <input type="number" class="form-control" name="veg" required min="0" step="0.001" /></td>
+                            <td>
+                                <input type="number" class="form-control" name="nonveg" required min="0" step="0.001" /></td>
                         </tr>
                     </tbody>
                 </table>
