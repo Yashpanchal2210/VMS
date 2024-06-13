@@ -124,7 +124,7 @@ namespace VMS_1
                         }
                     }
 
-                    for (int i = 0; i < dates.Length; i++)
+                    for (int i = 0; i < itemNames.Length; i++)
                     {
                         DateTime date = DateTime.Parse(dates[i]);
                         string itemName = itemNames[i];
@@ -143,10 +143,10 @@ namespace VMS_1
 
                         cmd.Parameters.AddWithValue("@ItemName", itemName);
                         cmd.Parameters.AddWithValue("@Quantity", quantity);
-                        cmd.Parameters.AddWithValue("@Denomination", denominations[i]);
-                        cmd.Parameters.AddWithValue("@ReceivedFrom", receivedFromValue);
-                        cmd.Parameters.AddWithValue("@ReferenceNo", referenceNos[i]);
-                        cmd.Parameters.AddWithValue("@Date", date);
+                        cmd.Parameters.AddWithValue("@Denomination", i < denominations.Length ? denominations[i] : denominations[0]);
+                        cmd.Parameters.AddWithValue("@ReceivedFrom", i < receivedFrom.Length ? receivedFrom[i] : receivedFrom[0]);
+                        cmd.Parameters.AddWithValue("@ReferenceNo", i < referenceNos.Length ? referenceNos[i] : referenceNos[0]);
+                        cmd.Parameters.AddWithValue("@Date", i < dates.Length ? dates[i] : dates[0]);
 
                         cmd.ExecuteNonQuery();
 

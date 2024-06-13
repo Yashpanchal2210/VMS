@@ -68,7 +68,7 @@ namespace VMS_1
                     mainItemCmd.Parameters.AddWithValue("@ItemName", itemName);
                     mainItemCmd.Parameters.AddWithValue("@RationScaleOfficer", officerScale);
                     mainItemCmd.Parameters.AddWithValue("@RationScaleSailor", sailorScale);
-                    mainItemCmd.Parameters.AddWithValue("@AlternateItems", null); // Placeholder for TVP
+                    mainItemCmd.Parameters.AddWithValue("@AlternateItems", null);
                     mainItemCmd.ExecuteNonQuery();
 
                     // Get the newly inserted ItemID or existing ItemID

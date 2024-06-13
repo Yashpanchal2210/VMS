@@ -23,6 +23,7 @@ namespace VMS_1
             Response.AppendHeader("Pragma", "no-cache");
             if (!IsPostBack)
             {
+                //LoadGridView();
                 // Initialize ViewState["DataTable"] if it's null
                 if (ViewState["DataTable"] == null)
                 {
@@ -87,6 +88,7 @@ namespace VMS_1
 
                 // Refresh the GridView after data insertion
                 BindGridView();
+                //LoadGridView();
 
                 // Bind the total GridView after data insertion
                 BindTotalGridView((DataTable)ViewState["DataTable"]);
@@ -98,8 +100,31 @@ namespace VMS_1
             }
         }
 
+        //private void LoadGridView()
+        //{
+        //    try
+        //    {
+        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
+
+        //            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Strength", conn);
+        //            DataTable dt = new DataTable();
+        //            da.Fill(dt);
+
+        //            GridViewStrength.DataSource = dt;
+        //            GridViewStrength.DataBind();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+        //    }
+        //}
 
         // Method to bind data to the GridView
+
 
         private void BindGridView()
         {
@@ -111,7 +136,7 @@ namespace VMS_1
                 DateTime dateTime = DateTime.Parse(firstSubmittedDate);
                 string monthFilter = dateTime.ToString("yyyy-MM");
 
-                string query = "SELECT * FROM Strength WHERE CONVERT(VARCHAR(7), Date, 120) = @Month";
+                string query = "SELECT * FROM Strength WHERE CONVERT(VARCHAR(7), dates, 120) = @Month";
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -126,7 +151,6 @@ namespace VMS_1
 
                     // Store DataTable in ViewState
                     ViewState["DataTable"] = dt;
-
 
                 }
             }
@@ -143,7 +167,7 @@ namespace VMS_1
             DataRow totalRow = dt.NewRow();
             foreach (DataColumn column in dt.Columns)
             {
-                if (column.DataType == typeof(int) && column.ColumnName != "Date")
+                if (column.DataType == typeof(int) && column.ColumnName != "dates")
                 {
                     totalRow[column.ColumnName] = dt.Compute($"SUM([{column.ColumnName}])", "");
                 }
