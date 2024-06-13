@@ -7,15 +7,17 @@
 
         <form id="issueForm" runat="server">
             <div>
-                <label for="userType">Select User Type:</label>
-                <select id="userType" onchange="toggleUserType()" name="userrole" class="form-control" style="width: 100px;">
-                    <option value="officer" selected>Officer</option>
-                    <option value="sailor">Sailor</option>
+                <%--<label for="userType">Select User Type:</label>--%>
+                <select id="userType" name="userrole" class="form-control" style="width: 150px;">
+                    <option value="Wardroom" selected>Wardroom</option>
+                    <option value="Galley">Galley</option>
+                    <option value="Others">Others</option>
                 </select>
             </div>
             <input type="hidden" id="ScalAmount_Val" />
             <input type="hidden" id="ItemCategory_Val" />
             <input type="hidden" id="entitledStrength" name="entitledstrength" />
+            <input type="hidden" id="EntitledStrength" name="EntitledStrength" />
             <div class="table-responsive">
                 <table class="table" id="issueTable">
                     <thead>
@@ -23,10 +25,8 @@
                             <th class="heading date">Date</th>
                             <th class="heading category">Item Category</th>
                             <th class="heading itemname">Item Name</th>
-                            <th class="heading issuedto">Enter Strength</th>
-                            <th class="heading qtyentitled">Qty Entitled</th>
+                            <th class="heading issuedto">Entitled Strength</th>
                             <th class="heading qty">Qty Issued</th>
-                            <th class="heading denom">Denomination</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -35,17 +35,11 @@
                             <td>
                                 <input type="date" class="form-control" name="date" required /></td>
                             <td>
-                                <%--<asp:DropDownList runat="server" CssClass="form-control itemcategory" AutoPostBack="False" onchange="itemcategory_SelectedIndexChanged()" Width="130px">
-                                    <asp:ListItem Text="Select" Value=""></asp:ListItem>
-                                </asp:DropDownList>--%>
                                 <select class="form-control itemcategory" id="itemcategory" name="itemcategory" onchange="itemcategory_SelectedIndexChanged(this)" width="130px" required>
                                     <option value="">Select</option>
                                 </select>
                             </td>
                             <td>
-                                <%--<asp:DropDownList ID="DropDownList1" runat="server" CssClass="form-control" AutoPostBack="False" Width="130px">
-                                    <asp:ListItem Text="Select" Value=""></asp:ListItem>
-                                </asp:DropDownList>--%>
                                 <select class="form-control" id="DropDownList1" name="itemname" width="130px" required>
                                     <option value="">Select</option>
                                 </select>
@@ -54,20 +48,8 @@
                                 <input type="text" class="form-control" name="Strength" />
                             </td>
                             <td>
-                                <input type="text" id="EntitledStrength" class="form-control" readonly />
-                                <%--<asp:Label ID="EntitledStrength" runat="server" Text="" class="form-control"></asp:Label>--%>
-                            </td>
-                            <td>
                                 <input type="text" class="form-control" name="Qtyissued" /></td>
-                            <td>
-                                <select class="form-control" name="denom" required>
-                                    <option value="">Select Denom</option>
-                                    <option value="Kgs">Kgs</option>
-                                    <option value="Ltr">Ltr</option>
-                                    <option value="Nos">Nos</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </td>
+
                             <%--<td>
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>--%>
                         </tr>
@@ -82,9 +64,9 @@
                 <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
             </div>
             <div>
-                <h2 class="mt-4">Entered Data</h2>
+                <h2 class="mt-4">Issue Details</h2>
             </div>
-            <div>
+            <%--<div>
                 <label for="ddlMonth">Select Month:</label>
                 <asp:DropDownList ID="ddlMonth" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlMonth_SelectedIndexChanged">
                     <asp:ListItem Text="January" Value="1"></asp:ListItem>
@@ -100,14 +82,80 @@
                     <asp:ListItem Text="November" Value="11"></asp:ListItem>
                     <asp:ListItem Text="December" Value="12"></asp:ListItem>
                 </asp:DropDownList>
-            </div>
+            </div>--%>
             <div>
                 <a class="btn" href="ExportIssueOfficerandSailor.aspx">Export Issue</a>
             </div>
             <div>
-                <asp:GridView ID="GridViewIssue" runat="server" CssClass="table table-bordered table-striped">
+                <asp:GridView ID="GridViewIssue" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False">
+                    <Columns>
+                        <asp:TemplateField HeaderText="Date">
+                            <ItemTemplate>
+                                <asp:Label ID="lblDate" runat="server" Text='<%# Eval("Date") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="lblDate" runat="server" Text='<%# Bind("Date") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Category">
+                            <ItemTemplate>
+                                <asp:Label ID="lblCategory" runat="server" Text='<%# Eval("CategoryItemName") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="lblCategory" runat="server" Text='<%# Bind("CategoryItemName") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Item">
+                            <ItemTemplate>
+                                <asp:Label ID="lblItem" runat="server" Text='<%# Eval("IssueItemName") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtItem" runat="server" Text='<%# Bind("IssueItemName") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Qty Issued">
+                            <ItemTemplate>
+                                <asp:Label ID="lblQtyIssued" runat="server" Text='<%# Eval("QtyIssued") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtQtyIssued" runat="server" Text='<%# Bind("QtyIssued") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Denomination">
+                            <ItemTemplate>
+                                <asp:Label ID="lblDenomination" runat="server" Text='<%# Eval("Denomination") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtDenomination" runat="server" Text='<%# Bind("Denomination") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+
+                    </Columns>
                 </asp:GridView>
             </div>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="entitledStrengthModal" tabindex="-1" role="dialog" aria-labelledby="entitledStrengthModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="entitledStrengthModalLabel">Entitled Strength</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <p><span class="font-weight-bolder" id="entitledStrengthValue"></span>Quantity is Entitled for given strength.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </form>
 
@@ -123,29 +171,32 @@
             //    $('#userRole').val("officer")
             //}
         });
-        function toggleUserType() {
-            var userType = document.getElementById("userType").value;
-            var heading = document.querySelector('.container h2');
+        //function toggleUserType() {
+        //    var userType = document.getElementById("userType").value;
+        //    var heading = document.querySelector('.container h2');
 
-            if (userType === "officer") {
-                $('#userRole').val("officer");
-                heading.textContent = "Issue Module - Officers";
-            } else if (userType === "sailor") {
-                $('#userRole').val("sailor");
-                heading.textContent = "Issue Module - Sailors";
-            }
-        }
+        //    if (userType === "officer") {
+        //        $('#userRole').val("officer");
+        //        heading.textContent = "Issue Module - Officers";
+        //    } else if (userType === "sailor") {
+        //        $('#userRole').val("sailor");
+        //        heading.textContent = "Issue Module - Sailors";
+        //    }
+        //}
 
-        $(document).on('input', 'input[name="Strength"]', function () {
+        $(document).on('change', 'input[name="Strength"]', function () {
             var scaleAmount = $('#ScalAmount_Val').val();
             var strengthValue = parseFloat($(this).val());
 
             if (!isNaN(strengthValue)) {
                 var entitledStrength = strengthValue * scaleAmount;
-
-                $(this).closest('tr').find('.EntitledStrength').val(entitledStrength);
+                $('#entitledStrengthValue').text(entitledStrength);
+                $('#entitledStrengthModal').modal('show');
+                //$(this).closest('tr').find('.EntitledStrength').val(entitledStrength);
             } else {
-                $(this).closest('tr').find('.EntitledStrength').val('');
+                $('#entitledStrengthValue').text("Please enter a valid strength value.");
+                $('#entitledStrengthModal').modal('show');
+                //$(this).closest('tr').find('.EntitledStrength').val('');
             }
         });
 
@@ -202,6 +253,7 @@
 
             var selectedDate = document.querySelector('input[type="date"][name="date"]').value;
             newRow.innerHTML = `
+                            <input type="hidden" id="EntitledStrength_${rowSequence}" name="EntitledStrength" />
                             <td>
                                 <input type="date" class="form-control" name="date" value="${selectedDate}" disabled required />
                             </td>
@@ -218,19 +270,7 @@
                                 <input type="text" class="form-control strength-input" name="Strength" id="Strength_${rowSequence}" />
                             </td>
                             <td>
-                                <input class="form-control entitled_strength" type="text" name="EntitledStrength" id="EntitledStrength_${rowSequence}" readonly />
-                            </td>
-                            <td>
                                 <input type="text" class="form-control" name="Qtyissued" id="Qtyissued_${rowSequence}" />
-                            </td>
-                            <td>
-                                <select class="form-control" name="denom" required id="denom_${rowSequence}">
-                                    <option value="">Select Denom</option>
-                                    <option value="Kgs">Kgs</option>
-                                    <option value="Ltr">Ltr</option>
-                                    <option value="Nos">Nos</option>
-                                    <option value="Others">Others</option>
-                                </select>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>

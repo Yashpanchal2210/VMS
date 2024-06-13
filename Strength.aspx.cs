@@ -39,15 +39,19 @@ namespace VMS_1
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
                 // Get data from the form
                 string[] dates = Request.Form.GetValues("date");
-                string[] vegOfficers = Request.Form.GetValues("vegOfficer");
-                string[] nonVegOfficers = Request.Form.GetValues("nonVegOfficer");
-                string[] rikOfficers = Request.Form.GetValues("rikOfficer");
-                string[] vegStaffs = Request.Form.GetValues("vegStaff");
-                string[] nonVegStaffs = Request.Form.GetValues("nonVegStaff");
-                string[] rikStaffs = Request.Form.GetValues("rikStaff");
-                string[] nonEntitledOfficers = Request.Form.GetValues("nonEntitledOfficer");
-                string[] nonEntitledStaffs = Request.Form.GetValues("nonEntitledStaff");
-                string[] civilians = Request.Form.GetValues("civilian");
+                string[] vegOfficers = Request.Form.GetValues("VegOfficer");
+                string[] nonVegOfficers = Request.Form.GetValues("NonVegOfficer");
+                string[] vegrikOfficers = Request.Form.GetValues("VegrikOfficer");
+                string[] nonVegrikOfficers = Request.Form.GetValues("NonVegRikOfficer");
+                string[] vegSailor = Request.Form.GetValues("vegSailor");
+                string[] nonVegSailor = Request.Form.GetValues("nonVegSailor");
+                string[] vegSailorRik = Request.Form.GetValues("VegSailorRik");
+                string[] nonVegSailorRik = Request.Form.GetValues("NonVegSailorRik");
+                string[] vegNonEntitledOfficer = Request.Form.GetValues("VegNonEntitledOfficer");
+                string[] nonVegNonEntitledOfficer = Request.Form.GetValues("NonVegNonEntitledOfficer");
+                string[] vegNonEntitledSailor = Request.Form.GetValues("VegNonEntitledSailor");
+                string[] NonVegNonEntitledSailor = Request.Form.GetValues("NonVegNonEntitledSailor");
+                string[] civilians = Request.Form.GetValues("Civilian");
 
                 // Connect to the database
                 using (SqlConnection conn = new SqlConnection(connStr))
@@ -61,15 +65,19 @@ namespace VMS_1
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@Date", dates[i]);
-                        cmd.Parameters.AddWithValue("@Veg_Officer", vegOfficers[i]);
-                        cmd.Parameters.AddWithValue("@NonVeg_Officer", nonVegOfficers[i]);
-                        cmd.Parameters.AddWithValue("@RIK_Officer", rikOfficers[i]);
-                        cmd.Parameters.AddWithValue("@Veg_Sailor", vegStaffs[i]);
-                        cmd.Parameters.AddWithValue("@NonVeg_Sailor", nonVegStaffs[i]);
-                        cmd.Parameters.AddWithValue("@RIK_Sailor", rikStaffs[i]);
-                        cmd.Parameters.AddWithValue("@NonEntitled_Officer", nonEntitledOfficers[i]);
-                        cmd.Parameters.AddWithValue("@NonEntitled_Sailor", nonEntitledStaffs[i]);
-                        cmd.Parameters.AddWithValue("@Civilian", civilians[i]);
+                        cmd.Parameters.AddWithValue("@VegOfficers", vegOfficers[i]);
+                        cmd.Parameters.AddWithValue("@NonVegOfficers", nonVegOfficers[i]);
+                        cmd.Parameters.AddWithValue("@VegrikOfficers", vegrikOfficers[i]);
+                        cmd.Parameters.AddWithValue("@NonVegrikOfficers", nonVegrikOfficers[i]);
+                        cmd.Parameters.AddWithValue("@VegSailor", vegSailor[i]);
+                        cmd.Parameters.AddWithValue("@NonVegSailor", nonVegSailor[i]);
+                        cmd.Parameters.AddWithValue("@VegSailorRik", vegSailorRik[i]);
+                        cmd.Parameters.AddWithValue("@NonVegSailorRik", nonVegSailorRik[i]);
+                        cmd.Parameters.AddWithValue("@VegNonEntitledOfficer", vegNonEntitledOfficer[i]);
+                        cmd.Parameters.AddWithValue("@NonVegNonEntitledOfficer", nonVegNonEntitledOfficer[i]);
+                        cmd.Parameters.AddWithValue("@VegNonEntitledSailor", vegNonEntitledSailor[i]);
+                        cmd.Parameters.AddWithValue("@NonVegNonEntitledSailor", NonVegNonEntitledSailor[i]);
+                        cmd.Parameters.AddWithValue("@Civilians", civilians[i]);
 
                         cmd.ExecuteNonQuery();
                     }

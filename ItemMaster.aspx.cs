@@ -55,6 +55,7 @@ namespace VMS_1
                 string[] alternateItemNames = Request.Form.GetValues("alternateitemname");
                 string[] equivalentOfficerScales = Request.Form.GetValues("equivalentofficerScale");
                 string[] equivalentSailorScales = Request.Form.GetValues("equivalentsailorScale");
+                string[] denoms = Request.Form.GetValues("denoms");
 
                 // Connect to the database
                 using (SqlConnection conn = new SqlConnection(connStr))
@@ -104,11 +105,12 @@ namespace VMS_1
 
                             if (Issuecount == 0)
                             {
-                                SqlCommand altItemCmd = new SqlCommand("INSERT INTO AlternateItem (AltItemName, AltRationScaleOfficer, AltRationScaleSailor, ItemID) VALUES (@AltItemName, @AltRationScaleOfficer, @AltRationScaleSailor, @ItemID)", conn);
+                                SqlCommand altItemCmd = new SqlCommand("INSERT INTO AlternateItem (AltItemName, AltRationScaleOfficer, AltRationScaleSailor, ItemID, Denomination) VALUES (@AltItemName, @AltRationScaleOfficer, @AltRationScaleSailor, @ItemID, @Denomination)", conn);
                                 altItemCmd.Parameters.AddWithValue("@AltItemName", alternateItemNames[i]);
                                 altItemCmd.Parameters.Add("@AltRationScaleOfficer", SqlDbType.Decimal).Value = Convert.ToDecimal(equivalentOfficerScales[i]);
                                 altItemCmd.Parameters.Add("@AltRationScaleSailor", SqlDbType.Decimal).Value = Convert.ToDecimal(equivalentSailorScales[i]);
                                 altItemCmd.Parameters.AddWithValue("@ItemID", itemID);
+                                altItemCmd.Parameters.AddWithValue("@Denomination", denoms[i]);
                                 altItemCmd.ExecuteNonQuery();
                             }
                         }

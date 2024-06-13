@@ -49,6 +49,7 @@
                             <th class="heading alternateitem">Alternate Item Name</th>
                             <th class="heading equivalentofficerScale">Equivalent Scale Officer (in Kg)</th>
                             <th class="heading equivalentsailorScale">Equivalent Scale Sailor (in Kg)</th>
+                            <th class="heading denomination">Denomination</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -60,6 +61,15 @@
                                 <input type="number" class="form-control" name="equivalentofficerScale" required min="0" step="0.001" /></td>
                             <td>
                                 <input type="number" class="form-control" name="equivalentsailorScale" required min="0" step="0.001" /></td>
+                            <td>
+                                <select class="form-control" name="denoms">
+                                    <option value="">Select</option>
+                                    <option value="Kgs">Kgs</option>
+                                    <option value="Ltrs">Ltrs</option>
+                                    <option value="Nos">Nos</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </td>
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
                         </tr>
@@ -94,6 +104,15 @@
             newRow.innerHTML = `<td><input type="text" class="form-control" name="alternateitemname" /></td>
                                 <td><input type="number" class="form-control" name = "equivalentofficerScale" required min="0" step="0.001"/></td>
                                 <td><input type="number" class="form-control" name="equivalentsailorScale" required min="0" step="0.001"/></td>
+                                <td>
+                                    <select class="form-control" name="denoms">
+                                        <option value="">Select</option>
+                                        <option value="Kgs">Kgs</option>
+                                        <option value="Ltrs">Ltrs</option>
+                                        <option value="Nos">Nos</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </td>
                                 <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
         }

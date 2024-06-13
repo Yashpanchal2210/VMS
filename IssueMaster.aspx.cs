@@ -108,8 +108,10 @@ namespace VMS_1
                 string[] enterstrength = Request.Form.GetValues("Strength");
                 string[] qtyentitled = Request.Form.GetValues("entitledstrength");
                 string[] qtyissued = Request.Form.GetValues("Qtyissued");
-                string[] denomination = Request.Form.GetValues("denom");
+                //string[] denomination = Request.Form.GetValues("denom");
                 string[] role = Request.Form.GetValues("userrole");
+
+                string[] denomination = new string[itemname.Length];
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -122,8 +124,23 @@ namespace VMS_1
                         string itemName = itemname[i];
                         decimal qtyIssued = decimal.Parse(qtyissued[i]);
 
+                        // Retrieve the Denomination value from the AlternateItem table
+                        SqlCommand getDenominationCmd = new SqlCommand(
+                            "SELECT Denomination FROM AlternateItem WHERE ItemName = @ItemName", conn);
+                        getDenominationCmd.Parameters.AddWithValue("@ItemName", itemName);
+
+                        object denomResult = getDenominationCmd.ExecuteScalar();
+                        if (denomResult != null && denomResult != DBNull.Value)
+                        {
+                            denomination[i] = denomResult.ToString();
+                        }
+                        else
+                        {
+                            denomination[i] = string.Empty;
+                        }
+
                         SqlCommand checkReceiptCmd = new SqlCommand(
-                    "SELECT SUM(Qty) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
+                            "SELECT SUM(Qty) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
                         checkReceiptCmd.Parameters.AddWithValue("@ItemName", itemName);
 
                         object result = checkReceiptCmd.ExecuteScalar();
@@ -228,7 +245,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM IssueMaster", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT im.Date, it.ItemName AS CategoryItemName, im.ItemName AS IssueItemName, im.QtyIssued, im.Denomination FROM IssueMaster im INNER JOIN Items it ON im.ItemCategoryId = it.ItemID", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
