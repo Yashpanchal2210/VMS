@@ -15,17 +15,20 @@
                 <table class="table" id="myTable">
                     <thead>
                         <tr>
+                            <th class="heading ref">Reference/CRV No</th>
                             <th class="heading itemname">Item Name</th>
                             <th class="heading qty">Quantity</th>
-                            <th class="heading denom">Denomination</th>
+                            <%--<th class="heading denom">Denomination</th>--%>
                             <th class="heading rcvdfrom">Received From</th>
-                            <th class="heading ref">Reference/CRV No</th>
                             <th class="heading date">Date</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" runat="server">
                         <tr>
+                            <td>
+                                <input type="text" class="form-control" name="ref" required />
+                            </td>
                             <td>
                                 <select class="form-control itemname" id="itemname" name="itemname" required>
                                     <option value="">Select</option>
@@ -34,7 +37,7 @@
                             <td>
                                 <input type="text" class="form-control" name="qty" required pattern="^\d+(\.\d+)?$" />
                             </td>
-                            <td>
+                            <%--<td>
                                 <select class="form-control" name="denom" required>
                                     <option value="">Select Denom</option>
                                     <option value="Kgs">Kgs</option>
@@ -42,7 +45,7 @@
                                     <option value="Nos">Nos</option>
                                     <option value="Others">Others</option>
                                 </select>
-                            </td>
+                            </td>--%>
                             <td>
                                 <select class="form-control" name="rcvdfrom" required onchange="checkReceivedFrom(this)">
                                     <option value="">Select </option>
@@ -52,9 +55,7 @@
                                     <option value="Others">Others</option>
                                 </select>
                             </td>
-                            <td>
-                                <input type="text" class="form-control" name="ref" required />
-                            </td>
+
                             <td>
                                 <input type="date" class="form-control" name="date" required />
                             </td>
@@ -65,9 +66,9 @@
                     </tbody>
                 </table>
             </div>
-            <%--<div class="text-left">
-                <asp:LinkButton ID="item" runat="server" Text="Go to Item Master" CssClass="btn btn-info" PostBackUrl="~/ItemMaster.aspx"></asp:LinkButton>
-            </div>--%>
+            <div class="text-left">
+                <button class="btn btn-primary">Upload CRV</button>
+            </div>
             <div>
                 <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
             </div>
@@ -83,8 +84,61 @@
                 <input type="month" id="monthYear" name="monthYear" class="form-control" onchange="filterData()" /><br />
                 &nbsp;
             </div>
-            <asp:GridView ID="GridView" runat="server" CssClass="table table-bordered table-striped">
-            </asp:GridView>
+            <div>
+                <asp:GridView ID="GridView" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False">
+                    <Columns>
+                        <asp:TemplateField HeaderText="Date">
+                            <ItemTemplate>
+                                <asp:Label ID="lblDate" runat="server" Text='<%# Eval("Dates") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="lblDate" runat="server" Text='<%# Bind("Dates") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Reference No">
+                            <ItemTemplate>
+                                <asp:Label ID="lblreferenceNos" runat="server" Text='<%# Eval("referenceNos") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="lblreferenceNos" runat="server" Text='<%# Bind("referenceNos") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Received From">
+                            <ItemTemplate>
+                                <asp:Label ID="lblreceivedFrom" runat="server" Text='<%# Eval("receivedFrom") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtreceivedFrom" runat="server" Text='<%# Bind("receivedFrom") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Item Name">
+                            <ItemTemplate>
+                                <asp:Label ID="lblitemnames" runat="server" Text='<%# Eval("itemnames") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtitemnames" runat="server" Text='<%# Bind("itemnames") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Denomination">
+                            <ItemTemplate>
+                                <asp:Label ID="lblDenomination" runat="server" Text='<%# Eval("denominations") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtDenomination" runat="server" Text='<%# Bind("denominations") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Quantities">
+                            <ItemTemplate>
+                                <asp:Label ID="lblquantities" runat="server" Text='<%# Eval("quantities") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtquantities" runat="server" Text='<%# Bind("quantities") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+
+                    </Columns>
+                </asp:GridView>
+            </div>
         </form>
     </div>
 
@@ -120,28 +174,26 @@
         function addRow() {
             var tableBody = document.getElementById("MainContent_tableBody");
             var newRow = document.createElement("tr");
+            var selectedRefNo = document.querySelector('input[type="text"][name="ref"]').value;
+            var selectedRcvdFrom = document.querySelector('select[name="rcvdfrom"]').value;
+            var selectedDate = document.querySelector('input[type="date"][name="date"]').value;
             newRow.innerHTML = `
+                                <td><input type="text" class="form-control" value="${selectedRefNo}" disabled /></td>
                                  <td>
                                       <select class="form-control itemname" name="itemname" id="itemname_${rowSequence}" required>
                                      </select>
                                  </td>
                                 <td><input type="text" class="form-control" name="qty" required pattern="^\\d+(\\.\\d+)?$" /></td>
-                                <td><select class="form-control" name="denom" required>
-                                    <option value="">Select Denom</option>
-                                    <option value="Kgs">Kgs</option>
-                                    <option value="Ltr">Ltr</option>
-                                    <option value="Nos">Nos</option>
-                                    <option value="Others">Others</option>
-                                </select></td>
-                                <td><select class="form-control" name="rcvdfrom" required onchange="checkReceivedFrom(this)">
-                                    <option value="">Select </option>
-                                    <option value="BV Yard">BV Yard</option>
-                                    <option value="Local Purchase">Local Purchase</option>
-                                    <option value="Other Ship">Other Ship</option>
-                                    <option value="Others">Others</option>
-                                </select></td>
-                                <td><input type="text" class="form-control" name="ref" required /></td>
-                                <td><input type="date" class="form-control" name="date" required /></td>
+                                <td>
+                                    <select class="form-control" name="rcvdfrom" required onchange="checkReceivedFrom(this)" disabled>
+                                        <option value="">Select</option>
+                                        <option value="BV Yard" ${selectedRcvdFrom === 'BV Yard' ? 'selected' : ''}>BV Yard</option>
+                                        <option value="Local Purchase" ${selectedRcvdFrom === 'Local Purchase' ? 'selected' : ''}>Local Purchase</option>
+                                        <option value="Other Ship" ${selectedRcvdFrom === 'Other Ship' ? 'selected' : ''}>Other Ship</option>
+                                        <option value="Others" ${selectedRcvdFrom === 'Others' ? 'selected' : ''}>Others</option>
+                                    </select>
+                                </td>
+                                <td><input type="date" class="form-control" value="${selectedDate}" name="date" required disabled /></td>
                                 <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
             loadItemNamesForRow(newRow);

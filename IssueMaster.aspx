@@ -147,7 +147,7 @@
                         </div>
                         <div class="modal-body">
 
-                            <p><span class="font-weight-bolder" id="entitledStrengthValue"></span>Quantity is Entitled for given strength.</p>
+                            <p><span class="font-weight-bolder" id="entitledStrengthValue"></span> Quantity is Entitled for given strength.</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

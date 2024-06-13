@@ -126,7 +126,7 @@ namespace VMS_1
 
                         // Retrieve the Denomination value from the AlternateItem table
                         SqlCommand getDenominationCmd = new SqlCommand(
-                            "SELECT Denomination FROM AlternateItem WHERE ItemName = @ItemName", conn);
+                            "SELECT Denomination FROM AlternateItem WHERE AltItemName = @ItemName", conn);
                         getDenominationCmd.Parameters.AddWithValue("@ItemName", itemName);
 
                         object denomResult = getDenominationCmd.ExecuteScalar();

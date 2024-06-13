@@ -86,35 +86,43 @@ namespace VMS_1
         {
             try
             {
-                //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
                 string[] itemNames = Request.Form.GetValues("itemname");
                 string[] quantities = Request.Form.GetValues("qty");
-                string[] denominations = Request.Form.GetValues("denom");
                 string[] receivedFrom = Request.Form.GetValues("rcvdfrom");
                 string[] otherReceivedFrom = Request.Form.GetValues("otherReceivedFrom");
                 string[] referenceNos = Request.Form.GetValues("ref");
                 string[] dates = Request.Form.GetValues("date");
 
-                List<string> missingFields = new List<string>();
-
-                if (itemNames == null) missingFields.Add("itemname");
-                if (quantities == null) missingFields.Add("qty");
-                if (denominations == null) missingFields.Add("denom");
-                if (receivedFrom == null) missingFields.Add("rcvdfrom");
-                if (referenceNos == null) missingFields.Add("ref");
-                if (dates == null) missingFields.Add("date");
-
-                if (missingFields.Count > 0)
+                if (itemNames == null || quantities == null || receivedFrom == null || referenceNos == null || dates == null)
                 {
-                    lblStatus.Text = "The following form values are missing: " + string.Join(", ", missingFields);
+                    lblStatus.Text = "Some form values are missing.";
                     return;
                 }
+
+                string[] denominations = new string[itemNames.Length];
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
+
+                    for (int i = 0; i < itemNames.Length; i++)
+                    {
+                        SqlCommand getDenominationCmd = new SqlCommand("SELECT Denomination FROM AlternateItem WHERE AltItemName = @ItemName", conn);
+                        getDenominationCmd.Parameters.AddWithValue("@ItemName", itemNames[i]);
+
+                        object denomValue = getDenominationCmd.ExecuteScalar();
+                        if (denomValue != null)
+                        {
+                            denominations[i] = denomValue.ToString();
+                        }
+                        else
+                        {
+                            lblStatus.Text = "Denomination not found for item: " + itemNames[i];
+                            return;
+                        }
+                    }
 
                     for (int i = 0; i < dates.Length; i++)
                     {
@@ -134,11 +142,11 @@ namespace VMS_1
                         cmd.CommandType = CommandType.Text;
 
                         cmd.Parameters.AddWithValue("@ItemName", itemName);
-                        cmd.Parameters.AddWithValue("@Quantity", decimal.Parse(quantities[i]));
+                        cmd.Parameters.AddWithValue("@Quantity", quantity);
                         cmd.Parameters.AddWithValue("@Denomination", denominations[i]);
                         cmd.Parameters.AddWithValue("@ReceivedFrom", receivedFromValue);
                         cmd.Parameters.AddWithValue("@ReferenceNo", referenceNos[i]);
-                        cmd.Parameters.AddWithValue("@Date", DateTime.Parse(dates[i]));
+                        cmd.Parameters.AddWithValue("@Date", date);
 
                         cmd.ExecuteNonQuery();
 
@@ -168,7 +176,6 @@ namespace VMS_1
 
                             insertPresentStockCmd.ExecuteNonQuery();
                         }
-
 
                         SqlCommand checkCmd = new SqlCommand(
                         "SELECT COUNT(*) FROM MonthEndStockMaster WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
@@ -211,6 +218,7 @@ namespace VMS_1
                 lblStatus.Text = "An error occurred: " + ex.Message;
             }
         }
+
 
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
@@ -263,7 +271,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ReceiptMaster", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT Dates, referenceNos, receivedFrom, itemnames, denominations, quantities FROM ReceiptMaster", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
