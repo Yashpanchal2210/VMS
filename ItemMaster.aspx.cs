@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web;
 using System.Web.Security;
+using System.Web.Services;
 using System.Web.UI.WebControls;
 
 namespace VMS_1
@@ -22,6 +24,7 @@ namespace VMS_1
             if (!IsPostBack)
             {
                 LoadGridView();
+                LoadBasicItems();
             }
         }
 
@@ -42,20 +45,129 @@ namespace VMS_1
             }
         }
 
+        private void LoadBasicItems()
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT MIN(Id) AS Id, BasicItem, BasicDenom FROM BasicLieuItems GROUP BY BasicItem, BasicDenom";
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                basicItem.DataSource = reader;
+                basicItem.DataTextField = "BasicItem";
+                basicItem.DataValueField = "Id";
+                basicItem.DataBind();
+            }
+            basicItem.Items.Insert(0, new ListItem("Select", ""));
+        }
+
+        [WebMethod]
+        public static List<string> GetInLieuItems(string basicItem)
+        {
+            List<string> items = new List<string>();
+            string connectionString = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // First, fetch the BasicItem value based on the Id
+                string idQuery = "SELECT BasicItem FROM BasicLieuItems WHERE Id = @Id";
+                string basicItemValue = null;
+                using (SqlCommand cmd = new SqlCommand(idQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", basicItem);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            basicItemValue = reader["BasicItem"].ToString();
+                        }
+                    }
+                }
+
+                // Then, use the fetched BasicItem value to fetch ilueItem and ilueDenom
+                if (basicItemValue != null)
+                {
+                    string query = "SELECT ilueItem, ilueDenom FROM BasicLieuItems WHERE BasicItem = @BasicItem";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@BasicItem", basicItemValue);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                items.Add(reader["ilueItem"].ToString());
+                            }
+                        }
+                    }
+                }
+            }
+
+            return items;
+        }
+
+        [WebMethod]
+        public static string GetBasicDenom(string basicItem)
+        {
+            string basicDenom = string.Empty;
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT BasicDenom FROM BasicLieuItems WHERE Id = @BasicItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@BasicItem", basicItem);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    basicDenom = reader["BasicDenom"].ToString();
+                }
+            }
+
+            return basicDenom;
+        }
+
+        [WebMethod]
+        public static string GetDenominationForInLieuItem(string inlieuItem)
+        {
+            string ilueDenom = string.Empty;
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "select iLueDenom from BasicLieuItems where iLueItem = @ilueItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@ilueItem", inlieuItem);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    ilueDenom = reader["iLueDenom"].ToString();
+                }
+            }
+
+            return ilueDenom;
+        }
+
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             try
             {
                 // Get main item details
-                string itemName = Request.Form["itemname"];
-                decimal officerScale = decimal.Parse(Request.Form["officerScale"]);
-                decimal sailorScale = decimal.Parse(Request.Form["sailorScale"]);
+                string itemName = basicItem.SelectedItem.Text;
+                string category = Request.Form["category"];
+                string denomsVal = Request.Form["denoms"];
+                decimal VegScale = decimal.Parse(Request.Form["veg"]);
+                decimal NonVegScale = decimal.Parse(Request.Form["nonveg"]);
 
                 // Get alternate item details
-                string[] alternateItemNames = Request.Form.GetValues("alternateitemname");
-                string[] equivalentOfficerScales = Request.Form.GetValues("equivalentofficerScale");
-                string[] equivalentSailorScales = Request.Form.GetValues("equivalentsailorScale");
-                string[] denoms = Request.Form.GetValues("denoms");
+                string[] inlieuItem = Request.Form.GetValues("inlieuItem");
+                string[] categoryIlue = Request.Form.GetValues("categoryIlue");
+                string[] vegscaleIlue = Request.Form.GetValues("vegscaleIlue");
+                string[] nonvegscaleIlue = Request.Form.GetValues("nonvegscaleIlue");
 
                 // Connect to the database
                 using (SqlConnection conn = new SqlConnection(connStr))
@@ -66,31 +178,33 @@ namespace VMS_1
                     SqlCommand mainItemCmd = new SqlCommand("UpsertItemWithAlternates", conn);
                     mainItemCmd.CommandType = CommandType.StoredProcedure;
                     mainItemCmd.Parameters.AddWithValue("@ItemName", itemName);
-                    mainItemCmd.Parameters.AddWithValue("@RationScaleOfficer", officerScale);
-                    mainItemCmd.Parameters.AddWithValue("@RationScaleSailor", sailorScale);
-                    mainItemCmd.Parameters.AddWithValue("@AlternateItems", null);
+                    mainItemCmd.Parameters.AddWithValue("@Category", category);
+                    mainItemCmd.Parameters.AddWithValue("@Denomination", denomsVal);
+                    mainItemCmd.Parameters.AddWithValue("@VegScale", VegScale);
+                    mainItemCmd.Parameters.AddWithValue("@NonVegScale", NonVegScale);
                     mainItemCmd.ExecuteNonQuery();
+
+                    //int BasicitemID = (int)itemIDParam.Value;
 
                     // Get the newly inserted ItemID or existing ItemID
                     object itemID;
-                    using (SqlCommand getIdCmd = new SqlCommand("SELECT ItemID FROM Items WHERE ItemName = @ItemName", conn))
+                    using (SqlCommand getIdCmd = new SqlCommand("SELECT TOP 1 Id FROM BasicItems ORDER BY Id DESC", conn))
                     {
-                        getIdCmd.Parameters.AddWithValue("@ItemName", itemName);
                         itemID = getIdCmd.ExecuteScalar();
                     }
 
                     // Insert alternate items
-                    if (alternateItemNames != null)
+                    if (inlieuItem != null)
                     {
-                        for (int i = 0; i < alternateItemNames.Length; i++)
+                        for (int i = 0; i < inlieuItem.Length; i++)
                         {
                             // Check if the alternate item already exists in PresentStockMaster
                             SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM PresentStockMaster WHERE ItemName = @AltItemName", conn);
-                            checkCmd.Parameters.AddWithValue("@AltItemName", alternateItemNames[i]);
+                            checkCmd.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
                             int Presentcount = (int)checkCmd.ExecuteScalar();
 
-                            SqlCommand checkCmdIssue = new SqlCommand("SELECT COUNT(*) FROM AlternateItem WHERE AltItemName = @AltItemName", conn);
-                            checkCmdIssue.Parameters.AddWithValue("@AltItemName", alternateItemNames[i]);
+                            SqlCommand checkCmdIssue = new SqlCommand("SELECT COUNT(*) FROM InLieuItems WHERE InLieuItem = @AltItemName", conn);
+                            checkCmdIssue.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
                             int Issuecount = (int)checkCmd.ExecuteScalar();
 
 
@@ -98,19 +212,24 @@ namespace VMS_1
                             {
                                 // Insert into PresentStockMaster if it doesn't exist
                                 SqlCommand insertCmd = new SqlCommand("INSERT INTO PresentStockMaster (ItemName, Qty) VALUES (@AltItemName, @Qty)", conn);
-                                insertCmd.Parameters.AddWithValue("@AltItemName", alternateItemNames[i]);
+                                insertCmd.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
                                 insertCmd.Parameters.AddWithValue("@Qty", "0");
                                 insertCmd.ExecuteNonQuery();
                             }
 
                             if (Issuecount == 0)
                             {
-                                SqlCommand altItemCmd = new SqlCommand("INSERT INTO AlternateItem (AltItemName, AltRationScaleOfficer, AltRationScaleSailor, ItemID, Denomination) VALUES (@AltItemName, @AltRationScaleOfficer, @AltRationScaleSailor, @ItemID, @Denomination)", conn);
-                                altItemCmd.Parameters.AddWithValue("@AltItemName", alternateItemNames[i]);
-                                altItemCmd.Parameters.Add("@AltRationScaleOfficer", SqlDbType.Decimal).Value = Convert.ToDecimal(equivalentOfficerScales[i]);
-                                altItemCmd.Parameters.Add("@AltRationScaleSailor", SqlDbType.Decimal).Value = Convert.ToDecimal(equivalentSailorScales[i]);
-                                altItemCmd.Parameters.AddWithValue("@ItemID", itemID);
-                                altItemCmd.Parameters.AddWithValue("@Denomination", denoms[i]);
+                                SqlCommand getDenomCmd = new SqlCommand("SELECT iLueDenom FROM BasicLieuItems WHERE iLueItem = @ItemName", conn);
+                                getDenomCmd.Parameters.AddWithValue("@ItemName", inlieuItem[i]);
+                                string denomination = (string)getDenomCmd.ExecuteScalar();
+
+                                SqlCommand altItemCmd = new SqlCommand("INSERT INTO InLieuItems (BasicItemId, InLieuItem, Category, Denomination, VegScale, NonVegScale) VALUES (@AltItemName, @AltRationScaleOfficer, @AltRationScaleSailor, @ItemID, @Denomination)", conn);
+                                altItemCmd.Parameters.AddWithValue("@IlueId", itemID);
+                                altItemCmd.Parameters.AddWithValue("@IlieuName", inlieuItem[i]);
+                                altItemCmd.Parameters.AddWithValue("@CategoryIlieu", categoryIlue[i]);
+                                altItemCmd.Parameters.AddWithValue("@Denomilieu", denomination);
+                                altItemCmd.Parameters.Add("@VegScale", SqlDbType.Decimal).Value = Convert.ToDecimal(vegscaleIlue[i]);
+                                altItemCmd.Parameters.Add("@NonVegScale", SqlDbType.Decimal).Value = Convert.ToDecimal(nonvegscaleIlue[i]);
                                 altItemCmd.ExecuteNonQuery();
                             }
                         }

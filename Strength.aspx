@@ -18,8 +18,8 @@
                             <th class="heading veg-staff" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sailor</th>
                             <th class="heading veg-staff" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sailor RIK</th>
                             <th class="heading veg-staff" colspan="2">&nbsp;Non Entitled Officer</th>
-                            <th class="heading veg-staff" colspan="2">&nbsp; Non Entitled Sailor</th>
-                            <th class="heading veg-staff" colspan="2"></th>
+                            <th class="heading veg-staff" colspan="2">&nbsp;Non Entitled Sailor</th>
+                            <th class="heading veg-staff" colspan="2">&nbsp;Civilian</th>
                         </tr>
                         <tr>
                             <th class="heading date" style="width: 123px">Date</th>
@@ -35,7 +35,7 @@
                             <th class="heading non-entitled-officer" style="width: 147px">&nbsp;&nbsp; NonVeg</th>
                             <th class="heading non-entitled-staff" style="width: 124px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
                             <th class="heading non-entitled-staff" style="width: 124px">&nbsp;&nbsp; NonVeg</th>
-                            <th class="heading civilian" style="width: 124px">&nbsp;&nbsp; Civilian</th>
+                            <th class="heading civilian" style="width: 124px"></th>
                             <th style="width: 124px">&nbsp;&nbsp; Action</th>
                         </tr>
                     </thead>
@@ -46,29 +46,29 @@
                             <td style="width: 123px">
                                 <input type="text" class="form-control" name="VegOfficer" required min="0" /></td>
                             <td style="width: 123px">
-                                <input type="number" class="form-control" name="NonVegOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegOfficer" required min="0" /></td>
                             <td style="width: 123px">
-                                <input type="number" class="form-control" name="VegrikOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegrikOfficer" required min="0" /></td>
                             <td style="width: 123px">
-                                <input type="number" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
                             <td style="width: 123px">
-                                <input type="number" class="form-control" name="vegSailor" required min="0" /></td>
+                                <input type="text" class="form-control" name="vegSailor" required min="0" /></td>
                             <td style="width: 123px">
-                                <input type="number" class="form-control" name="nonVegSailor" required min="0" /></td>
+                                <input type="text" class="form-control" name="nonVegSailor" required min="0" /></td>
                             <td style="width: 123px">
-                                <input type="number" class="form-control" name="VegSailorRik" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegSailorRik" required min="0" /></td>
                             <td style="width: 123px">
-                                <input type="number" class="form-control" name="NonVegSailorRik" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegSailorRik" required min="0" /></td>
                             <td style="width: 123px">
-                                <input type="number" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
                             <td style="width: 147px">
-                                <input type="number" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
                             <td style="width: 124px">
-                                <input type="number" class="form-control" name="VegNonEntitledSailor" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegNonEntitledSailor" required min="0" /></td>
                             <td style="width: 124px">
-                                <input type="number" class="form-control" name="NonVegNonEntitledSailor" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegNonEntitledSailor" required min="0" /></td>
                             <td style="width: 124px">
-                                <input type="number" class="form-control" name="Civilian" required min="0" style="width: 96%" /></td>
+                                <input type="text" class="form-control" name="Civilian" required min="0" style="width: 96%" /></td>
                             <td style="width: 124px">
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
                         </tr>
@@ -87,7 +87,7 @@
                 <h2 class="mt-4">Strength Data</h2>
 
             </div>
-            <div>
+            <div class="table-responsive">
                 <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped">
                 </asp:GridView>
             </div>

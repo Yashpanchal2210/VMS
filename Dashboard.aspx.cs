@@ -69,7 +69,7 @@ namespace VMS_1
                 int dateColumnIndex = 1;
                 foreach (DataControlField field in GridViewMonthStock.Columns)
                 {
-                    if (field.HeaderText == "Date") // Replace "Date" with the actual header text of your date column
+                    if (field.HeaderText == "Date")
                     {
                         dateColumnIndex = GridViewMonthStock.Columns.IndexOf(field);
                         break;
@@ -168,14 +168,46 @@ namespace VMS_1
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
-                    GridViewP2to7.DataSource = dt;
-                    GridViewP2to7.DataBind();
+                    //GridViewP2to7.DataSource = dt;
+                    //GridViewP2to7.DataBind();
+
+                    // Generate chart data
+                    string chartData = GenerateChartData(dt);
+                    hfChartDataPage2to7.Value = chartData;
                 }
             }
             catch (Exception ex)
             {
                 lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
             }
+        }
+
+        private string GenerateChartData(DataTable dt)
+        {
+            var dataPoints = dt.AsEnumerable().Select(row => new
+            {
+                label = row["ItemName"].ToString(),
+                value = Convert.ToDouble(row["Qty"])
+            }).ToList();
+
+            var chartData = new
+            {
+                labels = dataPoints.Select(dp => dp.label).ToArray(),
+                datasets = new[]
+                {
+            new
+            {
+                label = "Stock",
+                data = dataPoints.Select(dp => dp.value).ToArray(),
+                backgroundColor = new[]
+                {
+                    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"
+                }
+            }
+        }
+            };
+
+            return new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(chartData);
         }
 
         protected void ExportPresentStockButton_Click(object sender, EventArgs e)

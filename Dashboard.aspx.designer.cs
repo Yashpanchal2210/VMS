@@ -51,13 +51,13 @@ namespace VMS_1
         protected global::System.Web.UI.WebControls.GridView GridViewMonthStock;
 
         /// <summary>
-        /// GridViewP2to7 control.
+        /// hfChartDataPage2to7 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewP2to7;
+        protected global::System.Web.UI.WebControls.HiddenField hfChartDataPage2to7;
 
         /// <summary>
         /// GridViewPresentStock control.
