@@ -6,8 +6,17 @@
     <title>VMS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="wwwroot/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <script src="wwwroot/js/jquery.min.js"></script>
     <script src="wwwroot/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <%--   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>--%>
+    <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />--%>
+    <%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>--%>
+    <%--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>--%>
 
     <style>
         body {
@@ -16,6 +25,11 @@
             position: relative;
             background-color: #3498db;
             color: #000;
+            /*background-image: url('/wwwroot/Images/ins-hamla.png');
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;*/
         }
 
         .dark-theme {
@@ -31,9 +45,9 @@
             color: #000;
         }
 
-        .table.dark-theme {
-            color: #fff;
-        }
+            .table.dark-theme {
+                color: #fff;
+            }
 
         .theme-selector {
             position: fixed;
@@ -46,14 +60,14 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .theme-selector label {
-            margin-right: 5px;
-        }
+            .theme-selector label {
+                margin-right: 5px;
+            }
 
-        .theme-selector select {
-            padding: 5px;
-            border-radius: 4px;
-        }
+            .theme-selector select {
+                padding: 5px;
+                border-radius: 4px;
+            }
 
         .container {
             margin-top: 50px;
@@ -68,9 +82,9 @@
             color: #000;
         }
 
-        .heading.dark-theme {
-            color: #fff;
-        }
+            .heading.dark-theme {
+                color: #fff;
+            }
 
         .sidebar {
             height: 100%;
@@ -85,37 +99,67 @@
             padding-top: 60px;
         }
 
-        .sidebar a {
-            padding: 10px 15px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
+            .sidebar a, .dropdown-btn {
+                padding: 6px 8px 6px 16px;
+                text-decoration: none;
+                font-size: 20px;
+                color: #818181;
+                display: block;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+                outline: none;
+            }
+
+                .sidebar a:hover, .dropdown-btn:hover {
+                    color: #f1f1f1;
+                }
+
+            .sidebar .close-btn {
+                position: absolute;
+                top: 0;
+                font-size: 36px;
+                margin-left: 170px;
+            }
+
+        .active {
+            background-color: green;
+            color: white;
         }
 
-        .sidebar a:hover {
-            color: #f1f1f1;
+        .dropdown-container {
+            display: none;
+            background-color: #262626;
+            padding-left: 8px;
         }
 
-        .sidebar .close-btn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
+        .fa-caret-down {
+            float: right;
+            padding-right: 8px;
         }
 
         .open-btn {
             font-size: 30px;
             cursor: pointer;
             position: absolute;
-            top: -45px;
+            top: 10px;
             left: 10px;
         }
 
-        .open-btn:hover {
-            color: #fff;
+            .open-btn:hover {
+                color: #fff;
+            }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+                .sidenav a {
+                    font-size: 18px;
+                }
         }
     </style>
 </head>
@@ -123,35 +167,170 @@
     <div id="sidebar" class="sidebar">
         <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
         <a href="Dashboard.aspx">Home</a>
-        <a href="IssueMaster.aspx">Issue Master</a>
-        <a href="ItemReceipt.aspx">Item Receipt</a>
-        <a href="ItemMaster.aspx">Item Master</a>
-        <a href="RationScale.aspx">Ration Scale</a>
-        <a href="Strength.aspx">Strength</a>
-        <a href="Divers_ExtraIssue.aspx">Divers</a>
-        <a href="PestControl_ExtraIssue.aspx">Pest Control</a>
-        <a href="LeadPoisioning_ExtraIssue.aspx">Lead Poisioning</a>
-        <a href="LimeandSugar_ExtraIssue.aspx">Lime And Sugar</a>
-        <a href="LimeFresh_ExtraIssue.aspx">Lime Fresh</a>
-        <a href="MilkSugarandTea_ExtraIssue.aspx">Milk, Sugar and Tea</a>
-        <a href="RationIssueOnPayment.aspx">Ration Issue On Payment</a>
-        <a href="OtherShips.aspx">Other Ships</a>
-        <a href="Patients.aspx">Patients</a>
-        <a href="Wastage.aspx">Wastage</a>
-        <% if (IsUserLoggedIn() && IsUserInRole("Admin")) { %>
-        <a href="Users.aspx">User List</a>
-        <a href="UnapprovedUsers.aspx">Unapproved Users</a>
+        <button class="dropdown-btn">
+            Modules <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="IssueMaster.aspx">Issue Master</a>
+            <a href="ItemReceipt.aspx">Item Receipt</a>
+            <a href="ItemMaster.aspx">Item Master</a>
+            <a href="RationScale.aspx">Ration Scale</a>
+            <a href="Strength.aspx">Strength</a>
+        </div>
+
+        <button class="dropdown-btn">
+            Extra Issue <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="Divers_ExtraIssue.aspx">Divers</a>
+            <a href="PestControl_ExtraIssue.aspx">Pest Control</a>
+            <a href="LeadPoisioning_ExtraIssue.aspx">Lead Poisioning</a>
+            <a href="LimeandSugar_ExtraIssue.aspx">Lime And Sugar</a>
+            <a href="LimeFresh_ExtraIssue.aspx">Lime Fresh</a>
+            <a href="MilkSugarandTea_ExtraIssue.aspx">Milk, Sugar and Tea</a>
+            <a href="RationIssueOnPayment.aspx">Ration Issue On Payment</a>
+            <a href="OtherShips.aspx">Other Ships</a>
+            <a href="Patients.aspx">Patients</a>
+            <a href="Wastage.aspx">Wastage</a>
+        </div>
+
+        <button class="dropdown-btn">
+            Report Generate <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="ReportsGenerate.aspx">Reports</a>
+        </div>
+
+        <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
+            { %>
+        <button class="dropdown-btn">
+            Users <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="Users.aspx">User List</a>
+            <a href="UnapprovedUsers.aspx">Unapproved Users</a>
+        </div>
         <% } %>
         <a href="UserUpdate.aspx" runat="server">Reset Password</a>
         <a href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
     </div>
-    <span class="open-btn" style="color: white;" onclick="openNav()">&#9776;</span>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-success" style="justify-content: center;">
+            <span class="open-btn" style="color: white;" onclick="openNav()">&#9776;</span>
+
+            <div style="margin-inline-start: auto;">
+                <a class="navbar-brand text-white" style="font-size: 30px; font-weight: 500;">Victulling Management System</a>
+            </div>
+            <div <%--class="theme-selector"--%> style="margin-left: auto;">
+                <%--<label for="ddlTheme">Choose Theme:</label>--%>
+                <select id="ddlTheme" onchange="setTheme(this.value)" class="form-control">
+                    <option value="blue">Blue</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #1c7bdc;">
+            <a class="navbar-brand text-white" href="Dashboard.aspx">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modules
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="IssueMaster.aspx">Issue Master</a>
+                            <a class="dropdown-item" href="ItemReceipt.aspx">Item Receipt</a>
+                            <a class="dropdown-item" href="ItemMaster.aspx">Item Master</a>
+                            <a class="dropdown-item" href="RationScale.aspx">Ration Scale</a>
+                            <a class="dropdown-item" href="Strength.aspx">Strength</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Extra Issue
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="Divers_ExtraIssue.aspx">Divers</a>
+                            <a class="dropdown-item" href="PestControl_ExtraIssue.aspx">Pest Control</a>
+                            <a class="dropdown-item" href="LeadPoisioning_ExtraIssue.aspx">Lead Poisioning</a>
+                            <a class="dropdown-item" href="LimeandSugar_ExtraIssue.aspx">Lime And Sugar</a>
+                            <a class="dropdown-item" href="LimeFresh_ExtraIssue.aspx">Lime Fresh</a>
+                            <a class="dropdown-item" href="MilkSugarandTea_ExtraIssue.aspx">Milk, Sugar and Tea</a>
+                            <a class="dropdown-item" href="RationIssueOnPayment.aspx">Ration Issue On Payment</a>
+                            <a class="dropdown-item" href="OtherShips.aspx">Other Ships</a>
+                            <a class="dropdown-item" href="Patients.aspx">Patients</a>
+                            <a class="dropdown-item" href="Wastage.aspx">Wastage</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Report Generate
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="ReportsGenerate.aspx">Reports</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <%
+                        if (IsUserLoggedIn() && IsUserInRole("Admin"))
+                        {
+                    %>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle dark-theme-text text-white font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item " href="Users.aspx">User List</a>
+                            <a class="dropdown-item " href="UnapprovedUsers.aspx">Unapproved Users</a>
+                        </div>
+                    </li>
+                    <%
+                        }
+                    %>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= GetUserName() %>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="UserUpdate.aspx" runat="server">Reset Password</a>
+                            <a class="dropdown-item" href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+
+
+
+            </div>
+        </nav>
+    </header>
+
     <main>
         <asp:ContentPlaceHolder ID="MainContent" runat="server">
         </asp:ContentPlaceHolder>
     </main>
-
     <script>
+
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+            dropdown[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var dropdownContent = this.nextElementSibling;
+                if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+                } else {
+                    dropdownContent.style.display = "block";
+                }
+            });
+        }
+
         function openNav() {
             document.getElementById("sidebar").style.width = "250px";
         }
@@ -167,7 +346,6 @@
         // Set initial theme
         setTheme("blue");
     </script>
-
     <%
         bool IsUserLoggedIn()
         {

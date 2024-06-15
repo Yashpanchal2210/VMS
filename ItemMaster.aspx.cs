@@ -205,7 +205,7 @@ namespace VMS_1
 
                             SqlCommand checkCmdIssue = new SqlCommand("SELECT COUNT(*) FROM InLieuItems WHERE InLieuItem = @AltItemName", conn);
                             checkCmdIssue.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
-                            int Issuecount = (int)checkCmd.ExecuteScalar();
+                            int Issuecount = (int)checkCmdIssue.ExecuteScalar();
 
 
                             if (Presentcount == 0)
@@ -223,7 +223,7 @@ namespace VMS_1
                                 getDenomCmd.Parameters.AddWithValue("@ItemName", inlieuItem[i]);
                                 string denomination = (string)getDenomCmd.ExecuteScalar();
 
-                                SqlCommand altItemCmd = new SqlCommand("INSERT INTO InLieuItems (BasicItemId, InLieuItem, Category, Denomination, VegScale, NonVegScale) VALUES (@AltItemName, @AltRationScaleOfficer, @AltRationScaleSailor, @ItemID, @Denomination)", conn);
+                                SqlCommand altItemCmd = new SqlCommand("INSERT INTO InLieuItems (BasicItemId, InLieuItem, Category, Denomination, VegScale, NonVegScale) VALUES (@IlueId, @IlieuName, @CategoryIlieu, @Denomilieu, @VegScale, @NonVegScale)", conn);
                                 altItemCmd.Parameters.AddWithValue("@IlueId", itemID);
                                 altItemCmd.Parameters.AddWithValue("@IlieuName", inlieuItem[i]);
                                 altItemCmd.Parameters.AddWithValue("@CategoryIlieu", categoryIlue[i]);
