@@ -33,9 +33,22 @@ namespace VMS_1
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 string query = @"
-                    SELECT i.ItemID, i.ItemName, i.RationScaleOfficer, i.RationScaleSailor, a.AltItemName, a.AltRationScaleOfficer, a.AltRationScaleSailor 
-                    FROM Items i 
-                    LEFT JOIN AlternateItem a ON i.ItemID = a.ItemID";
+            SELECT 
+                b.Id AS BasicItemId, 
+                b.Category AS BasicItemCategory, 
+                b.Denomination AS BasicItemDenomination, 
+                b.VegScale AS BasicItemVegScale, 
+                b.NonVegScale AS BasicItemNonVegScale, 
+                i.Id AS InLieuItemId, 
+                i.Category AS InLieuItemCategory, 
+                i.Denomination AS InLieuItemDenomination, 
+                i.VegScale AS InLieuItemVegScale, 
+                i.NonVegScale AS InLieuItemNonVegScale
+            FROM 
+                BasicItems b
+            LEFT JOIN 
+                InLieuItems i ON b.Id = i.BasicItemId";
+
                 SqlCommand cmd = new SqlCommand(query, conn);
 
                 conn.Open();

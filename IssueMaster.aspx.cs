@@ -33,7 +33,27 @@ namespace VMS_1
             }
         }
 
+        [WebMethod]
+        public static string GetItemDenom(string ItemVal)
+        {
+            string basicDenom = string.Empty;
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT Denomination FROM AlternateItem WHERE AltItemName = @BasicItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@BasicItem", ItemVal);
 
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    basicDenom = reader["Denomination"].ToString();
+                }
+            }
+
+            return basicDenom;
+        }
 
         [WebMethod]
         public static List<object> GetItemCategories()

@@ -22,12 +22,12 @@
                 <table class="table" id="issueTable">
                     <thead>
                         <tr>
-                            <th class="heading date">Date</th>
-                            <th class="heading category">Item Category</th>
-                            <th class="heading itemname">Item Name</th>
-                            <th class="heading issuedto">Entitled Strength</th>
-                            <th class="heading qty">Qty Issued</th>
-                            <th>Action</th>
+                            <th class="heading">Date</th>
+                            <th class="heading">Item Category</th>
+                            <th class="heading">Item Name</th>
+                            <th class="heading">Denomination</th>
+                            <th class="heading">Entitled Strength</th>
+                            <th class="heading">Qty Issued</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" runat="server">
@@ -40,9 +40,12 @@
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" id="DropDownList1" name="itemname" width="130px" required>
+                                <select class="form-control" id="DropDownList1" name="itemname" onchange="fetchBasicDenom(this.id)" width="130px" required>
                                     <option value="">Select</option>
                                 </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" id="denomsVal" name="denoms" readonly />
                             </td>
                             <td>
                                 <input type="text" class="form-control" name="Strength" />
@@ -147,7 +150,7 @@
                         </div>
                         <div class="modal-body">
 
-                            <p><span class="font-weight-bolder" id="entitledStrengthValue"></span> Quantity is Entitled for given strength.</p>
+                            <p><span class="font-weight-bolder" id="entitledStrengthValue"></span>Quantity is Entitled for given strength.</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -183,6 +186,41 @@
         //        heading.textContent = "Issue Module - Sailors";
         //    }
         //}
+
+        function fetchBasicDenom(id) {
+            var ItemValue = document.getElementById(id).value;
+
+            if (id != null) {
+                var value = id;  // Use 'var' instead of 'string'
+                var parts = value.split('_');  // Use JavaScript's 'split' method
+            }
+
+            var part1 = parts[1];
+
+            fetch('IssueMaster.aspx/GetItemDenom', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ItemVal: ItemValue })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.d) {
+                        if (rowSequence > 1) {
+                            var denomsDropdown = document.getElementById("denomsVal_" + part1);
+                            denomsDropdown.value = data.d;
+                        } else {
+                            var denomsDropdown = document.getElementById("denomsVal");
+                            denomsDropdown.value = data.d;
+                        }
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching basic denomination:', error);
+                });
+        }
 
         $(document).on('change', 'input[name="Strength"]', function () {
             var scaleAmount = $('#ScalAmount_Val').val();
@@ -262,9 +300,12 @@
                                 </select>
                             </td>
                             <td>
-                                <select id="DropDownList1_${rowSequence}" class="form-control" name="itemname" required>
+                                <select id="DropDownList1_${rowSequence}" class="form-control" onchange="fetchBasicDenom(this.id)" name="itemname" required>
                                     <option value="">Select</option>
                                 </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" id="denomsVal_${rowSequence}" name="denoms" readonly />
                             </td>
                             <td>
                                 <input type="text" class="form-control strength-input" name="Strength" id="Strength_${rowSequence}" />
