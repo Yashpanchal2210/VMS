@@ -43,8 +43,26 @@
                 <h2 class="mt-4">Entered Data</h2>
             </div>
             <div>
-                <asp:GridView ID="GridViewRationScale" runat="server" CssClass="table table-bordered table-striped">
+                <asp:GridView ID="GridViewRationScale" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false" AutoPostBack="true" DataKeyNames="ID" OnRowEditing="GridViewRationScale_RowEditing" OnRowUpdating="GridViewRationScale_RowUpdating" OnRowCancelingEdit="GridViewRationScale_RowCancelingEdit" OnRowDeleting="GridViewRationScale_RowDeleting">
+                    <Columns>
+                        <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
+
+                        <asp:TemplateField HeaderText="Item Name">
+                            <ItemTemplate>
+                                <asp:Label ID="lblItemName" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:DropDownList ID="ddlItemName" runat="server" CssClass="form-control itemname" AppendDataBoundItems="true">
+                                    <asp:ListItem Text="Select" Value="" />
+                                </asp:DropDownList>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+
+                        <asp:BoundField DataField="Rate" HeaderText="Rate" />
+                        <asp:CommandField HeaderText="Action" ShowEditButton="true" ShowDeleteButton="true" />
+                    </Columns>
                 </asp:GridView>
+
             </div>
         </form>
     </div>

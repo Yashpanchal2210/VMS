@@ -16,7 +16,7 @@
             </div>
             <input type="hidden" id="ScalAmount_Val" />
             <input type="hidden" id="ItemCategory_Val" />
-            <input type="hidden" id="entitledStrength" name="entitledstrength" />
+            <input type="hidden" id="entitledStrength" />
             <input type="hidden" id="EntitledStrength" name="EntitledStrength" />
             <div class="table-responsive">
                 <table class="table" id="issueTable">
@@ -28,6 +28,7 @@
                             <th class="heading">Denomination</th>
                             <th class="heading">Entitled Strength</th>
                             <th class="heading">Qty Issued</th>
+                            <th class="heading"></th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" runat="server">

@@ -329,6 +329,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AddBasicandLieuItems.aspx" />
     <Content Include="Dashboard.aspx" />
     <Content Include="Divers_ExtraIssue.aspx" />
     <Content Include="ExportIssueOfficerandSailor.aspx" />
@@ -362,6 +363,13 @@
     <Content Include="wwwroot\js\jquery.min.js" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddBasicandLieuItems.aspx.cs">
+      <DependentUpon>AddBasicandLieuItems.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AddBasicandLieuItems.aspx.designer.cs">
+      <DependentUpon>AddBasicandLieuItems.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
