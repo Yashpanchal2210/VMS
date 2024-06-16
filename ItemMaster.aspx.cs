@@ -34,13 +34,12 @@ namespace VMS_1
             {
                 string query = @"
             SELECT 
-                b.Id AS ID,
-                b.BasicItem AS BasicItem, 
-                b.Category AS Category, 
-                b.Denomination AS Denomination, 
-                b.VegScale AS VegScale, 
-                b.NonVegScale AS NonVegScale, 
-                i.InLieuItem AS InLieuItem, 
+                b.Id AS BasicItemId, 
+                b.Category AS BasicItemCategory, 
+                b.Denomination AS BasicItemDenomination, 
+                b.VegScale AS BasicItemVegScale, 
+                b.NonVegScale AS BasicItemNonVegScale, 
+                i.Id AS InLieuItemId, 
                 i.Category AS InLieuItemCategory, 
                 i.Denomination AS InLieuItemDenomination, 
                 i.VegScale AS InLieuItemVegScale, 
@@ -58,7 +57,6 @@ namespace VMS_1
                 GridView1.DataBind();
             }
         }
-
 
         private void LoadBasicItems()
         {
@@ -262,123 +260,26 @@ namespace VMS_1
             LoadGridView();
         }
 
-        protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-            GridView1.EditIndex = e.NewEditIndex;
-            LoadGridView();
-        }
-
-        //protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        //{
-        //    try
-        //    {
-        //        // Get the updated item details from the gridview
-        //        GridViewRow row = GridView1.Rows[e.RowIndex];
-        //        string itemName = ((Label)row.FindControl("lblItemName")).Text; // Assuming you have a label for ItemName
-        //        string category = ((TextBox)row.FindControl("txtCategory")).Text; // Assuming you have a textbox for Category
-        //        string denomsVal = ((TextBox)row.FindControl("txtDenomination")).Text; // Assuming you have a textbox for Denomination
-        //        decimal vegScale = decimal.Parse(((TextBox)row.FindControl("txtVegScale")).Text); // Assuming you have a textbox for VegScale
-        //        decimal nonVegScale = decimal.Parse(((TextBox)row.FindControl("txtNonVegScale")).Text); // Assuming you have a textbox for NonVegScale
-
-        //        // Update the main item details in the database
-        //        using (SqlConnection conn = new SqlConnection(connStr))
-        //        {
-        //            conn.Open();
-
-        //            SqlCommand updateCmd = new SqlCommand("UPDATE BasicItems SET Category = @Category, Denomination = @Denomination, VegScale = @VegScale, NonVegScale = @NonVegScale WHERE ItemName = @ItemName", conn);
-        //            updateCmd.Parameters.AddWithValue("@Category", category);
-        //            updateCmd.Parameters.AddWithValue("@Denomination", denomsVal);
-        //            updateCmd.Parameters.AddWithValue("@VegScale", vegScale);
-        //            updateCmd.Parameters.AddWithValue("@NonVegScale", nonVegScale);
-        //            updateCmd.Parameters.AddWithValue("@ItemName", itemName);
-        //            updateCmd.ExecuteNonQuery();
-        //        }
-
-        //        lblStatus.Text = "Data updated successfully.";
-        //        GridView1.EditIndex = -1;
-        //        LoadGridView();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblStatus.Text = "An error occurred: " + ex.Message;
-        //    }
-        //}
-
-        protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            GridView1.EditIndex = -1;
-            LoadGridView();
-        }
-
-        //protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
-        //{
-        //    if (e.CommandName == "DeleteRow")
-        //    {
-        //        int rowIndex = Convert.ToInt32(e.CommandArgument);
-        //        GridViewRow row = GridView1.Rows[rowIndex];
-
-        //        // Get the item name from the row
-        //        string itemName = ((Label)row.FindControl("lblItemName")).Text;
-
-        //        // Delete the item from the database
-        //        DeleteItem(itemName);
-
-        //        // Rebind the GridView
-        //        LoadGridView();
-        //    }
-        //}
-
         protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            try
-            {
-                // Check the value of e.RowIndex
-                int rowIndex = e.RowIndex;
+            int itemId = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value);
 
-                // Check the number of rows in the GridView
-                int rowCount = GridView1.Rows.Count;
-
-                // Check the number of data keys in the DataKeys collection
-                int dataKeyCount = GridView1.DataKeys.Count;
-
-                // Check the DataKeys collection itself
-                var dataKeys = GridView1.DataKeys;
-
-                // Put a breakpoint here and inspect the values
-                int id = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value);
-                // Call your delete method with the ID
-                DeleteItem(id);
-                // Rebind the GridView
-                LoadGridView();
-            }
-            catch (Exception ex)
-            {
-                // Handle the exception or log it for further investigation
-                // You can also examine the exception details in the debugger
-                throw;
-            }
-        }
-
-
-
-        private void DeleteItem(int id)
-        {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
+                string deleteAlternateItemsQuery = "DELETE FROM AlternateItem WHERE ItemID = @ItemID";
+                SqlCommand deleteAlternateCmd = new SqlCommand(deleteAlternateItemsQuery, conn);
+                deleteAlternateCmd.Parameters.AddWithValue("@ItemID", itemId);
+
+                string deleteItemQuery = "DELETE FROM Items WHERE ItemID = @ItemID";
+                SqlCommand deleteItemCmd = new SqlCommand(deleteItemQuery, conn);
+                deleteItemCmd.Parameters.AddWithValue("@ItemID", itemId);
+
                 conn.Open();
-
-                // Delete from InLieuItems table first
-                SqlCommand deleteInLieuCmd = new SqlCommand("DELETE FROM InLieuItems WHERE BasicItemId = @Id", conn);
-                deleteInLieuCmd.Parameters.AddWithValue("@Id", id);
-                deleteInLieuCmd.ExecuteNonQuery();
-
-                // Then, delete from BasicItems table
-                SqlCommand deleteCmd = new SqlCommand("DELETE FROM BasicItems WHERE Id = @Id", conn);
-                deleteCmd.Parameters.AddWithValue("@Id", id);
-                deleteCmd.ExecuteNonQuery();
+                deleteAlternateCmd.ExecuteNonQuery();
+                deleteItemCmd.ExecuteNonQuery();
             }
+
+            LoadGridView();
         }
-
-
     }
 }

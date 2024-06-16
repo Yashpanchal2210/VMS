@@ -83,6 +83,7 @@ namespace VMS_1
                         checkCmd.Parameters.AddWithValue("@ItemName", itemName);
                         int count = (int)checkCmd.ExecuteScalar();
 
+                        //QTY GETTING ISSUED BEYOND PRESENT STOCK - NEGATIVE ISSUE 15 JUNE 2024
                         if (count > 0)
                         {
                             // If data exists, update the existing row

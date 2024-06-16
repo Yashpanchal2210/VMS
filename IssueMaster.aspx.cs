@@ -185,7 +185,7 @@ namespace VMS_1
                         cmd.Parameters.AddWithValue("@ItemCategoryId", i < itemcategory.Length ? itemcategory[i] : itemcategory[0]);
                         cmd.Parameters.AddWithValue("@ItemName", itemname[i]);
                         cmd.Parameters.AddWithValue("@Strength", enterstrength[i]);
-                        cmd.Parameters.AddWithValue("@QtyEntitled", qtyentitled[i]);
+                        cmd.Parameters.AddWithValue("@QtyEntitled", i < qtyentitled.Length ? qtyentitled[i] : qtyentitled[0]);
                         cmd.Parameters.AddWithValue("@QtyIssued", qtyissued[i]);
                         cmd.Parameters.AddWithValue("@Denomination", denomination[i]);
                         cmd.Parameters.AddWithValue("@Role", i < role.Length ? role[i] : role[0]);
