@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
-        <h2 class="mb-4">Enter Scale of Items</h2>
+        <h2 class="mb-4">Add Item Scale</h2>
 
         <form id="itemMasterForm" runat="server">
             <%--<div class="text-right">
@@ -65,10 +65,10 @@
                         <tr>
                             <th class="heading">In-lieu Item</th>
                             <th class="heading">Category</th>
-                            <th class="heading">Denomination</th>
+                            <%--<th class="heading">Denomination</th>--%>
                             <th class="heading">Veg Scale</th>
                             <th class="heading">NonVeg Scale</th>
-                            <th></th>
+                            
                         </tr>
                     </thead>
                     <tbody id="Tbody1" runat="server">
@@ -80,9 +80,9 @@
                             </td>
                             <td>
                                 <input type="text" class="form-control" name="categoryIlue" id="categoryIlue" required readonly /></td>
-                            <td>
-                                <input type="text" class="form-control" name="denoms" required readonly />
-                            </td>
+                           <%-- <td>
+                                <input type="text" class="form-control" name="denoms" required readonly/>
+                            </td>--%>
                             <td>
                                 <input type="number" class="form-control" name="vegscaleIlue" required min="0" step="0.001" />
                             </td>
@@ -103,21 +103,7 @@
             <asp:Label ID="lblMessage" runat="server" ForeColor="Green"></asp:Label>
             <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
             <div class="mt-2">
-                <asp:GridView ID="GridView1" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridView1_RowEditing" OnRowCancelingEdit="GridView1_RowCancelingEdit" OnRowDeleting="GridView1_RowDeleting">
-                    <Columns>
-                        <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
-                        <asp:BoundField DataField="BasicItem" HeaderText="Basic Item" ReadOnly="True" />
-                        <asp:BoundField DataField="Category" HeaderText="Category" ReadOnly="True" />
-                        <asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="True" />
-                        <asp:BoundField DataField="VegScale" HeaderText="Veg Scale" ReadOnly="True" />
-                        <asp:BoundField DataField="NonVegScale" HeaderText="NonVeg Scale" ReadOnly="True" />
-                        <asp:BoundField DataField="InLieuItem" HeaderText="InLieu Item" ReadOnly="True" />
-                        <asp:BoundField DataField="Category" HeaderText="Category" ReadOnly="True" />
-                        <asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="True" />
-                        <asp:BoundField DataField="VegScale" HeaderText="VegScale" ReadOnly="True" />
-                        <asp:BoundField DataField="NonVegScale" HeaderText="NonVeg Scale" ReadOnly="True" />
-                        <%--<asp:CommandField HeaderText="Action" ShowDeleteButton="true" />--%>
-                    </Columns>
+                <asp:GridView ID="GridView1" runat="server" CssClass="table table-bordered table-striped">
                 </asp:GridView>
             </div>
 
@@ -129,39 +115,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        var rowSequence = 1;
-        function addAlternativeItem() {
-            var tableBody = document.getElementById("MainContent_Tbody1");
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `<td>
-                                    <select class="form-control" name="inlieuItem" id="inlieuItemVal_${rowSequence}" required>
-                                        <option value="">Select</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="categoryIlue" id="categoryIlue_${rowSequence}" required readonly /></td>
-                                <td>
-                                    <input type="text" class="form-control" name="denoms" required readonly/>
-                                </td>
-                                <td>
-                                    <input type="number" class="form-control" name="vegscaleIlue" required min="0" step="0.001" />
-                                </td>
-                                <td>
-                                    <input type="number" class="form-control" name="nonvegscaleIlue" required min="0" step="0.001" />
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
-            tableBody.appendChild(newRow);
-            fetchInLieuItemsForRow(rowSequence);
-
-            var hiddenCategory = document.getElementById("categoryVal");
-            var caregoryField = document.getElementById("categoryIlue_" + rowSequence);
-            caregoryField.value = hiddenCategory.value;
-
-
-            rowSequence++;
-        }
-
         function fetchBasicDenom() {
             var basicItemValue = document.getElementById('<%= basicItem.ClientID %>').value;
 
@@ -223,6 +176,7 @@
             hiddenCategory.value = val;
             var caregoryField = document.getElementById("categoryIlue");
             caregoryField.value = val;
+
         }
 
         function fetchInLieuItemsForRow(rowSequence) {
@@ -260,7 +214,35 @@
                 });
         }
 
+        var rowSequence = 1;
+        function addAlternativeItem() {
+            var tableBody = document.getElementById("MainContent_Tbody1");
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `<td>
+                                    <select class="form-control" name="inlieuItem" id="inlieuItemVal_${rowSequence}" required>
+                                        <option value="">Select</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="categoryIlue" id="categoryIlue_${rowSequence}" required readonly /></td>
+                                <td>
+                                    <input type="number" class="form-control" name="vegscale" required min="0" step="0.001" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" name="nonvegscale" required min="0" step="0.001" />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
+            tableBody.appendChild(newRow);
+            fetchInLieuItemsForRow(rowSequence);
 
+            var hiddenCategory = document.getElementById("categoryVal");
+            var caregoryField = document.getElementById("categoryIlue_" + rowSequence);
+            caregoryField.value = hiddenCategory.value;
+
+
+            rowSequence++;
+        }
 
         function setTheme(theme) {
             var gridView = document.getElementById("GridView1");
