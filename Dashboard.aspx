@@ -12,7 +12,7 @@
     <form id="form1" runat="server">
 
         <div class="container">
-            <h2>Monthly Stock</h2>
+            <h2>Month Stock</h2>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label" for="ddlMonths">Select Month:</label>
                 <div class="col-sm-4">
@@ -41,7 +41,7 @@
         </div>
 
         <div class="container">
-            <h2>Current Stock</h2>
+            <h2>Page 2 To 7</h2>
             <%-- <asp:GridView ID="GridViewP2to7" runat="server" CssClass="table table-bordered table-striped">
             </asp:GridView>--%>
             <div style="height: 355px;">
