@@ -77,7 +77,7 @@
                 <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
             </div>
             <div>
-                <h2 class="mt-4">Search Receipt</h2>
+                <h2 class="mt-4">Entered Data</h2>
             </div>
             <div class="form-group">
                 <label for="monthYear">Select Month and Year:</label>
@@ -85,8 +85,7 @@
                 &nbsp;
             </div>
             <div>
-                <asp:GridView ID="GridView" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridView_RowEditing" OnRowUpdating="GridView_RowUpdating" OnRowCancelingEdit="GridView_RowCancelingEdit"
-                    OnRowDeleting="GridView_RowDeleting">
+                <asp:GridView ID="GridView" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False">
                     <Columns>
                         <asp:TemplateField HeaderText="Date">
                             <ItemTemplate>
@@ -136,16 +135,7 @@
                                 <asp:TextBox ID="txtquantities" runat="server" Text='<%# Bind("quantities") %>'></asp:TextBox>
                             </EditItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Actions">
-                            <ItemTemplate>
-                                <asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>
-                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete" OnClientClick="return confirm('Are you sure you want to delete this item?');"></asp:LinkButton>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update"></asp:LinkButton>
-                                <asp:LinkButton ID="CancelButton" runat="server" CommandName="Cancel" Text="Cancel"></asp:LinkButton>
-                            </EditItemTemplate>
-                        </asp:TemplateField>
+
                     </Columns>
                 </asp:GridView>
             </div>
