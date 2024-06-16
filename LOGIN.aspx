@@ -1,16 +1,8 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LOGIN.aspx.cs" Inherits="VMS_1.LOGIN" %>
-
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LOGIN.aspx.cs" Inherits="VMS_1.LOGIN" %> 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Login</title>
-    <style>
-        body {
-            background-image: url('imgfile/loginpage.jpg');
-            background-position: top center;
-            background-size: cover;
-        }
-    </style>
+    <title>Login</title> 
     <style>
         :root {
             --primary-color: #3498db;
@@ -56,28 +48,28 @@
             text-align: left;
         }
 
-            .form-group label {
-                color: #555555;
-                font-weight: 500;
-                display: block;
-                margin-bottom: 5px;
-            }
+        .form-group label {
+            color: #555555;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 5px;
+        }
 
-            .form-group input {
-                width: calc(100% - 24px);
-                padding: 14px;
-                margin-bottom: 10px;
-                border: 1px solid #cccccc;
-                border-radius: 6px;
-                box-sizing: border-box;
-                font-size: 16px;
-                transition: border-color 0.3s;
-                outline: none;
-            }
+        .form-group input {
+            width: calc(100% - 24px);
+            padding: 14px;
+            margin-bottom: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            outline: none;
+        }
 
-                .form-group input:focus {
-                    border-color: var(--primary-color);
-                }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+        }
 
         .alert {
             color: red;
@@ -100,9 +92,9 @@
             margin: 0 auto;
         }
 
-            .btn-login:hover {
-                background-color: var(--hover-color);
-            }
+        .btn-login:hover {
+            background-color: var(--hover-color);
+        }
 
         .forgot-password {
             color: var(--primary-color);
@@ -112,9 +104,9 @@
             display: inline-block;
         }
 
-            .forgot-password:hover {
-                text-decoration: underline;
-            }
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
 
         .register-link {
             color: var(--primary-color);
@@ -124,12 +116,12 @@
             font-weight: bold;
         }
 
-            .register-link:hover {
-                text-decoration: underline;
-            }
+        .register-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
-<body>
+<body> 
     <form id="form1" runat="server" class="container">
         <div class="title">
             VICTUALLING MANAGEMENT SYSTEM
