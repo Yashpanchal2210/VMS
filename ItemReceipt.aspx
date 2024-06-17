@@ -86,7 +86,7 @@
             </div>
             <div>
                 <asp:GridView ID="GridView" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridView_RowEditing" OnRowUpdating="GridView_RowUpdating" OnRowCancelingEdit="GridView_RowCancelingEdit"
-                    OnRowDeleting="GridView_RowDeleting">
+                    OnRowDeleting="GridView_RowDeleting" DataKeyNames="itemid">
                     <Columns>
                         <asp:TemplateField HeaderText="Date">
                             <ItemTemplate>
