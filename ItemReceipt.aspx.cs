@@ -42,20 +42,20 @@ namespace VMS_1
             HashSet<string> itemNames = new HashSet<string>();
             //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT AltItemName FROM AlternateItem ORDER BY AltItemName ASC";
-            string itemquery = "SELECT ItemName FROM Items ORDER BY ItemName ASC";
+            string query = "SELECT DISTINCT BasicItem FROM BasicLieuItems ORDER BY BasicItem ASC";
+            string itemquery = "SELECT DISTINCT iLueItem FROM BasicLieuItems ORDER BY iLueItem ASC";
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    SqlCommand command = new SqlCommand(query, conn);
+                    SqlCommand command = new SqlCommand(itemquery, conn);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        itemNames.Add(reader["AltItemName"].ToString());
+                        itemNames.Add(reader["iLueItem"].ToString());
                     }
                     reader.Close();
                 }
@@ -63,12 +63,12 @@ namespace VMS_1
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    SqlCommand command = new SqlCommand(itemquery, conn);
+                    SqlCommand command = new SqlCommand(query, conn);
                     SqlDataReader itemReader = command.ExecuteReader();
 
                     while (itemReader.Read())
                     {
-                        itemNames.Add(itemReader["ItemName"].ToString());
+                        itemNames.Add(itemReader["BasicItem"].ToString());
                     }
                     itemReader.Close();
                 }
