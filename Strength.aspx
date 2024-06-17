@@ -125,19 +125,19 @@
             var tableBody = document.getElementById("MainContent_tableBody");
             var newRow = document.createElement("tr");
             newRow.innerHTML = `<td><input type="date" class="form-control" name="date" required /></td>
-                                <td><input type="number" class="form-control" name="VegOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegRikOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegSailor" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegSailor" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegSailorRik" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegSailorRik" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegNonEntitledsailor" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegNonEntitledsailor" required min="0" /></td>  
-                                <td><input type="number" class="form-control" name="Civilian" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="VegOfficer" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="NonVegOfficer" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="VegRikOfficer" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="VegSailor" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="NonVegSailor" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="VegSailorRik" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="NonVegSailorRik" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="VegNonEntitledsailor" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="NonVegNonEntitledsailor" required min="0" /></td>
+                                <td><input type="text" class="form-control" name="Civilian" required min="0" /></td>
                                 <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
         }
