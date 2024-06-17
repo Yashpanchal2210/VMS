@@ -3,7 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="container">
-        <h2 class="">Milk,Sugar & Tea Extra Issue</h2>
+        <h2 class="">Pest Control - Extra Issue</h2>
     </div>
     <form id="milkSugarTeaForm" runat="server">
         <div class="table-responsive">

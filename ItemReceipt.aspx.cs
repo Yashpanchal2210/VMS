@@ -42,20 +42,20 @@ namespace VMS_1
             HashSet<string> itemNames = new HashSet<string>();
             //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT DISTINCT BasicItem FROM BasicLieuItems ORDER BY BasicItem ASC";
-            string itemquery = "SELECT DISTINCT iLueItem FROM BasicLieuItems ORDER BY iLueItem ASC";
+            string query = "SELECT AltItemName FROM AlternateItem ORDER BY AltItemName ASC";
+            string itemquery = "SELECT ItemName FROM Items ORDER BY ItemName ASC";
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    SqlCommand command = new SqlCommand(itemquery, conn);
+                    SqlCommand command = new SqlCommand(query, conn);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        itemNames.Add(reader["iLueItem"].ToString());
+                        itemNames.Add(reader["AltItemName"].ToString());
                     }
                     reader.Close();
                 }
@@ -63,12 +63,12 @@ namespace VMS_1
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    SqlCommand command = new SqlCommand(query, conn);
+                    SqlCommand command = new SqlCommand(itemquery, conn);
                     SqlDataReader itemReader = command.ExecuteReader();
 
                     while (itemReader.Read())
                     {
-                        itemNames.Add(itemReader["BasicItem"].ToString());
+                        itemNames.Add(itemReader["ItemName"].ToString());
                     }
                     itemReader.Close();
                 }
@@ -284,6 +284,84 @@ namespace VMS_1
             catch (Exception ex)
             {
                 lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+            }
+        }
+
+        protected void GridView_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            GridView.EditIndex = e.NewEditIndex;
+            BindGridView();
+        }
+
+        protected void GridView_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            GridViewRow row = GridView.Rows[e.RowIndex];
+            //int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Values[0]);
+            string date = ((TextBox)row.FindControl("lblDate")).Text;
+            string referenceNos = ((TextBox)row.FindControl("lblreferenceNos")).Text;
+            string receivedFrom = ((TextBox)row.FindControl("txtreceivedFrom")).Text;
+            string itemnames = ((TextBox)row.FindControl("txtitemnames")).Text;
+            string denominations = ((TextBox)row.FindControl("txtDenomination")).Text;
+            string quantities = ((TextBox)row.FindControl("txtquantities")).Text;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("UPDATE ReceiptMaster SET Dates=@Date, referenceNos=@ReferenceNos, receivedFrom=@ReceivedFrom, itemnames=@ItemNames, denominations=@Denominations, quantities=@Quantities WHERE ID=@ID", conn);
+                    cmd.Parameters.AddWithValue("@ID", e.RowIndex);
+                    cmd.Parameters.AddWithValue("@Date", date);
+                    cmd.Parameters.AddWithValue("@ReferenceNos", referenceNos);
+                    cmd.Parameters.AddWithValue("@ReceivedFrom", receivedFrom);
+                    cmd.Parameters.AddWithValue("@ItemNames", itemnames);
+                    cmd.Parameters.AddWithValue("@Denominations", denominations);
+                    cmd.Parameters.AddWithValue("@Quantities", quantities);
+
+                    cmd.ExecuteNonQuery();
+                }
+                GridView.EditIndex = -1;
+                BindGridView();
+                lblStatus.Text = "Record updated successfully.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while updating the record: " + ex.Message;
+            }
+        }
+
+        protected void GridView_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            GridView.EditIndex = -1;
+            BindGridView();
+        }
+
+        protected void GridView_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            //int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Values[0]);
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("DELETE FROM ReceiptMaster WHERE ID=@ID", conn);
+                    cmd.Parameters.AddWithValue("@ID", e);
+
+                    cmd.ExecuteNonQuery();
+                }
+                BindGridView();
+                lblStatus.Text = "Record deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = ("An error occurred while deleting the record: " + ex.Message);
             }
         }
     }

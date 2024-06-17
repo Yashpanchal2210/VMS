@@ -23,7 +23,7 @@ namespace VMS_1
             Response.AppendHeader("Pragma", "no-cache");
             if (!IsPostBack)
             {
-                LoadGridView();
+                //LoadGridView();
                 // Initialize ViewState["DataTable"] if it's null
                 if (ViewState["DataTable"] == null)
                 {
@@ -87,13 +87,11 @@ namespace VMS_1
                 lblStatus.Text = "Data entered successfully.";
 
                 // Refresh the GridView after data insertion
-                //BindGridView();
-                LoadGridView();
+                BindGridView();
+                //LoadGridView();
 
                 // Bind the total GridView after data insertion
-                
-                //uncomment upon review - later to be bold and bg color change
-                //BindTotalGridView((DataTable)ViewState["DataTable"]);
+                BindTotalGridView((DataTable)ViewState["DataTable"]);
             }
             catch (Exception ex)
             {
@@ -102,28 +100,28 @@ namespace VMS_1
             }
         }
 
-        private void LoadGridView()
-        {
-            try
-            {
-                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
+        //private void LoadGridView()
+        //{
+        //    try
+        //    {
+        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Strength", conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
+        //            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Strength", conn);
+        //            DataTable dt = new DataTable();
+        //            da.Fill(dt);
 
-                    GridViewStrength.DataSource = dt;
-                    GridViewStrength.DataBind();
-                }
-            }
-            catch (Exception ex)
-            {
-                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
-            }
-        }
+        //            GridViewStrength.DataSource = dt;
+        //            GridViewStrength.DataBind();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+        //    }
+        //}
 
         // Method to bind data to the GridView
 
@@ -163,25 +161,24 @@ namespace VMS_1
             }
         }
 
-        //uncomment upon review - later to be bold and bg color change
-        //private void BindTotalGridView(DataTable dt)
-        //{
-        //    // Calculate totals for each column except "Date"
-        //    DataRow totalRow = dt.NewRow();
-        //    foreach (DataColumn column in dt.Columns)
-        //    {
-        //        if (column.DataType == typeof(int) && column.ColumnName != "dates")
-        //        {
-        //            totalRow[column.ColumnName] = dt.Compute($"SUM([{column.ColumnName}])", "");
-        //        }
-        //    }
+        private void BindTotalGridView(DataTable dt)
+        {
+            // Calculate totals for each column except "Date"
+            DataRow totalRow = dt.NewRow();
+            foreach (DataColumn column in dt.Columns)
+            {
+                if (column.DataType == typeof(int) && column.ColumnName != "dates")
+                {
+                    totalRow[column.ColumnName] = dt.Compute($"SUM([{column.ColumnName}])", "");
+                }
+            }
 
-        //    // Add the total row to the DataTable
-        //    dt.Rows.Add(totalRow);
+            // Add the total row to the DataTable
+            dt.Rows.Add(totalRow);
 
-        //    // Bind the totals to the second GridView
-        //    GridViewStrength.DataSource = dt;
-        //    GridViewStrength.DataBind();
-        //}
+            // Bind the totals to the second GridView
+            GridViewStrength.DataSource = dt;
+            GridViewStrength.DataBind();
+        }
     }
 }
