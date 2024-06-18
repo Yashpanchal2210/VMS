@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace VMS_1 {
-    
-    
-    public partial class UserRegister {
-        
+namespace VMS_1
+{
+
+
+    public partial class UserRegister
+    {
+
         /// <summary>
         /// formRegister control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm formRegister;
-        
+
         /// <summary>
         /// Name control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox Name;
-        
+
         /// <summary>
         /// Rank control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList Rank;
-        
+
         /// <summary>
         /// Designation control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox Designation;
-        
+
         /// <summary>
         /// NudID control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox NudID;
-        
+
         /// <summary>
         /// Password control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox Password;
-        
+
         /// <summary>
         /// PasswordValidator control.
         /// </summary>
@@ -74,7 +76,34 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator PasswordValidator;
-        
+
+        /// <summary>
+        /// ConfirmPassword control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox ConfirmPassword;
+
+        /// <summary>
+        /// RegularExpressionValidator1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
+
+        /// <summary>
+        /// CompareValidator1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CompareValidator CompareValidator1;
+
         /// <summary>
         /// Role control.
         /// </summary>
@@ -83,7 +112,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList Role;
-        
+
         /// <summary>
         /// SecretQuestion control.
         /// </summary>
@@ -92,7 +121,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList SecretQuestion;
-        
+
         /// <summary>
         /// Answer control.
         /// </summary>
@@ -101,7 +130,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox Answer;
-        
+
         /// <summary>
         /// btnSubmit control.
         /// </summary>
@@ -110,7 +139,7 @@ namespace VMS_1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSubmit;
-        
+
         /// <summary>
         /// Label1 control.
         /// </summary>

@@ -71,7 +71,8 @@
             margin-bottom: 20px;
             color: #333333;
             font-style: var(--font-style);
-            font-weight: var(--font-weight);
+            font-weight: bold;
+            text-decoration: underline;
         }
 
         label {
@@ -129,16 +130,16 @@
         <div class="title">
             VICTUALLING MANAGEMENT SYSTEM
         </div>
-        <div class="theme-selector">
+        <%-- <div class="theme-selector">
             <label for="ddlTheme">Choose Theme:</label>
             <select id="ddlTheme">
                 <option value="blue">Blue</option>
                 <option value="dark">Dark</option>
             </select>
-        </div>
+        </div>--%>
     </div>
     <form id="formRegister" runat="server">
-        <h2>User Registration</h2>
+        <h2>USER REGISTERATION</h2>
         <div>
             <label for="txtName">Name:</label>
             <asp:TextBox ID="Name" runat="server" placeholder="Enter your name" required></asp:TextBox>
@@ -171,11 +172,17 @@
             <asp:RegularExpressionValidator ID="PasswordValidator" runat="server" ControlToValidate="Password" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"></asp:RegularExpressionValidator>
         </div>
         <div>
+            <label for="txtPassword">Confirm Password:</label>
+            <asp:TextBox ID="ConfirmPassword" runat="server" TextMode="Password" placeholder="Re-Enter your password" required></asp:TextBox>
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="ConfirmPassword" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"></asp:RegularExpressionValidator><br />
+            <asp:CompareValidator ID="CompareValidator1" runat="server" ControlToValidate="ConfirmPassword" ControlToCompare="Password" ErrorMessage="Entered passwords are not matching"></asp:CompareValidator>
+        </div>
+        <div>
             <label for="role">Role:</label>
             <asp:DropDownList ID="Role" runat="server" Width="100%">
                 <asp:ListItem Text="-- Select Role --"></asp:ListItem>
-                <asp:ListItem Text="User"></asp:ListItem>
-                <asp:ListItem Text="Co"></asp:ListItem>
+                <asp:ListItem Text="Store Keeper"></asp:ListItem>
+                <asp:ListItem Text="Commanding Officer"></asp:ListItem>
                 <asp:ListItem Text="Logistic Officer"></asp:ListItem>
             </asp:DropDownList>
         </div>

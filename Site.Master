@@ -235,12 +235,13 @@
             Users <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
-            <a href="Users.aspx">User List</a>
-            <a href="UnapprovedUsers.aspx">Unapproved Users</a>
+            <a href="Users.aspx">Edit Users</a>
+            <a href="UnapprovedUsers.aspx">Approve Users</a>
         </div>
         <% } %>
+
         <a href="UserUpdate.aspx" runat="server">Reset Password</a>
-        <a href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
+        <a href="~/LOGIN.aspx?m=logout" runat="server" >Logout</a>
     </div>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-success" style="justify-content: center;">
@@ -328,8 +329,8 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle dark-theme-text text-white font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item " href="Users.aspx">User List</a>
-                            <a class="dropdown-item " href="UnapprovedUsers.aspx">Unapproved Users</a>
+                            <a class="dropdown-item " href="Users.aspx">Edit Users</a>
+                            <a class="dropdown-item " href="UnapprovedUsers.aspx">Approve Users</a>
                         </div>
                     </li>
                     <%

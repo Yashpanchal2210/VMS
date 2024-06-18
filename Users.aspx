@@ -41,10 +41,10 @@
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Password">
                         <itemtemplate>
-                            <asp:Label ID="lblPassword" runat="server" Text="****"></asp:Label>
+                            <asp:Label ID="lblPassword" runat="server" Text="********"></asp:Label>
                         </itemtemplate>
                         <edititemtemplate>
-                            <asp:TextBox ID="txtPassword" runat="server" Text='<%# Bind("Password") %>'></asp:TextBox>
+                            <asp:TextBox ID="txtPassword" runat="server" Text="********"></asp:TextBox>
                         </edititemtemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Role">
@@ -56,7 +56,7 @@
                                 <asp:ListItem Text="User" Value="User"></asp:ListItem>
                                 <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
                                 <asp:ListItem Text="Logistic Officer" Value="Logistic Officer"></asp:ListItem>
-                                <asp:ListItem Text="CO" Value="CO"></asp:ListItem>
+                                <asp:ListItem Text="Commanding Officer" Value="Commanding Officer"></asp:ListItem>
                             </asp:DropDownList>
                         </edititemtemplate>
                     </asp:TemplateField>

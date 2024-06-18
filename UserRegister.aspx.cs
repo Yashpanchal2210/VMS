@@ -37,13 +37,14 @@ namespace VMS_1
                 }
 
                 // Insert new user record
-                SqlCommand cmd = new SqlCommand("INSERT INTO usermaster(Name, Rank, Designation, NudId, Password,SecretQuestion, Answer, Role, IsApproved) VALUES(@Name, @Rank, @Designation, @NudID, @Password, @SecretQuestion, @Answer, @Role, @IsApproved)", con);
+                SqlCommand cmd = new SqlCommand("INSERT INTO usermaster(Name, Rank, Designation, NudId, Password,ConfirmPassword,SecretQuestion, Answer, Role, IsApproved) VALUES(@Name, @Rank, @Designation, @NudID, @Password,@ConfirmPassword, @SecretQuestion, @Answer, @Role, @IsApproved)", con);
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.AddWithValue("@Name", Name.Text);
                 cmd.Parameters.AddWithValue("@Rank", Rank.SelectedValue);
                 cmd.Parameters.Add("@Designation", System.Data.SqlDbType.NVarChar).Value = Designation.Text;
                 cmd.Parameters.AddWithValue("@NudID", NudID.Text);
                 cmd.Parameters.AddWithValue("@Password", Password.Text);
+                cmd.Parameters.AddWithValue("@ConfirmPassword", ConfirmPassword.Text);
                 cmd.Parameters.AddWithValue("@SecretQuestion", SecretQuestion.SelectedValue);
                 cmd.Parameters.AddWithValue("@Role", Role.SelectedValue);
                 cmd.Parameters.AddWithValue("@Answer", Answer.Text);
