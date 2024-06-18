@@ -6,24 +6,27 @@
         <h2 class="mt-4">Daily Issue Register</h2>
 
         <form id="issueForm" runat="server">
-            <div>
+            <div class="mb-3">
                 <%--<label for="userType">Select User Type:</label>--%>
-                <select id="userType" name="userrole" class="form-control" style="width: 150px;">
-                    <option value="Wardroom" selected>Wardroom</option>
+                <select id="userType" name="userrole" class="form-control" onchange="selectCategory(this.value, '')" style="width: 150px;">
+                    <option value="" selected>Select</option>
+                    <option value="Wardroom">Wardroom</option>
                     <option value="Galley">Galley</option>
-                    <option value="Others">Others</option>
                 </select>
+                <span class="text-danger">PLEASE SELECT TYPE FIRST</span>
             </div>
             <input type="hidden" id="ScalAmount_Val" />
             <input type="hidden" id="ItemCategory_Val" />
             <input type="hidden" id="entitledStrength" />
             <input type="hidden" id="EntitledStrength" name="EntitledStrength" />
+            <input type="hidden" id="scaleAmount" />
+            <input type="hidden" id="Selected_Category" />
+
             <div class="table-responsive">
                 <table class="table" id="issueTable">
                     <thead>
                         <tr>
                             <th class="heading">Date</th>
-                            <th class="heading">Item Category</th>
                             <th class="heading">Item Name</th>
                             <th class="heading">Denomination</th>
                             <th class="heading">Entitled Strength</th>
@@ -35,11 +38,6 @@
                         <tr>
                             <td>
                                 <input type="date" class="form-control" name="date" required /></td>
-                            <td>
-                                <select class="form-control itemcategory" id="itemcategory" name="itemcategory" onchange="itemcategory_SelectedIndexChanged(this)" width="130px" required>
-                                    <option value="">Select</option>
-                                </select>
-                            </td>
                             <td>
                                 <select class="form-control" id="DropDownList1" name="itemname" onchange="fetchBasicDenom(this.id)" width="130px" required>
                                     <option value="">Select</option>
@@ -170,26 +168,70 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function () {
-            fetchItemCategories();
-            //if ($('#userRole').val() == null || $('#userRole').val() == "") {
-            //    $('#userRole').val("officer")
-            //}
         });
-        //function toggleUserType() {
-        //    var userType = document.getElementById("userType").value;
-        //    var heading = document.querySelector('.container h2');
 
-        //    if (userType === "officer") {
-        //        $('#userRole').val("officer");
-        //        heading.textContent = "Issue Module - Officers";
-        //    } else if (userType === "sailor") {
-        //        $('#userRole').val("sailor");
-        //        heading.textContent = "Issue Module - Sailors";
-        //    }
-        //}
+        function selectCategory(val, row) {
+
+            var categoryVal = document.getElementById("Selected_Category").value;
+
+            if (categoryVal == null || categoryVal == "") {
+                document.getElementById("Selected_Category").value = val;
+            }
+
+            fetch('IssueMaster.aspx/GetInLiueItemsByCategory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Category: document.getElementById("Selected_Category").value })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const items = JSON.parse(data.d);
+
+                    if (row == "" || row == null) {
+                        const selectElement = document.getElementById('DropDownList1');
+                        selectElement.innerHTML = '<option value="">Select</option>';
+
+                        for (let i = 0; i < items.length; i += 2) {
+                            const optionText = items[i];
+                            const optionValue = items[i + 1];
+                            if (optionText && optionValue) {
+                                const option = document.createElement('option');
+                                option.text = optionText;
+                                option.value = optionValue;
+                                selectElement.appendChild(option);
+                            }
+                        }
+                        selectElement.disabled = false;
+                    } else {
+                        const selectElement1 = document.getElementById('DropDownList1_' + row);
+                        selectElement1.innerHTML = '<option value="">Select</option>';
+
+                        for (let i = 0; i < items.length; i += 2) {
+                            const optionText = items[i];
+                            const optionValue = items[i + 1];
+                            if (optionText && optionValue) {
+                                const option = document.createElement('option');
+                                option.text = optionText;
+                                option.value = optionValue;
+                                selectElement1.appendChild(option);
+                            }
+                        }
+                        selectElement1.disabled = false;
+                    }
+
+                    // Enable the select element after populating it
+                    
+                })
+                .catch(error => {
+                    console.error('Error fetching Items:', error);
+                });
+        }
 
         function fetchBasicDenom(id) {
             var ItemValue = document.getElementById(id).value;
+            document.getElementById("scaleAmount").value = "";
 
             if (id != null) {
                 var value = id;  // Use 'var' instead of 'string'
@@ -208,14 +250,23 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.d) {
+
+                        var result = JSON.parse(data.d);
+                        var denomination = result.Denomination;
+
+                        var vegScale = result.VegScale;
+                        var nonvegeScale = result.NonVegScale;
+
+                        var sumofScale = vegScale + nonvegeScale;
+                        document.getElementById("scaleAmount").value = sumofScale;
+
                         if (rowSequence > 1) {
                             var denomsDropdown = document.getElementById("denomsVal_" + part1);
-                            denomsDropdown.value = data.d;
+                            denomsDropdown.value = denomination;
                         } else {
                             var denomsDropdown = document.getElementById("denomsVal");
-                            denomsDropdown.value = data.d;
+                            denomsDropdown.value = denomination;
                         }
-
                     }
                 })
                 .catch(error => {
@@ -224,7 +275,7 @@
         }
 
         $(document).on('change', 'input[name="Strength"]', function () {
-            var scaleAmount = $('#ScalAmount_Val').val();
+            var scaleAmount = $('#scaleAmount').val();
             var strengthValue = parseFloat($(this).val());
 
             if (!isNaN(strengthValue)) {
@@ -290,15 +341,13 @@
             var tableBody = document.getElementById("MainContent_tableBody");
             var newRow = document.createElement("tr");
 
+            freezDiv();
+
             var selectedDate = document.querySelector('input[type="date"][name="date"]').value;
             newRow.innerHTML = `
                             <input type="hidden" id="EntitledStrength_${rowSequence}" name="EntitledStrength" />
                             <td>
                                 <input type="date" class="form-control" name="date" value="${selectedDate}" disabled required />
-                            </td>
-                            <td>
-                                 <select class="form-control itemcategory" id="itemcategory_${rowSequence}" onchange="itemcategory_SelectedIndexChanged(this)" disabled required>
-                                </select>
                             </td>
                             <td>
                                 <select id="DropDownList1_${rowSequence}" class="form-control" onchange="fetchBasicDenom(this.id)" name="itemname" required>
@@ -320,6 +369,8 @@
 
             tableBody.appendChild(newRow);
 
+            selectCategory('', rowSequence);
+
             var strengthInput = document.getElementById("Strength_" + rowSequence);
             var strengthID = "Strength_" + rowSequence;
             strengthInput.addEventListener('input', function () {
@@ -338,11 +389,11 @@
 
             //fetchItemCategories();
             //fetchItemCategories(newRow);
-            $("#itemcategory_" + rowSequence).append($('#itemcategory').html())
+            //fetchItemNames(getCategory, rowSequence);
 
+            $("#itemcategory_" + rowSequence).append($('#itemcategory').html())
             var getCategory = $("#ItemCategory_Val").val();
             $('.itemcategory').val(getCategory);
-            fetchItemNames(getCategory, rowSequence);
 
             rowSequence++;
         }
@@ -352,10 +403,10 @@
             row.parentNode.removeChild(row);
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            var rows = document.querySelectorAll("#tableBody tr");
-            rows.forEach(fetchItemCategories);
-        });
+        //document.addEventListener("DOMContentLoaded", function () {
+        //    var rows = document.querySelectorAll("#tableBody tr");
+        //    rows.forEach(fetchItemCategories);
+        //});
 
         function checkReceivedFrom(selectElement) {
             var parentTd = selectElement.parentNode;
@@ -376,7 +427,8 @@
             }
         }
 
-        //function fetchItemCategories(row) {
+        var scaleAmountsByCategory = {};
+        //function fetchItemCategories() {
         //    fetch('IssueMaster.aspx/GetItemCategories', {
         //        method: 'POST',
         //        headers: {
@@ -386,18 +438,18 @@
         //        .then(response => response.json())
         //        .then(data => {
         //            if (data.d && data.d.length) {
-        //                var itemSelect = row.querySelector('.itemcategory');
+
+        //                var dropdown = document.getElementById('itemcategory');
+
+        //                // Clear existing options
+        //                dropdown.innerHTML = '<option value="">Select</option>';
 
         //                data.d.forEach(function (item) {
-        //                    var categoryVal = document.getElementById('ItemCategory_Val').value;
         //                    var option = document.createElement('option');
         //                    option.value = item.Value;
         //                    option.textContent = item.Text;
         //                    option.setAttribute('data-scaleamount', item.ScaleAmount);
-        //                    if (item.Value === categoryVal) {
-        //                        option.selected = true;
-        //                    }
-        //                    itemSelect.appendChild(option);
+        //                    dropdown.appendChild(option);
 
         //                    scaleAmountsByCategory[item.Value] = parseFloat(item.ScaleAmount);
         //                });
@@ -407,38 +459,6 @@
         //            console.error('Error fetching item categories:', error);
         //        });
         //}
-        var scaleAmountsByCategory = {};
-        function fetchItemCategories() {
-            fetch('IssueMaster.aspx/GetItemCategories', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.d && data.d.length) {
-
-                        var dropdown = document.getElementById('itemcategory');
-
-                        // Clear existing options
-                        dropdown.innerHTML = '<option value="">Select</option>';
-
-                        data.d.forEach(function (item) {
-                            var option = document.createElement('option');
-                            option.value = item.Value;
-                            option.textContent = item.Text;
-                            option.setAttribute('data-scaleamount', item.ScaleAmount);
-                            dropdown.appendChild(option);
-
-                            scaleAmountsByCategory[item.Value] = parseFloat(item.ScaleAmount);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching item categories:', error);
-                });
-        }
 
 
         function populateDropDown(data) {
@@ -448,49 +468,54 @@
                 dropdown.append($('<option></option>').attr('value', entry.Value).text(entry.Text));
             });
         }
-        var selectedCategoryValue = '';
+            var selectedCategoryValue = '';
 
-        function itemcategory_SelectedIndexChanged(element) {
-            selectedCategoryValue = element.value;
-            document.querySelector('input[name="Strength"]').value = '';
-            document.getElementById('EntitledStrength').textContent = '';
-            var selectedCategory = document.getElementById('itemcategory').value;
-            //var selectedCategory = document.querySelector('.itemcategory').value;
-            var ScalAmount = document.getElementById('ScalAmount_Val');
-            $('#ItemCategory_Val').val(selectedCategory);
-            fetchItemNames(selectedCategory, '');
+        //function itemcategory_SelectedIndexChanged(element) {
+        //    selectedCategoryValue = element.value;
+        //    document.querySelector('input[name="Strength"]').value = '';
+        //    document.getElementById('EntitledStrength').textContent = '';
+        //    var selectedCategory = document.getElementById('itemcategory').value;
+        //    //var selectedCategory = document.querySelector('.itemcategory').value;
+        //    var ScalAmount = document.getElementById('ScalAmount_Val');
+        //    $('#ItemCategory_Val').val(selectedCategory);
+        //    fetchItemNames(selectedCategory, '');
 
-            var scaleAmount = scaleAmountsByCategory[selectedCategory];
-            ScalAmount.value = scaleAmount;
-        }
+        //    var scaleAmount = scaleAmountsByCategory[selectedCategory];
+        //    ScalAmount.value = scaleAmount;
+        //}
 
-        function fetchItemNames(category, val) {
-            fetch('IssueMaster.aspx/GetItemNamesByCategory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ category: category })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (val == '' || val == null) {
-                        var dropdown = document.getElementById('DropDownList1');
-                    } else {
-                        var dropdown = document.getElementById('DropDownList1' + '_' + val);
-                    }
-                    dropdown.innerHTML = '';
-                    var itemNames = JSON.parse(data.d);
-                    itemNames.forEach(function (itemName) {
-                        var option = document.createElement('option');
-                        option.value = itemName;
-                        option.textContent = itemName;
-                        dropdown.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching item names:', error);
-                });
+        //function fetchItemNames(category, val) {
+        //    fetch('IssueMaster.aspx/GetItemNamesByCategory', {
+        //        method: 'POST',
+        //        headers: {
+        //            'Content-Type': 'application/json'
+        //        },
+        //        body: JSON.stringify({ category: category })
+        //    })
+        //        .then(response => response.json())
+        //        .then(data => {
+        //            if (val == '' || val == null) {
+        //                var dropdown = document.getElementById('DropDownList1');
+        //            } else {
+        //                var dropdown = document.getElementById('DropDownList1' + '_' + val);
+        //            }
+        //            dropdown.innerHTML = '';
+        //            var itemNames = JSON.parse(data.d);
+        //            itemNames.forEach(function (itemName) {
+        //                var option = document.createElement('option');
+        //                option.value = itemName;
+        //                option.textContent = itemName;
+        //                dropdown.appendChild(option);
+        //            });
+        //        })
+        //        .catch(error => {
+        //            console.error('Error fetching item names:', error);
+        //        });
+        //}
+
+        function freezDiv() {
+            var type = document.getElementById("userType");
+            type.disabled = true;
         }
     </script>
 </asp:Content>

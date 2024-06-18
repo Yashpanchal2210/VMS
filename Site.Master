@@ -187,7 +187,10 @@
             <a href="ItemMaster.aspx">Item Master</a>
             <a href="RationScale.aspx">Ration Scale</a>
             <a href="Strength.aspx">Strength</a>
+            <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
+                { %>
             <a href="AddBasicandLieuItems.aspx">Add Items</a>
+            <% } %>
         </div>
 
         <button class="dropdown-btn">

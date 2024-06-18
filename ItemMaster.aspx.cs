@@ -12,7 +12,6 @@ namespace VMS_1
 {
     public partial class ItemMaster : System.Web.UI.Page
     {
-        //private string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
         private string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -48,7 +47,9 @@ namespace VMS_1
             FROM 
                 BasicItems b
             LEFT JOIN 
-                InLieuItems i ON b.Id = i.BasicItemId";
+                InLieuItems i ON b.Id = i.BasicItemId
+            ORDER BY 
+                b.Id DESC";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
 
@@ -58,7 +59,6 @@ namespace VMS_1
                 GridView1.DataBind();
             }
         }
-
 
         private void LoadBasicItems()
         {
@@ -87,7 +87,6 @@ namespace VMS_1
             {
                 conn.Open();
 
-                // First, fetch the BasicItem value based on the Id
                 string idQuery = "SELECT BasicItem FROM BasicLieuItems WHERE Id = @Id";
                 string basicItemValue = null;
                 using (SqlCommand cmd = new SqlCommand(idQuery, conn))
@@ -102,7 +101,6 @@ namespace VMS_1
                     }
                 }
 
-                // Then, use the fetched BasicItem value to fetch ilueItem and ilueDenom
                 if (basicItemValue != null)
                 {
                     string query = "SELECT ilueItem, ilueDenom FROM BasicLieuItems WHERE BasicItem = @BasicItem";
@@ -171,25 +169,25 @@ namespace VMS_1
         {
             try
             {
-                // Get main item details
                 string itemName = basicItem.SelectedItem.Text;
                 string category = Request.Form["category"];
                 string denomsVal = Request.Form["denoms"];
                 decimal VegScale = decimal.Parse(Request.Form["veg"]);
                 decimal NonVegScale = decimal.Parse(Request.Form["nonveg"]);
 
-                // Get alternate item details
                 string[] inlieuItem = Request.Form.GetValues("inlieuItem");
                 string[] categoryIlue = Request.Form.GetValues("categoryIlue");
-                string[] vegscaleIlue = Request.Form.GetValues("vegscaleIlue");
-                string[] nonvegscaleIlue = Request.Form.GetValues("nonvegscaleIlue");
+                string[] vegscaleIlueStrings = Request.Form.GetValues("vegscaleIlue");
+                string[] nonvegscaleIlueStrings = Request.Form.GetValues("nonvegscaleIlue");
 
-                // Connect to the database
+
+                decimal[] vegscaleIlue = Array.ConvertAll(vegscaleIlueStrings, s => string.IsNullOrEmpty(s) ? 0.00m : decimal.Parse(s));
+                decimal[] nonvegscaleIlue = Array.ConvertAll(nonvegscaleIlueStrings, s => string.IsNullOrEmpty(s) ? 0.00m : decimal.Parse(s));
+
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
 
-                    // Insert or update main item details
                     SqlCommand mainItemCmd = new SqlCommand("UpsertItemWithAlternates", conn);
                     mainItemCmd.CommandType = CommandType.StoredProcedure;
                     mainItemCmd.Parameters.AddWithValue("@ItemName", itemName);
@@ -199,21 +197,16 @@ namespace VMS_1
                     mainItemCmd.Parameters.AddWithValue("@NonVegScale", NonVegScale);
                     mainItemCmd.ExecuteNonQuery();
 
-                    //int BasicitemID = (int)itemIDParam.Value;
 
-                    // Get the newly inserted ItemID or existing ItemID
                     object itemID;
                     using (SqlCommand getIdCmd = new SqlCommand("SELECT TOP 1 Id FROM BasicItems ORDER BY Id DESC", conn))
                     {
                         itemID = getIdCmd.ExecuteScalar();
                     }
-
-                    // Insert alternate items
                     if (inlieuItem != null)
                     {
                         for (int i = 0; i < inlieuItem.Length; i++)
                         {
-                            // Check if the alternate item already exists in PresentStockMaster
                             SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM PresentStockMaster WHERE ItemName = @AltItemName", conn);
                             checkCmd.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
                             int Presentcount = (int)checkCmd.ExecuteScalar();
@@ -225,7 +218,6 @@ namespace VMS_1
 
                             if (Presentcount == 0)
                             {
-                                // Insert into PresentStockMaster if it doesn't exist
                                 SqlCommand insertCmd = new SqlCommand("INSERT INTO PresentStockMaster (ItemName, Qty) VALUES (@AltItemName, @Qty)", conn);
                                 insertCmd.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
                                 insertCmd.Parameters.AddWithValue("@Qty", "0");
@@ -240,11 +232,11 @@ namespace VMS_1
 
                                 SqlCommand altItemCmd = new SqlCommand("INSERT INTO InLieuItems (BasicItemId, InLieuItem, Category, Denomination, VegScale, NonVegScale) VALUES (@IlueId, @IlieuName, @CategoryIlieu, @Denomilieu, @VegScale, @NonVegScale)", conn);
                                 altItemCmd.Parameters.AddWithValue("@IlueId", itemID);
-                                altItemCmd.Parameters.AddWithValue("@IlieuName", inlieuItem[i]);
-                                altItemCmd.Parameters.AddWithValue("@CategoryIlieu", categoryIlue[i]);
-                                altItemCmd.Parameters.AddWithValue("@Denomilieu", denomination);
-                                altItemCmd.Parameters.Add("@VegScale", SqlDbType.Decimal).Value = Convert.ToDecimal(vegscaleIlue[i]);
-                                altItemCmd.Parameters.Add("@NonVegScale", SqlDbType.Decimal).Value = Convert.ToDecimal(nonvegscaleIlue[i]);
+                                altItemCmd.Parameters.AddWithValue("@IlieuName", inlieuItem[i] ?? "");
+                                altItemCmd.Parameters.AddWithValue("@CategoryIlieu", categoryIlue[i] ?? "");
+                                altItemCmd.Parameters.AddWithValue("@Denomilieu", denomination ?? "");
+                                altItemCmd.Parameters.AddWithValue("@VegScale", vegscaleIlue[i]);
+                                altItemCmd.Parameters.AddWithValue("@NonVegScale", nonvegscaleIlue[i]);
                                 altItemCmd.ExecuteNonQuery();
                             }
                         }
@@ -255,7 +247,6 @@ namespace VMS_1
             }
             catch (Exception ex)
             {
-                // Handle exceptions
                 lblMessage.Text = "An error occurred: " + ex.Message;
             }
 
@@ -268,98 +259,33 @@ namespace VMS_1
             LoadGridView();
         }
 
-        //protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        //{
-        //    try
-        //    {
-        //        // Get the updated item details from the gridview
-        //        GridViewRow row = GridView1.Rows[e.RowIndex];
-        //        string itemName = ((Label)row.FindControl("lblItemName")).Text; // Assuming you have a label for ItemName
-        //        string category = ((TextBox)row.FindControl("txtCategory")).Text; // Assuming you have a textbox for Category
-        //        string denomsVal = ((TextBox)row.FindControl("txtDenomination")).Text; // Assuming you have a textbox for Denomination
-        //        decimal vegScale = decimal.Parse(((TextBox)row.FindControl("txtVegScale")).Text); // Assuming you have a textbox for VegScale
-        //        decimal nonVegScale = decimal.Parse(((TextBox)row.FindControl("txtNonVegScale")).Text); // Assuming you have a textbox for NonVegScale
-
-        //        // Update the main item details in the database
-        //        using (SqlConnection conn = new SqlConnection(connStr))
-        //        {
-        //            conn.Open();
-
-        //            SqlCommand updateCmd = new SqlCommand("UPDATE BasicItems SET Category = @Category, Denomination = @Denomination, VegScale = @VegScale, NonVegScale = @NonVegScale WHERE ItemName = @ItemName", conn);
-        //            updateCmd.Parameters.AddWithValue("@Category", category);
-        //            updateCmd.Parameters.AddWithValue("@Denomination", denomsVal);
-        //            updateCmd.Parameters.AddWithValue("@VegScale", vegScale);
-        //            updateCmd.Parameters.AddWithValue("@NonVegScale", nonVegScale);
-        //            updateCmd.Parameters.AddWithValue("@ItemName", itemName);
-        //            updateCmd.ExecuteNonQuery();
-        //        }
-
-        //        lblStatus.Text = "Data updated successfully.";
-        //        GridView1.EditIndex = -1;
-        //        LoadGridView();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblStatus.Text = "An error occurred: " + ex.Message;
-        //    }
-        //}
-
         protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
         {
             GridView1.EditIndex = -1;
             LoadGridView();
         }
 
-        //protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
-        //{
-        //    if (e.CommandName == "DeleteRow")
-        //    {
-        //        int rowIndex = Convert.ToInt32(e.CommandArgument);
-        //        GridViewRow row = GridView1.Rows[rowIndex];
-
-        //        // Get the item name from the row
-        //        string itemName = ((Label)row.FindControl("lblItemName")).Text;
-
-        //        // Delete the item from the database
-        //        DeleteItem(itemName);
-
-        //        // Rebind the GridView
-        //        LoadGridView();
-        //    }
-        //}
-
         protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             try
             {
-                // Check the value of e.RowIndex
                 int rowIndex = e.RowIndex;
 
-                // Check the number of rows in the GridView
                 int rowCount = GridView1.Rows.Count;
 
-                // Check the number of data keys in the DataKeys collection
                 int dataKeyCount = GridView1.DataKeys.Count;
 
-                // Check the DataKeys collection itself
                 var dataKeys = GridView1.DataKeys;
 
-                // Put a breakpoint here and inspect the values
                 int id = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value);
-                // Call your delete method with the ID
                 DeleteItem(id);
-                // Rebind the GridView
                 LoadGridView();
             }
             catch (Exception ex)
             {
-                // Handle the exception or log it for further investigation
-                // You can also examine the exception details in the debugger
                 throw;
             }
         }
-
-
 
         private void DeleteItem(int id)
         {
@@ -367,18 +293,14 @@ namespace VMS_1
             {
                 conn.Open();
 
-                // Delete from InLieuItems table first
                 SqlCommand deleteInLieuCmd = new SqlCommand("DELETE FROM InLieuItems WHERE BasicItemId = @Id", conn);
                 deleteInLieuCmd.Parameters.AddWithValue("@Id", id);
                 deleteInLieuCmd.ExecuteNonQuery();
 
-                // Then, delete from BasicItems table
                 SqlCommand deleteCmd = new SqlCommand("DELETE FROM BasicItems WHERE Id = @Id", conn);
                 deleteCmd.Parameters.AddWithValue("@Id", id);
                 deleteCmd.ExecuteNonQuery();
             }
         }
-
-
     }
 }

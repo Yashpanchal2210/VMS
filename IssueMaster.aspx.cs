@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Web.Security;
 using System.Web.Services;
 using System.Web.UI.WebControls;
@@ -34,13 +35,58 @@ namespace VMS_1
         }
 
         [WebMethod]
+        public static string GetInLiueItemsByCategory(string Category)
+        {
+            string categoryVal = string.Empty;
+
+            if (Category == "Wardroom")
+            {
+                categoryVal = "Officer";
+            }
+            else if (Category == "Galley")
+            {
+                categoryVal = "Sailor";
+            }
+
+            List<string> itemNames = new List<string>();
+
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            string query = "SELECT Id, InLieuItem FROM InLieuItems WHERE Category = @category";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Category", categoryVal);
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            itemNames.Add(reader["InLieuItem"].ToString());
+                            itemNames.Add(reader["Id"].ToString());
+                        }
+                    }
+                }
+            }
+            return JsonConvert.SerializeObject(itemNames); ;
+        }
+
+        [WebMethod]
         public static string GetItemDenom(string ItemVal)
         {
-            string basicDenom = string.Empty;
+
+            var result = new
+            {
+                Denomination = string.Empty,
+                VegScale = string.Empty,
+                NonVegScale = string.Empty
+            };
+
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "SELECT Denomination FROM AlternateItem WHERE AltItemName = @BasicItem";
+                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE Id = @BasicItem";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@BasicItem", ItemVal);
 
@@ -48,11 +94,16 @@ namespace VMS_1
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    basicDenom = reader["Denomination"].ToString();
+                    result = new
+                    {
+                        Denomination = reader["Denomination"].ToString(),
+                        VegScale = reader["VegScale"].ToString(),
+                        NonVegScale = reader["NonVegScale"].ToString()
+                    };
                 }
             }
 
-            return basicDenom;
+            return new JavaScriptSerializer().Serialize(result);
         }
 
         [WebMethod]

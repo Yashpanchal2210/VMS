@@ -50,9 +50,9 @@
                                 </select>--%>
                             </td>
                             <td>
-                                <input type="number" class="form-control" name="veg" required min="0" step="0.001" /></td>
+                                <input type="number" class="form-control" name="veg" required min="0" step="0.00000001" /></td>
                             <td>
-                                <input type="number" class="form-control" name="nonveg" required min="0" step="0.001" /></td>
+                                <input type="number" class="form-control" name="nonveg" required min="0" step="0.00000001" /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -74,20 +74,20 @@
                     <tbody id="Tbody1" runat="server">
                         <tr>
                             <td>
-                                <select class="form-control" name="inlieuItem" id="inlieuItemVal" required>
+                                <select class="form-control" name="inlieuItem" id="inlieuItemVal">
                                     <option value="">Select</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="categoryIlue" id="categoryIlue" required readonly /></td>
+                                <input type="text" class="form-control" name="categoryIlue" id="categoryIlue" readonly /></td>
                             <td>
-                                <input type="text" class="form-control" name="denoms" required readonly />
+                                <input type="text" class="form-control" name="denoms" readonly />
                             </td>
                             <td>
-                                <input type="number" class="form-control" name="vegscaleIlue" required min="0" step="0.001" />
+                                <input type="number" class="form-control" name="vegscaleIlue" min="0" step="0.00000001" />
                             </td>
                             <td>
-                                <input type="number" class="form-control" name="nonvegscaleIlue" required min="0" step="0.001" />
+                                <input type="number" class="form-control" name="nonvegscaleIlue" min="0" step="0.00000001" />
                             </td>
                         </tr>
                     </tbody>
@@ -134,20 +134,20 @@
             var tableBody = document.getElementById("MainContent_Tbody1");
             var newRow = document.createElement("tr");
             newRow.innerHTML = `<td>
-                                    <select class="form-control" name="inlieuItem" id="inlieuItemVal_${rowSequence}" required>
+                                    <select class="form-control" name="inlieuItem" id="inlieuItemVal_${rowSequence}">
                                         <option value="">Select</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" name="categoryIlue" id="categoryIlue_${rowSequence}" required readonly /></td>
+                                    <input type="text" class="form-control" name="categoryIlue" id="categoryIlue_${rowSequence}" readonly /></td>
                                 <td>
-                                    <input type="text" class="form-control" name="denoms" required readonly/>
+                                    <input type="text" class="form-control" name="denoms" readonly/>
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control" name="vegscaleIlue" required min="0" step="0.001" />
+                                    <input type="number" class="form-control" name="vegscaleIlue" min="0" step="0.00000001" />
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control" name="nonvegscaleIlue" required min="0" step="0.001" />
+                                    <input type="number" class="form-control" name="nonvegscaleIlue" min="0" step="0.00000001" />
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
