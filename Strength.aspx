@@ -124,27 +124,44 @@
         function addRow() {
             var tableBody = document.getElementById("MainContent_tableBody");
             var newRow = document.createElement("tr");
-            newRow.innerHTML = `<td><input type="date" class="form-control" name="date" required /></td>
-                                <td><input type="number" class="form-control" name="VegOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegRikOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegSailor" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegSailor" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegSailorRik" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegSailorRik" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="VegNonEntitledsailor" required min="0" /></td>
-                                <td><input type="number" class="form-control" name="NonVegNonEntitledsailor" required min="0" /></td>  
-                                <td><input type="number" class="form-control" name="Civilian" required min="0" /></td>
-                                <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
+            newRow.innerHTML = `<td style="width: 123px">
+    <input type="date" class="form-control" name="date" required style="width: 98%" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="VegOfficer" required min="0" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="NonVegOfficer" required min="0" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="VegrikOfficer" required min="0" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="vegSailor" required min="0" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="nonVegSailor" required min="0" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="VegSailorRik" required min="0" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="NonVegSailorRik" required min="0" /></td>
+<td style="width: 123px">
+    <input type="text" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
+<td style="width: 147px">
+    <input type="text" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
+<td style="width: 124px">
+    <input type="text" class="form-control" name="VegNonEntitledSailor" required min="0" /></td>
+<td style="width: 124px">
+    <input type="text" class="form-control" name="NonVegNonEntitledSailor" required min="0" /></td>
+<td style="width: 124px">
+    <input type="text" class="form-control" name="Civilian" required min="0" style="width: 96%" /></td>
+<td style="width: 124px">
+    <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
         }
 
         function deleteRow(btn) {
             var row = btn.parentNode.parentNode;
             row.parentNode.removeChild(row);
+        }' : 'none';
         }
+
     </script>
 </asp:Content>

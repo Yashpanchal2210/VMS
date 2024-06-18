@@ -42,8 +42,8 @@ namespace VMS_1
             HashSet<string> itemNames = new HashSet<string>();
             //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT DISTINCT iLueItem FROM BasicLieuItems ORDER BY iLueItem ASC";
-            string itemquery = "SELECT DISTINCT BasicItem FROM BasicLieuItems ORDER BY BasicItem ASC;";
+            string query = "SELECT AltItemName FROM AlternateItem ORDER BY AltItemName ASC";
+            string itemquery = "SELECT ItemName FROM Items ORDER BY ItemName ASC";
 
             try
             {
@@ -55,7 +55,7 @@ namespace VMS_1
 
                     while (reader.Read())
                     {
-                        itemNames.Add(reader["iLueItem"].ToString());
+                        itemNames.Add(reader["AltItemName"].ToString());
                     }
                     reader.Close();
                 }
@@ -68,7 +68,7 @@ namespace VMS_1
 
                     while (itemReader.Read())
                     {
-                        itemNames.Add(itemReader["BasicItem"].ToString());
+                        itemNames.Add(itemReader["ItemName"].ToString());
                     }
                     itemReader.Close();
                 }
@@ -109,7 +109,7 @@ namespace VMS_1
 
                     for (int i = 0; i < itemNames.Length; i++)
                     {
-                        SqlCommand getDenominationCmd = new SqlCommand("SELECT iLueDenom FROM BasicLieuItems WHERE iLueItem = @ItemName", conn);
+                        SqlCommand getDenominationCmd = new SqlCommand("SELECT Denomination FROM AlternateItem WHERE AltItemName = @ItemName", conn);
                         getDenominationCmd.Parameters.AddWithValue("@ItemName", itemNames[i]);
 
                         object denomValue = getDenominationCmd.ExecuteScalar();
@@ -271,7 +271,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT itemid, Dates, referenceNos, receivedFrom, itemnames, denominations, quantities FROM ReceiptMaster", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT Dates, referenceNos, receivedFrom, itemnames, denominations, quantities FROM ReceiptMaster", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
@@ -296,7 +296,6 @@ namespace VMS_1
         protected void GridView_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            int itemid = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Value);
 
             GridViewRow row = GridView.Rows[e.RowIndex];
             //int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Values[0]);
@@ -313,8 +312,8 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("UPDATE ReceiptMaster SET Dates=@Date, referenceNos=@ReferenceNos, receivedFrom=@ReceivedFrom, itemnames=@ItemNames, denominations=@Denominations, quantities=@Quantities WHERE itemid=@ID", conn);
-                    cmd.Parameters.AddWithValue("@ID", itemid);
+                    SqlCommand cmd = new SqlCommand("UPDATE ReceiptMaster SET Dates=@Date, referenceNos=@ReferenceNos, receivedFrom=@ReceivedFrom, itemnames=@ItemNames, denominations=@Denominations, quantities=@Quantities WHERE ID=@ID", conn);
+                    cmd.Parameters.AddWithValue("@ID", e.RowIndex);
                     cmd.Parameters.AddWithValue("@Date", date);
                     cmd.Parameters.AddWithValue("@ReferenceNos", referenceNos);
                     cmd.Parameters.AddWithValue("@ReceivedFrom", receivedFrom);
@@ -345,7 +344,6 @@ namespace VMS_1
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
             //int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Values[0]);
-            int itemid = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Value);
 
             try
             {
@@ -353,8 +351,8 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("DELETE FROM ReceiptMaster WHERE itemid=@ID", conn);
-                    cmd.Parameters.AddWithValue("@ID", itemid);
+                    SqlCommand cmd = new SqlCommand("DELETE FROM ReceiptMaster WHERE ID=@ID", conn);
+                    cmd.Parameters.AddWithValue("@ID", e);
 
                     cmd.ExecuteNonQuery();
                 }
