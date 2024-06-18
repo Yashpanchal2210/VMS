@@ -23,7 +23,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             transition: background-color 0.3s, color 0.3s;
             position: relative;
-            background-color: #3498db;
+            background-color: #EDE8F5;
             color: #000;
             /*background-image: url('/wwwroot/Images/ins-hamla.png');
             background-position: center;
@@ -244,23 +244,16 @@
         <a href="~/LOGIN.aspx?m=logout" runat="server" >Logout</a>
     </div>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-success" style="justify-content: center;">
+        <nav class="navbar navbar-expand-lg navbar-light" style="margin-inline-start: auto;justify-content: center; background-color: #3D52A0 !important;">
             <span class="open-btn" style="color: white;" onclick="openNav()">&#9776;</span>
 
-            <div style="margin-inline-start: auto;">
+            <div>
                 <a class="navbar-brand text-white" style="font-size: 30px; font-weight: 500;">Victulling Management System</a>
-            </div>
-            <div <%--class="theme-selector"--%> style="margin-left: auto;">
-                <%--<label for="ddlTheme">Choose Theme:</label>--%>
-                <select id="ddlTheme" onchange="setTheme(this.value)" class="form-control">
-                    <option value="blue">Blue</option>
-                    <option value="dark">Dark</option>
-                </select>
             </div>
         </nav>
     </header>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #1c7bdc;">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #7091E6;">
             <a class="navbar-brand text-white" href="Dashboard.aspx">Home</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
