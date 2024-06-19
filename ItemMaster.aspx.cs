@@ -195,9 +195,10 @@ namespace VMS_1
                         int itemID;
 
                         // Check if the basic item exists
-                        using (SqlCommand checkItemCmd = new SqlCommand("SELECT Id FROM BasicItems WHERE BasicItem = @ItemName", conn, transaction))
+                        using (SqlCommand checkItemCmd = new SqlCommand("SELECT Id FROM BasicItems WHERE BasicItem = @ItemName AND Category = @Category", conn, transaction))
                         {
                             checkItemCmd.Parameters.AddWithValue("@ItemName", itemName);
+                            checkItemCmd.Parameters.AddWithValue("@Category", category);
                             object result = checkItemCmd.ExecuteScalar();
 
                             if (result != null)
@@ -241,7 +242,7 @@ namespace VMS_1
                                 decimal altNonVegScale = nonvegscaleIlue[i];
 
                                 // Check if the alternate item exists for the same BasicItemId, InLieuItem, and Category
-                                using (SqlCommand checkAltCmd = new SqlCommand("SELECT Id FROM InLieuItems WHERE BasicItemId = @ItemID AND InLieuItem = @AltItemName AND Category = @AltCategory", conn, transaction))
+                                using (SqlCommand checkAltCmd = new SqlCommand("SELECT Id FROM InLieuItems WHERE InLieuItem = @AltItemName AND Category = @AltCategory", conn, transaction))
                                 {
                                     checkAltCmd.Parameters.AddWithValue("@ItemID", itemID);
                                     checkAltCmd.Parameters.AddWithValue("@AltItemName", altItemName);
