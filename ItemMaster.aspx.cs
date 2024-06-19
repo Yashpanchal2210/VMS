@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Web;
 using System.Web.Security;
 using System.Web.Services;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace VMS_1
@@ -36,14 +37,14 @@ namespace VMS_1
                 b.Id AS ID,
                 b.BasicItem AS BasicItem, 
                 b.Category AS Category, 
-                b.Denomination AS Denomination, 
-                b.VegScale AS VegScale, 
-                b.NonVegScale AS NonVegScale, 
+                REPLACE(b.Denomination, ',', '') AS Denomination, 
+                FORMAT(b.VegScale, 'N4') AS VegScale, 
+                FORMAT(b.NonVegScale, 'N4') AS NonVegScale, 
                 i.InLieuItem AS InLieuItem, 
                 i.Category AS InLieuItemCategory, 
-                i.Denomination AS InLieuItemDenomination, 
-                i.VegScale AS InLieuItemVegScale, 
-                i.NonVegScale AS InLieuItemNonVegScale
+                REPLACE(i.Denomination, ',', '') AS InLieuItemDenomination, 
+                FORMAT(i.VegScale, 'N4') AS InLieuItemVegScale, 
+                FORMAT(i.NonVegScale, 'N4') AS InLieuItemNonVegScale
             FROM 
                 BasicItems b
             LEFT JOIN 
@@ -180,7 +181,6 @@ namespace VMS_1
                 string[] vegscaleIlueStrings = Request.Form.GetValues("vegscaleIlue");
                 string[] nonvegscaleIlueStrings = Request.Form.GetValues("nonvegscaleIlue");
 
-
                 decimal[] vegscaleIlue = Array.ConvertAll(vegscaleIlueStrings, s => string.IsNullOrEmpty(s) ? 0.00m : decimal.Parse(s));
                 decimal[] nonvegscaleIlue = Array.ConvertAll(nonvegscaleIlueStrings, s => string.IsNullOrEmpty(s) ? 0.00m : decimal.Parse(s));
 
@@ -188,70 +188,107 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlCommand mainItemCmd = new SqlCommand("UpsertItemWithAlternates", conn);
-                    mainItemCmd.CommandType = CommandType.StoredProcedure;
-                    mainItemCmd.Parameters.AddWithValue("@ItemName", itemName);
-                    mainItemCmd.Parameters.AddWithValue("@Category", category);
-                    mainItemCmd.Parameters.AddWithValue("@Denomination", denomsVal);
-                    mainItemCmd.Parameters.AddWithValue("@VegScale", VegScale);
-                    mainItemCmd.Parameters.AddWithValue("@NonVegScale", NonVegScale);
-                    mainItemCmd.ExecuteNonQuery();
+                    SqlTransaction transaction = conn.BeginTransaction();
 
+                    try
+                    {
+                        int itemID;
 
-                    object itemID;
-                    using (SqlCommand getIdCmd = new SqlCommand("SELECT TOP 1 Id FROM BasicItems ORDER BY Id DESC", conn))
-                    {
-                        itemID = getIdCmd.ExecuteScalar();
-                    }
-                    if (inlieuItem != null)
-                    {
-                        for (int i = 0; i < inlieuItem.Length; i++)
+                        // Check if the basic item exists
+                        using (SqlCommand checkItemCmd = new SqlCommand("SELECT Id FROM BasicItems WHERE BasicItem = @ItemName", conn, transaction))
                         {
-                            SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM PresentStockMaster WHERE ItemName = @AltItemName", conn);
-                            checkCmd.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
-                            int Presentcount = (int)checkCmd.ExecuteScalar();
+                            checkItemCmd.Parameters.AddWithValue("@ItemName", itemName);
+                            object result = checkItemCmd.ExecuteScalar();
 
-                            SqlCommand checkCmdIssue = new SqlCommand("SELECT COUNT(*) FROM InLieuItems WHERE InLieuItem = @AltItemName", conn);
-                            checkCmdIssue.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
-                            int Issuecount = (int)checkCmdIssue.ExecuteScalar();
-
-
-                            if (Presentcount == 0)
+                            if (result != null)
                             {
-                                SqlCommand insertCmd = new SqlCommand("INSERT INTO PresentStockMaster (ItemName, Qty) VALUES (@AltItemName, @Qty)", conn);
-                                insertCmd.Parameters.AddWithValue("@AltItemName", inlieuItem[i]);
-                                insertCmd.Parameters.AddWithValue("@Qty", "0");
-                                insertCmd.ExecuteNonQuery();
+                                itemID = (int)result;
+
+                                // Update existing item
+                                using (SqlCommand updateItemCmd = new SqlCommand("UPDATE BasicItems SET VegScale = @VegScale, NonVegScale = @NonVegScale, Denomination = @Denomination, Category = @Category, updateDate = GETDATE() WHERE Id = @ItemID", conn, transaction))
+                                {
+                                    updateItemCmd.Parameters.AddWithValue("@VegScale", VegScale);
+                                    updateItemCmd.Parameters.AddWithValue("@NonVegScale", NonVegScale);
+                                    updateItemCmd.Parameters.AddWithValue("@Denomination", denomsVal);
+                                    updateItemCmd.Parameters.AddWithValue("@Category", category);
+                                    updateItemCmd.Parameters.AddWithValue("@ItemID", itemID);
+                                    updateItemCmd.ExecuteNonQuery();
+                                }
                             }
-
-                            if (Issuecount == 0)
+                            else
                             {
-                                SqlCommand getDenomCmd = new SqlCommand("SELECT iLueDenom FROM BasicLieuItems WHERE iLueItem = @ItemName", conn);
-                                getDenomCmd.Parameters.AddWithValue("@ItemName", inlieuItem[i]);
-                                string denomination = (string)getDenomCmd.ExecuteScalar();
-
-                                SqlCommand altItemCmd = new SqlCommand("INSERT INTO InLieuItems (BasicItemId, InLieuItem, Category, Denomination, VegScale, NonVegScale) VALUES (@IlueId, @IlieuName, @CategoryIlieu, @Denomilieu, @VegScale, @NonVegScale)", conn);
-                                altItemCmd.Parameters.AddWithValue("@IlueId", itemID);
-                                altItemCmd.Parameters.AddWithValue("@IlieuName", inlieuItem[i] ?? "");
-                                altItemCmd.Parameters.AddWithValue("@CategoryIlieu", categoryIlue[i] ?? "");
-                                altItemCmd.Parameters.AddWithValue("@Denomilieu", denomination ?? "");
-                                altItemCmd.Parameters.AddWithValue("@VegScale", vegscaleIlue[i]);
-                                altItemCmd.Parameters.AddWithValue("@NonVegScale", nonvegscaleIlue[i]);
-                                altItemCmd.ExecuteNonQuery();
+                                // Insert new item
+                                using (SqlCommand insertItemCmd = new SqlCommand("INSERT INTO BasicItems (BasicItem, Category, Denomination, VegScale, NonVegScale, AddDate, updateDate) VALUES (@ItemName, @Category, @Denomination, @VegScale, @NonVegScale, GETDATE(), NULL); SELECT SCOPE_IDENTITY();", conn, transaction))
+                                {
+                                    insertItemCmd.Parameters.AddWithValue("@ItemName", itemName);
+                                    insertItemCmd.Parameters.AddWithValue("@Category", category);
+                                    insertItemCmd.Parameters.AddWithValue("@Denomination", denomsVal);
+                                    insertItemCmd.Parameters.AddWithValue("@VegScale", VegScale);
+                                    insertItemCmd.Parameters.AddWithValue("@NonVegScale", NonVegScale);
+                                    itemID = Convert.ToInt32(insertItemCmd.ExecuteScalar());
+                                }
                             }
                         }
+
+                        // Process alternate items
+                        if (inlieuItem != null)
+                        {
+                            for (int i = 0; i < inlieuItem.Length; i++)
+                            {
+                                string altItemName = inlieuItem[i] ?? "";
+                                string altCategory = categoryIlue[i] ?? "";
+                                decimal altVegScale = vegscaleIlue[i];
+                                decimal altNonVegScale = nonvegscaleIlue[i];
+
+                                // Check if the alternate item exists for the same BasicItemId, InLieuItem, and Category
+                                using (SqlCommand checkAltCmd = new SqlCommand("SELECT Id FROM InLieuItems WHERE BasicItemId = @ItemID AND InLieuItem = @AltItemName AND Category = @AltCategory", conn, transaction))
+                                {
+                                    checkAltCmd.Parameters.AddWithValue("@ItemID", itemID);
+                                    checkAltCmd.Parameters.AddWithValue("@AltItemName", altItemName);
+                                    checkAltCmd.Parameters.AddWithValue("@AltCategory", altCategory);
+                                    object altResult = checkAltCmd.ExecuteScalar();
+
+                                    if (altResult != null)
+                                    {
+                                        // Alternate item already exists, do nothing
+                                    }
+                                    else
+                                    {
+                                        // Insert new alternate item
+                                        using (SqlCommand insertAltCmd = new SqlCommand("INSERT INTO InLieuItems (BasicItemId, InLieuItem, Category, Denomination, VegScale, NonVegScale) VALUES (@ItemID, @AltItemName, @AltCategory, @Denomination, @VegScale, @NonVegScale)", conn, transaction))
+                                        {
+                                            insertAltCmd.Parameters.AddWithValue("@ItemID", itemID);
+                                            insertAltCmd.Parameters.AddWithValue("@AltItemName", altItemName);
+                                            insertAltCmd.Parameters.AddWithValue("@AltCategory", altCategory);
+                                            insertAltCmd.Parameters.AddWithValue("@Denomination", denomsVal);
+                                            insertAltCmd.Parameters.AddWithValue("@VegScale", altVegScale);
+                                            insertAltCmd.Parameters.AddWithValue("@NonVegScale", altNonVegScale);
+                                            insertAltCmd.ExecuteNonQuery();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        transaction.Commit();
+                        lblStatus.Text = "Data entered successfully.";
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        lblMessage.Text = "An error occurred: " + ex.Message;
                     }
                 }
-
-                lblStatus.Text = "Data entered successfully.";
             }
             catch (Exception ex)
             {
                 lblMessage.Text = "An error occurred: " + ex.Message;
             }
-
+            ScriptManager.RegisterStartupScript(this, GetType(), "refreshPage", "window.location.href=window.location.href;", true);
             LoadGridView();
         }
+
+
 
         protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
         {
