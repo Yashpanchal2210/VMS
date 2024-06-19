@@ -307,6 +307,7 @@ namespace VMS_1
         {
             GridView1.EditIndex = e.NewEditIndex;
             LoadGridView();
+            ScriptManager.RegisterStartupScript(this, GetType(), "FetchInLieuItems", $"onRowEdit({e.NewEditIndex});", true);
         }
 
         protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)

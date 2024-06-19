@@ -174,30 +174,33 @@ namespace VMS_1
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
                 string[] date = Request.Form.GetValues("date");
-                //string[] itemcategory = Request.Form.GetValues("itemcategory");
+                string[] role = Request.Form.GetValues("Category");
                 string[] itemname = Request.Form.GetValues("itemname");
                 string[] enterstrength = Request.Form.GetValues("Strength");
-                string[] qtyentitled = Request.Form.GetValues("entitledstrength");
                 string[] qtyissued = Request.Form.GetValues("Qtyissued");
+
+
+                //string[] itemcategory = Request.Form.GetValues("itemcategory");
                 //string[] denomination = Request.Form.GetValues("denom");
-                string[] role = Request.Form.GetValues("userrole");
+                //string[] qtyentitled = Request.Form.GetValues("entitledstrength");
 
                 string[] denomination = new string[itemname.Length];
+                string[] itemid = new string[itemname.Length];
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    int maxLength = Math.Max(date.Length, Math.Max(itemname.Length, Math.Max(enterstrength.Length, Math.Max(qtyentitled.Length, Math.Max(qtyissued.Length, Math.Max(denomination.Length, role.Length))))));
+                    //int maxLength = Math.Max(date.Length, Math.Max(itemname.Length, Math.Max(enterstrength.Length, Math.Max(qtyissued.Length, Math.Max(denomination.Length, role.Length)))));
 
-                    for (int i = 0; i < maxLength; i++)
+                    for (int i = 0; i < itemname.Length; i++)
                     {
-                        DateTime parsedDate = DateTime.Parse(date[i]);
+                        DateTime parsedDate = DateTime.Parse(i < date.Length ? date[i] : date[0]);
                         string itemName = itemname[i];
                         decimal qtyIssued = decimal.Parse(qtyissued[i]);
 
-                        // Retrieve the Denomination value from the AlternateItem table
+                        // Retrieve the Denomination value from the AlternateItem table 
                         SqlCommand getDenominationCmd = new SqlCommand(
-                            "SELECT Denomination FROM AlternateItem WHERE AltItemName = @ItemName", conn);
+                            "SELECT Denomination FROM InLieuItems WHERE Id = @ItemName", conn);
                         getDenominationCmd.Parameters.AddWithValue("@ItemName", itemName);
 
                         object denomResult = getDenominationCmd.ExecuteScalar();
@@ -210,33 +213,49 @@ namespace VMS_1
                             denomination[i] = string.Empty;
                         }
 
+                        SqlCommand getIdCmd = new SqlCommand(
+                            "SELECT InLieuItem FROM InLieuItems WHERE Id = @ItemName", conn);
+                        getIdCmd.Parameters.AddWithValue("@ItemName", itemName);
+
+                        object idResult = getIdCmd.ExecuteScalar();
+                        if (idResult != null && idResult != DBNull.Value)
+                        {
+                            itemid[i] = idResult.ToString();
+                        }
+                        else
+                        {
+                            itemid[i] = string.Empty;
+                        }
+
                         SqlCommand checkReceiptCmd = new SqlCommand(
                             "SELECT SUM(Qty) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
-                        checkReceiptCmd.Parameters.AddWithValue("@ItemName", itemName);
+                        checkReceiptCmd.Parameters.AddWithValue("@ItemName", itemid[i]);
 
                         object result = checkReceiptCmd.ExecuteScalar();
                         if (result == null || result == DBNull.Value)
                         {
                             lblStatus.Text = $"No data found for item {itemName} in PresentStockMaster.";
-                            continue; // Skip this iteration
+                            //continue;
                         }
-
-                        decimal availableQty = Convert.ToDecimal(result);
-
-                        if (availableQty < qtyIssued)
+                        else
                         {
-                            lblStatus.Text = $"Insufficient quantity for item {itemName}.";
-                            continue;
+                            decimal availableQty = Convert.ToDecimal(result);
+
+                            if (availableQty < qtyIssued)
+                            {
+                                lblStatus.Text = $"Insufficient quantity for item.";
+                                continue;
+                            }
                         }
 
                         SqlCommand cmd = new SqlCommand("InsertIssue", conn);
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@Date", i < date.Length ? date[i] : date[0]);
-                        //cmd.Parameters.AddWithValue("@ItemCategoryId", i < itemcategory.Length ? itemcategory[i] : itemcategory[0]);
                         cmd.Parameters.AddWithValue("@ItemName", itemname[i]);
+                        //cmd.Parameters.AddWithValue("@ItemId", itemname[i]);
                         cmd.Parameters.AddWithValue("@Strength", enterstrength[i]);
-                        cmd.Parameters.AddWithValue("@QtyEntitled", qtyentitled[i]);
+                        //cmd.Parameters.AddWithValue("@QtyEntitled", qtyentitled[i]);
                         cmd.Parameters.AddWithValue("@QtyIssued", qtyissued[i]);
                         cmd.Parameters.AddWithValue("@Denomination", denomination[i]);
                         cmd.Parameters.AddWithValue("@Role", i < role.Length ? role[i] : role[0]);
@@ -245,7 +264,7 @@ namespace VMS_1
                         // Update PresentStockMaster table if ItemName exists
                         SqlCommand updatePresentStockCmd = new SqlCommand(
                         "UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
-                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemName);
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemid[i]);
                         updatePresentStockCmd.Parameters.AddWithValue("@Quantity", qtyIssued);
                         updatePresentStockCmd.Parameters.AddWithValue("@Denos", denomination[i]);
                         updatePresentStockCmd.ExecuteNonQuery();
@@ -259,7 +278,7 @@ namespace VMS_1
                             "SELECT COUNT(*) FROM MonthEndStockMaster WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
                         checkCmd.Parameters.AddWithValue("@Month", month);
                         checkCmd.Parameters.AddWithValue("@Year", year);
-                        checkCmd.Parameters.AddWithValue("@ItemName", itemName);
+                        checkCmd.Parameters.AddWithValue("@ItemName", itemid[i]);
 
                         int count = (int)checkCmd.ExecuteScalar();
 
@@ -271,7 +290,7 @@ namespace VMS_1
                                 "WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
                             updateCmd.Parameters.AddWithValue("@Month", month);
                             updateCmd.Parameters.AddWithValue("@Year", year);
-                            updateCmd.Parameters.AddWithValue("@ItemName", itemName);
+                            updateCmd.Parameters.AddWithValue("@ItemName", itemid[i]);
                             updateCmd.Parameters.AddWithValue("@Quantity", qtyIssued);
 
                             updateCmd.ExecuteNonQuery();
@@ -282,7 +301,7 @@ namespace VMS_1
                             SqlCommand insertCmd = new SqlCommand(
                                 "INSERT INTO MonthEndStockMaster (Date, ItemName, Qty, Type) VALUES (@Date, @ItemName, @Quantity, @Type)", conn);
                             insertCmd.Parameters.AddWithValue("@Date", parsedDate); // Use the full date here
-                            insertCmd.Parameters.AddWithValue("@ItemName", itemName);
+                            insertCmd.Parameters.AddWithValue("@ItemName", itemid[i]);
                             insertCmd.Parameters.AddWithValue("@Quantity", qtyIssued);
                             insertCmd.Parameters.AddWithValue("@Type", "Issue"); // Set the correct parameter name for Type
 
@@ -316,7 +335,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT im.Date, it.ItemName AS CategoryItemName, im.ItemName AS IssueItemName, im.QtyIssued, im.Denomination FROM IssueMaster im INNER JOIN Items it ON im.ItemCategoryId = it.ItemID", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM IssueMaster", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

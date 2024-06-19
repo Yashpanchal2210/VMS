@@ -77,14 +77,25 @@ namespace VMS_1
 
                 string[] itemNames = Request.Form.GetValues("itemname");
                 string[] quantities = Request.Form.GetValues("qty");
-                string[] receivedFrom = Request.Form.GetValues("rcvdfrom");
-                string[] otherReceivedFrom = Request.Form.GetValues("otherReceivedFrom");
-                string[] referenceNos = Request.Form.GetValues("ref");
-                string[] dates = Request.Form.GetValues("date");
+                string[] receivedFromArray = Request.Form.GetValues("rcvdfrom");
+                string[] otherReceivedFromArray = Request.Form.GetValues("otherReceivedFrom");
+                string[] referenceNosArray = Request.Form.GetValues("ref");
+                string[] datesArray = Request.Form.GetValues("date");
 
-                if (itemNames == null || quantities == null || receivedFrom == null || referenceNos == null || dates == null)
+                if (itemNames == null || quantities == null || receivedFromArray == null || referenceNosArray == null || datesArray == null)
                 {
                     lblStatus.Text = "Some form values are missing.";
+                    return;
+                }
+
+                string receivedFrom = receivedFromArray.Length > 0 ? receivedFromArray[0] : null;
+                //string otherReceivedFrom = otherReceivedFromArray.Length > 0 ? otherReceivedFromArray[0] : null;
+                string referenceNo = referenceNosArray.Length > 0 ? referenceNosArray[0] : null;
+                string dateStr = datesArray.Length > 0 ? datesArray[0] : null;
+
+                if (itemNames.Length != quantities.Length)
+                {
+                    lblStatus.Text = "The number of items and quantities do not match.";
                     return;
                 }
 
@@ -96,7 +107,7 @@ namespace VMS_1
 
                     for (int i = 0; i < itemNames.Length; i++)
                     {
-                        SqlCommand getDenominationCmd = new SqlCommand("SELECT Denomination FROM AlternateItem WHERE AltItemName = @ItemName", conn);
+                        SqlCommand getDenominationCmd = new SqlCommand("SELECT Denomination FROM InLieuItems WHERE InLieuItem = @ItemName", conn);
                         getDenominationCmd.Parameters.AddWithValue("@ItemName", itemNames[i]);
 
                         object denomValue = getDenominationCmd.ExecuteScalar();
@@ -113,17 +124,22 @@ namespace VMS_1
 
                     for (int i = 0; i < itemNames.Length; i++)
                     {
-                        DateTime date = DateTime.Parse(dates[i]);
-                        string itemName = itemNames[i];
-                        decimal quantity = decimal.Parse(quantities[i]);
-                        int month = date.Month;
-                        int year = date.Year;
-
-                        string receivedFromValue = receivedFrom[i];
-                        if (receivedFromValue == "Others" && otherReceivedFrom != null && otherReceivedFrom.Length > i)
+                        DateTime date;
+                        if (!DateTime.TryParse(dateStr, out date))
                         {
-                            receivedFromValue = otherReceivedFrom[i];
+                            lblStatus.Text = "Invalid date format for item: " + itemNames[i];
+                            return;
                         }
+
+                        string itemName = itemNames[i];
+                        decimal quantity;
+                        if (!decimal.TryParse(quantities[i], out quantity))
+                        {
+                            lblStatus.Text = "Invalid quantity format for item: " + itemNames[i];
+                            return;
+                        }
+
+                        //string receivedFromValue = receivedFrom == "Others" ? otherReceivedFrom : receivedFrom;
 
                         SqlCommand cmd = new SqlCommand("INSERT INTO ReceiptMaster (itemNames, quantities, denominations, receivedFrom, referenceNos, Dates) VALUES (@ItemName, @Quantity, @Denomination, @ReceivedFrom, @ReferenceNo, @Date)", conn);
                         cmd.CommandType = CommandType.Text;
@@ -131,9 +147,9 @@ namespace VMS_1
                         cmd.Parameters.AddWithValue("@ItemName", itemName);
                         cmd.Parameters.AddWithValue("@Quantity", quantity);
                         cmd.Parameters.AddWithValue("@Denomination", i < denominations.Length ? denominations[i] : denominations[0]);
-                        cmd.Parameters.AddWithValue("@ReceivedFrom", i < receivedFrom.Length ? receivedFrom[i] : receivedFrom[0]);
-                        cmd.Parameters.AddWithValue("@ReferenceNo", i < referenceNos.Length ? referenceNos[i] : referenceNos[0]);
-                        cmd.Parameters.AddWithValue("@Date", i < dates.Length ? dates[i] : dates[0]);
+                        cmd.Parameters.AddWithValue("@ReceivedFrom", receivedFrom);
+                        cmd.Parameters.AddWithValue("@ReferenceNo", referenceNo);
+                        cmd.Parameters.AddWithValue("@Date", date);
 
                         cmd.ExecuteNonQuery();
 
@@ -149,7 +165,6 @@ namespace VMS_1
                             SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty + @Quantity WHERE ItemName = @ItemName", conn);
                             updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemName);
                             updatePresentStockCmd.Parameters.AddWithValue("@Quantity", quantity);
-                            updatePresentStockCmd.Parameters.AddWithValue("@Denos", denominations[i]);
 
                             updatePresentStockCmd.ExecuteNonQuery();
                         }
@@ -166,8 +181,8 @@ namespace VMS_1
 
                         SqlCommand checkCmd = new SqlCommand(
                         "SELECT COUNT(*) FROM MonthEndStockMaster WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
-                        checkCmd.Parameters.AddWithValue("@Month", month);
-                        checkCmd.Parameters.AddWithValue("@Year", year);
+                        checkCmd.Parameters.AddWithValue("@Month", date.Month);
+                        checkCmd.Parameters.AddWithValue("@Year", date.Year);
                         checkCmd.Parameters.AddWithValue("@ItemName", itemName);
 
                         int count = (int)checkCmd.ExecuteScalar();
@@ -176,8 +191,8 @@ namespace VMS_1
                         {
                             SqlCommand updateCmd = new SqlCommand(
                                 "UPDATE MonthEndStockMaster SET Qty = Qty + @Quantity WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
-                            updateCmd.Parameters.AddWithValue("@Month", month);
-                            updateCmd.Parameters.AddWithValue("@Year", year);
+                            updateCmd.Parameters.AddWithValue("@Month", date.Month);
+                            updateCmd.Parameters.AddWithValue("@Year", date.Year);
                             updateCmd.Parameters.AddWithValue("@ItemName", itemName);
                             updateCmd.Parameters.AddWithValue("@Quantity", quantity);
 
@@ -205,6 +220,7 @@ namespace VMS_1
                 lblStatus.Text = "An error occurred: " + ex.Message;
             }
         }
+
 
 
         [WebMethod]

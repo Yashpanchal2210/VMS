@@ -114,7 +114,16 @@
                         <asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="True" />
                         <asp:BoundField DataField="VegScale" HeaderText="Veg Scale" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegScale" HeaderText="NonVeg Scale" ReadOnly="True" />
-                        <asp:BoundField DataField="InLieuItem" HeaderText="InLieu Item" ReadOnly="True" />
+                        <asp:TemplateField HeaderText="InLieu Item">
+                            <ItemTemplate>
+                                <asp:Label ID="lblInLieuItem" runat="server" Text='<%# Eval("InLieuItem") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:DropDownList ID="ddlInLieuItem" runat="server"></asp:DropDownList>
+                                <asp:HiddenField ID="hfRowIndex" runat="server" Value='<%# Container.DataItemIndex %>' />
+                                <asp:HiddenField ID="hfId" runat="server" Value='<%# Eval("Id") %>' />
+                            </EditItemTemplate>
+                        </asp:TemplateField>
                         <asp:TemplateField HeaderText="VegScale">
                             <ItemTemplate>
                                 <asp:Label ID="lblVegScale" runat="server" Text='<%# Eval("InLieuItemVegScale") %>'></asp:Label>
@@ -169,7 +178,7 @@
                                 <td>
                                     <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
-            fetchInLieuItemsForRow(rowSequence);
+            fetchInLieuItemsForRow(rowSequence, '');
 
             var hiddenCategory = document.getElementById("categoryVal");
             var caregoryField = document.getElementById("categoryIlue_" + rowSequence);
@@ -195,7 +204,7 @@
                         var denomsDropdown = document.getElementById("denomsVal");
                         denomsDropdown.value = data.d;
                     }
-                    fetchInLieuItemsForRow('');
+                    fetchInLieuItemsForRow('', '');
                 })
                 .catch(error => {
                     console.error('Error fetching basic denomination:', error);
@@ -242,8 +251,15 @@
             caregoryField.value = val;
         }
 
-        function fetchInLieuItemsForRow(rowSequence) {
-            var basicItemValue = document.getElementById('<%= basicItem.ClientID %>').value;
+        function fetchInLieuItemsForRow(rowSequence, idValue) {
+
+            var basicItemValue = "";
+
+            if (idValue == "" || idValue == null) {
+                basicItemValue = document.getElementById('<%= basicItem.ClientID %>').value;
+            } else {
+                basicItemValue = idValue;
+            }
 
             fetch('ItemMaster.aspx/GetInLieuItems', {
                 method: 'POST',
@@ -275,6 +291,11 @@
                 .catch(error => {
                     console.error('Error fetching in-lieu items:', error);
                 });
+        }
+
+        function onRowEdit(rowIndex) {
+            var idValue = document.getElementById('GridView1').rows[rowIndex + 1].querySelector("[id$='hfId']").value;
+            fetchInLieuItemsForRow(rowIndex, idValue);
         }
 
 

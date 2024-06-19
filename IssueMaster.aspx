@@ -37,7 +37,7 @@
             <input type="hidden" id="entitledStrength" />
             <input type="hidden" id="EntitledStrength" name="EntitledStrength" />
             <input type="hidden" id="scaleAmount" />
-            <input type="hidden" id="Selected_Category" />
+            <input type="hidden" id="Selected_Category" name="Category" />
 
             <div class="table-responsive">
                 <table class="table" id="issueTable">
@@ -119,20 +119,20 @@
                                 <asp:TextBox ID="lblDate" runat="server" Text='<%# Bind("Date") %>'></asp:TextBox>
                             </EditItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Category">
+                        <%--<asp:TemplateField HeaderText="Category">
                             <ItemTemplate>
                                 <asp:Label ID="lblCategory" runat="server" Text='<%# Eval("CategoryItemName") %>'></asp:Label>
                             </ItemTemplate>
                             <EditItemTemplate>
                                 <asp:TextBox ID="lblCategory" runat="server" Text='<%# Bind("CategoryItemName") %>'></asp:TextBox>
                             </EditItemTemplate>
-                        </asp:TemplateField>
+                        </asp:TemplateField>--%>
                         <asp:TemplateField HeaderText="Item">
                             <ItemTemplate>
-                                <asp:Label ID="lblItem" runat="server" Text='<%# Eval("IssueItemName") %>'></asp:Label>
+                                <asp:Label ID="lblItem" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:TextBox ID="txtItem" runat="server" Text='<%# Bind("IssueItemName") %>'></asp:TextBox>
+                                <asp:TextBox ID="txtItem" runat="server" Text='<%# Bind("ItemName") %>'></asp:TextBox>
                             </EditItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Qty Issued">
