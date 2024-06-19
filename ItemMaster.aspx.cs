@@ -40,6 +40,7 @@ namespace VMS_1
                 REPLACE(b.Denomination, ',', '') AS Denomination, 
                 FORMAT(b.VegScale, 'N4') AS VegScale, 
                 FORMAT(b.NonVegScale, 'N4') AS NonVegScale, 
+                i.Id AS InlIueId,
                 i.InLieuItem AS InLieuItem, 
                 i.Category AS InLieuItemCategory, 
                 REPLACE(i.Denomination, ',', '') AS InLieuItemDenomination, 
@@ -173,6 +174,7 @@ namespace VMS_1
                 string itemName = basicItem.SelectedItem.Text;
                 string category = Request.Form["category"];
                 string denomsVal = Request.Form["denoms"];
+                denomsVal = denomsVal.Replace(",", "");
                 decimal VegScale = decimal.Parse(Request.Form["veg"]);
                 decimal NonVegScale = decimal.Parse(Request.Form["nonveg"]);
 
@@ -242,7 +244,7 @@ namespace VMS_1
                                 decimal altNonVegScale = nonvegscaleIlue[i];
 
                                 // Check if the alternate item exists for the same BasicItemId, InLieuItem, and Category
-                                using (SqlCommand checkAltCmd = new SqlCommand("SELECT Id FROM InLieuItems WHERE InLieuItem = @AltItemName AND Category = @AltCategory", conn, transaction))
+                                using (SqlCommand checkAltCmd = new SqlCommand("SELECT BasicItemId FROM InLieuItems WHERE InLieuItem = @AltItemName AND Category = @AltCategory", conn, transaction))
                                 {
                                     checkAltCmd.Parameters.AddWithValue("@ItemID", itemID);
                                     checkAltCmd.Parameters.AddWithValue("@AltItemName", altItemName);
@@ -251,11 +253,21 @@ namespace VMS_1
 
                                     if (altResult != null)
                                     {
-                                        // Alternate item already exists, do nothing
+                                        lblStatus.Text = "Item already exists. Cannot add duplicate item.";
+
+                                        //using (SqlCommand updateAltCmd = new SqlCommand("UPDATE InLieuItems SET BasicItemId = @ItemID, InLieuItem = @AltItemName, Category = @AltCategory, Denomination = @Denomination, VegScale = @VegScale, NonVegScale = @NonVegScale WHERE BasicItemId = @ItemID", conn, transaction))
+                                        //{
+                                        //    updateAltCmd.Parameters.AddWithValue("@ItemID", itemID);
+                                        //    updateAltCmd.Parameters.AddWithValue("@AltItemName", altItemName);
+                                        //    updateAltCmd.Parameters.AddWithValue("@AltCategory", altCategory);
+                                        //    updateAltCmd.Parameters.AddWithValue("@Denomination", denomsVal);
+                                        //    updateAltCmd.Parameters.AddWithValue("@VegScale", altVegScale);
+                                        //    updateAltCmd.Parameters.AddWithValue("@NonVegScale", altNonVegScale);
+                                        //    updateAltCmd.ExecuteNonQuery();
+                                        //}
                                     }
                                     else
                                     {
-                                        // Insert new alternate item
                                         using (SqlCommand insertAltCmd = new SqlCommand("INSERT INTO InLieuItems (BasicItemId, InLieuItem, Category, Denomination, VegScale, NonVegScale) VALUES (@ItemID, @AltItemName, @AltCategory, @Denomination, @VegScale, @NonVegScale)", conn, transaction))
                                         {
                                             insertAltCmd.Parameters.AddWithValue("@ItemID", itemID);
@@ -266,13 +278,13 @@ namespace VMS_1
                                             insertAltCmd.Parameters.AddWithValue("@NonVegScale", altNonVegScale);
                                             insertAltCmd.ExecuteNonQuery();
                                         }
+                                        lblStatus.Text = "Data entered successfully.";
                                     }
                                 }
                             }
                         }
 
                         transaction.Commit();
-                        lblStatus.Text = "Data entered successfully.";
                     }
                     catch (Exception ex)
                     {
@@ -285,7 +297,7 @@ namespace VMS_1
             {
                 lblMessage.Text = "An error occurred: " + ex.Message;
             }
-            ScriptManager.RegisterStartupScript(this, GetType(), "refreshPage", "window.location.href=window.location.href;", true);
+            //ScriptManager.RegisterStartupScript(this, GetType(), "refreshPage", "window.location.href=window.location.href;", true);
             LoadGridView();
         }
 
@@ -303,42 +315,57 @@ namespace VMS_1
             LoadGridView();
         }
 
-        protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
             try
             {
                 int rowIndex = e.RowIndex;
+                if (rowIndex >= 0 && rowIndex < GridView1.Rows.Count)
+                {
+                    GridViewRow row = GridView1.Rows[rowIndex];
+                    int id = Convert.ToInt32(GridView1.DataKeys[rowIndex].Value);
 
-                int rowCount = GridView1.Rows.Count;
+                    decimal vegScale = decimal.Parse(((TextBox)row.FindControl("txtVegScale")).Text);
+                    decimal nonVegScale = decimal.Parse(((TextBox)row.FindControl("txtNonVegScale")).Text);
 
-                int dataKeyCount = GridView1.DataKeys.Count;
+                    using (SqlConnection conn = new SqlConnection(connStr))
+                    {
+                        conn.Open();
+                        using (SqlCommand cmd = new SqlCommand("UPDATE InLieuItems SET VegScale = @VegScale, NonVegScale = @NonVegScale WHERE Id = @Id", conn))
+                        {
+                            cmd.Parameters.AddWithValue("@VegScale", vegScale);
+                            cmd.Parameters.AddWithValue("@NonVegScale", nonVegScale);
+                            cmd.Parameters.AddWithValue("@Id", id);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
 
-                var dataKeys = GridView1.DataKeys;
-
-                int id = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value);
-                DeleteItem(id);
-                LoadGridView();
+                    GridView1.EditIndex = -1;
+                    LoadGridView();
+                }
             }
             catch (Exception ex)
             {
-                throw;
+                // Log the error or handle it accordingly
+                Response.Write("Error: " + ex.Message);
             }
         }
 
-        private void DeleteItem(int id)
+        protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
+            int id = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value);
+
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
-
-                SqlCommand deleteInLieuCmd = new SqlCommand("DELETE FROM InLieuItems WHERE BasicItemId = @Id", conn);
-                deleteInLieuCmd.Parameters.AddWithValue("@Id", id);
-                deleteInLieuCmd.ExecuteNonQuery();
-
-                SqlCommand deleteCmd = new SqlCommand("DELETE FROM BasicItems WHERE Id = @Id", conn);
-                deleteCmd.Parameters.AddWithValue("@Id", id);
-                deleteCmd.ExecuteNonQuery();
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM InLieuItems WHERE Id = @Id", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
             }
+
+            LoadGridView();
         }
     }
 }

@@ -103,22 +103,39 @@
             <asp:Label ID="lblMessage" runat="server" ForeColor="Green"></asp:Label>
             <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
             <div class="mt-2">
-                <asp:GridView ID="GridView1" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridView1_RowEditing" OnRowCancelingEdit="GridView1_RowCancelingEdit" OnRowDeleting="GridView1_RowDeleting">
+                <asp:GridView ID="GridView1" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False"
+                    OnRowEditing="GridView1_RowEditing" OnRowCancelingEdit="GridView1_RowCancelingEdit" OnRowDeleting="GridView1_RowDeleting"
+                    OnRowUpdating="GridView1_RowUpdating" DataKeyNames="InlIueId">
                     <Columns>
                         <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
+                        <asp:BoundField DataField="InlIueId" HeaderText="InlIueId" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <asp:BoundField DataField="BasicItem" HeaderText="Basic Item" ReadOnly="True" />
                         <asp:BoundField DataField="Category" HeaderText="Category" ReadOnly="True" />
                         <asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="True" />
                         <asp:BoundField DataField="VegScale" HeaderText="Veg Scale" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegScale" HeaderText="NonVeg Scale" ReadOnly="True" />
                         <asp:BoundField DataField="InLieuItem" HeaderText="InLieu Item" ReadOnly="True" />
-                        <%--<asp:BoundField DataField="Category" HeaderText="Category" ReadOnly="True" />--%>
-                        <%--<asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="True" />--%>
-                        <asp:BoundField DataField="VegScale" HeaderText="VegScale" ReadOnly="True" />
-                        <asp:BoundField DataField="NonVegScale" HeaderText="NonVeg Scale" ReadOnly="True" />
-                        <%--<asp:CommandField HeaderText="Action" ShowDeleteButton="true" />--%>
+                        <asp:TemplateField HeaderText="VegScale">
+                            <ItemTemplate>
+                                <asp:Label ID="lblVegScale" runat="server" Text='<%# Eval("InLieuItemVegScale") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtVegScale" runat="server" Text='<%# Bind("InLieuItemVegScale") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="NonVeg Scale">
+                            <ItemTemplate>
+                                <asp:Label ID="lblNonVegScale" runat="server" Text='<%# Eval("InLieuItemNonVegScale") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtNonVegScale" runat="server" Text='<%# Bind("InLieuItemNonVegScale") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:CommandField ShowEditButton="True" ShowDeleteButton="True" />
                     </Columns>
                 </asp:GridView>
+
+
             </div>
 
         </form>
