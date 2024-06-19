@@ -42,8 +42,8 @@ namespace VMS_1
             HashSet<string> itemNames = new HashSet<string>();
             //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT AltItemName FROM AlternateItem ORDER BY AltItemName ASC";
-            string itemquery = "SELECT ItemName FROM Items ORDER BY ItemName ASC";
+            string query = "SELECT DISTINCT InLieuItem FROM InLieuItems ORDER BY InLieuItem ASC";
+            //string itemquery = "SELECT DISTINCT BasicItem FROM BasicItems ORDER BY BasicItem ASC";
 
             try
             {
@@ -55,22 +55,9 @@ namespace VMS_1
 
                     while (reader.Read())
                     {
-                        itemNames.Add(reader["AltItemName"].ToString());
+                        itemNames.Add(reader["InLieuItem"].ToString());
                     }
                     reader.Close();
-                }
-
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
-                    SqlCommand command = new SqlCommand(itemquery, conn);
-                    SqlDataReader itemReader = command.ExecuteReader();
-
-                    while (itemReader.Read())
-                    {
-                        itemNames.Add(itemReader["ItemName"].ToString());
-                    }
-                    itemReader.Close();
                 }
             }
             catch (Exception ex)

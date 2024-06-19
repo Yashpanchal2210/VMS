@@ -112,7 +112,7 @@
                         <asp:BoundField DataField="VegScale" HeaderText="Veg Scale" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegScale" HeaderText="NonVeg Scale" ReadOnly="True" />
                         <asp:BoundField DataField="InLieuItem" HeaderText="InLieu Item" ReadOnly="True" />
-                        <asp:BoundField DataField="Category" HeaderText="Category" ReadOnly="True" />
+                        <%--<asp:BoundField DataField="Category" HeaderText="Category" ReadOnly="True" />--%>
                         <%--<asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="True" />--%>
                         <asp:BoundField DataField="VegScale" HeaderText="VegScale" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegScale" HeaderText="NonVeg Scale" ReadOnly="True" />

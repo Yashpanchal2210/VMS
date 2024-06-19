@@ -1,6 +1,23 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="IssueMaster.aspx.cs" Inherits="VMS_1.IssueMaster" EnableEventValidation="false" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .input-container {
+            position: relative;
+        }
+
+            .input-container input {
+                padding-right: 30px; /* Adjust padding to accommodate the icon */
+            }
+
+            .input-container .fa-info-circle {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+    </style>
     <div class="container">
 
         <h2 class="mt-4">Daily Issue Register</h2>
@@ -39,7 +56,7 @@
                             <td>
                                 <input type="date" class="form-control" name="date" required /></td>
                             <td>
-                                <select class="form-control" id="DropDownList1" name="itemname" onchange="fetchBasicDenom(this.id)" width="130px" required>
+                                <select class="form-control js-states" id="DropDownList1" name="itemname" onchange="fetchBasicDenom(this.id)" width="130px" required>
                                     <option value="">Select</option>
                                 </select>
                             </td>
@@ -47,7 +64,10 @@
                                 <input type="text" class="form-control" id="denomsVal" name="denoms" readonly />
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="Strength" />
+                                <div class="input-container">
+                                    <input type="text" class="form-control" name="Strength" />
+                                    <i class="fas fa-info-circle" data-toggle="modal" data-target="#infoModal"></i>
+                                </div>
                             </td>
                             <td>
                                 <input type="text" class="form-control" name="Qtyissued" /></td>
@@ -158,6 +178,26 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalLabel">Entitled Strength Info</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Kindly enter approximate strength for which the item is to be issue * number of days 
+           
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </form>
 
@@ -166,8 +206,13 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
+            $('#DropDownList1').select2({
+                placeholder: 'Select an option',
+                allowClear: true
+            });
         });
 
         function selectCategory(val, row) {

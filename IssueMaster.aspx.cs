@@ -174,7 +174,7 @@ namespace VMS_1
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
                 string[] date = Request.Form.GetValues("date");
-                string[] itemcategory = Request.Form.GetValues("itemcategory");
+                //string[] itemcategory = Request.Form.GetValues("itemcategory");
                 string[] itemname = Request.Form.GetValues("itemname");
                 string[] enterstrength = Request.Form.GetValues("Strength");
                 string[] qtyentitled = Request.Form.GetValues("entitledstrength");
@@ -187,7 +187,7 @@ namespace VMS_1
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    int maxLength = Math.Max(date.Length, Math.Max(itemcategory.Length, Math.Max(itemname.Length, Math.Max(enterstrength.Length, Math.Max(qtyentitled.Length, Math.Max(qtyissued.Length, Math.Max(denomination.Length, role.Length)))))));
+                    int maxLength = Math.Max(date.Length, Math.Max(itemname.Length, Math.Max(enterstrength.Length, Math.Max(qtyentitled.Length, Math.Max(qtyissued.Length, Math.Max(denomination.Length, role.Length))))));
 
                     for (int i = 0; i < maxLength; i++)
                     {
@@ -233,7 +233,7 @@ namespace VMS_1
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@Date", i < date.Length ? date[i] : date[0]);
-                        cmd.Parameters.AddWithValue("@ItemCategoryId", i < itemcategory.Length ? itemcategory[i] : itemcategory[0]);
+                        //cmd.Parameters.AddWithValue("@ItemCategoryId", i < itemcategory.Length ? itemcategory[i] : itemcategory[0]);
                         cmd.Parameters.AddWithValue("@ItemName", itemname[i]);
                         cmd.Parameters.AddWithValue("@Strength", enterstrength[i]);
                         cmd.Parameters.AddWithValue("@QtyEntitled", qtyentitled[i]);
