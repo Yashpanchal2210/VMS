@@ -85,6 +85,40 @@ namespace VMS_1
             cmd.Parameters.AddWithValue("@Qty", qty);
 
             cmd.ExecuteNonQuery();
+
+            // Update PresentStockMaster table if ItemName exists
+            SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
+            updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemName);
+            updatePresentStockCmd.Parameters.AddWithValue("@Quantity", qty);
+            updatePresentStockCmd.Parameters.AddWithValue("@Denos", "Ltr");
+            updatePresentStockCmd.ExecuteNonQuery();
+
+            SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM MonthEndStockMaster WHERE Date = @Date AND ItemName = @ItemName", conn);
+            checkCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date)); // Use current date
+            checkCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+            int count = (int)checkCmd.ExecuteScalar();
+
+            if (count > 0)
+            {
+                // If data exists, update the existing row
+                SqlCommand updateCmd = new SqlCommand("UPDATE MonthEndStockMaster SET Qty = CASE WHEN Qty - @Quantity >= 0 THEN Qty - @Quantity ELSE Qty END WHERE Date = @Date AND ItemName = @ItemName", conn);
+                updateCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date)); // Use current date
+                updateCmd.Parameters.AddWithValue("@ItemName", itemName);
+                updateCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty));
+
+                updateCmd.ExecuteNonQuery();
+            }
+            else
+            {
+                // If no data exists, insert a new row
+                SqlCommand insertCmd = new SqlCommand("INSERT INTO MonthEndStockMaster (Date, ItemName, Qty, Type) VALUES (@Date, @ItemName, @Quantity, @Type)", conn);
+                insertCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date)); // Use current date
+                insertCmd.Parameters.AddWithValue("@ItemName", itemName);
+                insertCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty));
+                insertCmd.Parameters.AddWithValue("@Type", "Issue"); // Set the correct parameter name for Type
+
+                insertCmd.ExecuteNonQuery();
+            }
         }
 
 
