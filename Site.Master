@@ -31,18 +31,20 @@
             background-attachment: fixed;
             min-height: 100vh;*/
         }
-                    .popup {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9; /* Sit on top */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Full width */
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
-}
+
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9; /* Sit on top */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Full width */
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+        }
+
         .dark-theme {
             color: #fff;
         }
@@ -185,7 +187,7 @@
             <a href="IssueMaster.aspx">Issue Master</a>
             <a href="ItemReceipt.aspx">Item Receipt</a>
             <a href="ItemMaster.aspx">Item Master</a>
-            <a href="RationScale.aspx">Ration Scale</a>
+            <a href="RationScale.aspx">Item Price</a>
             <a href="Strength.aspx">Strength</a>
             <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
                 { %>
@@ -213,20 +215,20 @@
             Report Generate <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
-        <a href="ReportsGenerate.aspx">Page1</a>
-        <a href="OfficerWorksheet.aspx">Officer Worksheet</a>
-        <a href="SailorWorksheet.aspx">Sailor Worksheet</a>
-        <a href="Page2-7.aspx">Page2-7</a>
-        <a href="ExtraIssueReport.aspx">Extra Issue(Page9)</a>
-        <a href="PaymentIssue.aspx">Payment Issue(Page10-11)</a>
-        <a href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
-        <a href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
-        <a href="Page14.aspx">Page14</a>
-        <a href="transfervoucher.aspx">Transfer Voucher</a>
-        <a href="DiversReport.aspx">Diver Report</a>
-        <a href="Cat-ISchool.aspx">Cat-I School</a>
-        <a href="Cat-IISchool.aspx">Cat-II School</a>
-        <a href="Overdrawal.aspx">OverDrawal</a>
+            <a href="ReportsGenerate.aspx">Page1</a>
+            <a href="OfficerWorksheet.aspx">Officer Worksheet</a>
+            <a href="SailorWorksheet.aspx">Sailor Worksheet</a>
+            <a href="Page2_7Report.aspx">Page2-7</a>
+            <a href="ExtraIssueReport.aspx">Extra Issue(Page9)</a>
+            <a href="PaymentIssue.aspx">Payment Issue(Page10-11)</a>
+            <a href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
+            <a href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
+            <a href="Page14.aspx">Page14</a>
+            <a href="transfervoucher.aspx">Transfer Voucher</a>
+            <a href="DiversReport.aspx">Diver Report</a>
+            <a href="Cat-ISchool.aspx">Cat-I School</a>
+            <a href="Cat-IISchool.aspx">Cat-II School</a>
+            <a href="Overdrawal.aspx">OverDrawal</a>
         </div>
 
         <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
@@ -241,14 +243,14 @@
         <% } %>
 
         <a href="UserUpdate.aspx" runat="server">Reset Password</a>
-        <a href="~/LOGIN.aspx?m=logout" runat="server" >Logout</a>
+        <a href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
     </div>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light" style="margin-inline-start: auto;justify-content: center; background-color: #3D52A0 !important;">
+        <nav class="navbar navbar-expand-lg navbar-light" style="margin-inline-start: auto; justify-content: center; background-color: #3D52A0 !important;">
             <span class="open-btn" style="color: white;" onclick="openNav()">&#9776;</span>
 
             <div>
-                <a class="navbar-brand text-white" style="font-size: 30px; font-weight: 500;">Victulling Management System</a>
+                <a class="navbar-brand text-white" style="font-size: 30px; font-weight: 500; font-weight:bolder; ">VICTUALLING MANAGEMENT SYSTEM</a>
             </div>
         </nav>
     </header>
@@ -267,9 +269,12 @@
                             <a class="dropdown-item" href="IssueMaster.aspx">Issue Master</a>
                             <a class="dropdown-item" href="ItemReceipt.aspx">Item Receipt</a>
                             <a class="dropdown-item" href="ItemMaster.aspx">Item Master</a>
-                            <a class="dropdown-item" href="RationScale.aspx">Ration Scale</a>
+                            <a class="dropdown-item" href="RationScale.aspx">Item Price</a>
                             <a class="dropdown-item" href="Strength.aspx">Strength</a>
+                            <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
+                                { %>
                             <a class="dropdown-item" href="AddBasicandLieuItems.aspx">Add Items</a>
+                            <% } %>
                         </div>
                     </li>
                 </ul>
@@ -298,20 +303,20 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="ReportsGenerate.aspx">Page1</a>
                             <a class="dropdown-item" href="OfficerWorksheet.aspx">Officer Worksheet</a>
-                    <a class="dropdown-item" href="SailorWorksheet.aspx">Sailor Worksheet</a>
-                            <a class="dropdown-item" href="Page2-7.aspx">Page2-7</a>
+                            <a class="dropdown-item" href="SailorWorksheet.aspx">Sailor Worksheet</a>
+                            <a class="dropdown-item" href="Page2_7Report.aspx">Page2-7</a>
                             <a class="dropdown-item" href="ExtraIssueReport.aspx">Extra Issue(Page9)</a>
                             <a class="dropdown-item" href="PaymentIssue.aspx">Payment Issue(Page10-11)</a>
-                    <a class="dropdown-item" href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
+                            <a class="dropdown-item" href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
                             <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
-                    <a class="dropdown-item" href="Page14.aspx">Page14</a>
-                    <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
-                    <a class="dropdown-item" href="DiversReport.aspx">Diver Report</a>
-                    <a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>
-                    <a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>
-                    <a class="dropdown-item" href="Overdrawal.aspx">OverDrawal</a>
-                    
-                            </div>
+                            <a class="dropdown-item" href="Page14.aspx">Page14</a>
+                            <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
+                            <a class="dropdown-item" href="DiversReport.aspx">Diver Report</a>
+                            <%--<a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>--%>
+                            <%--<a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>--%>
+                            <%--<a class="dropdown-item" href="Overdrawal.aspx">OverDrawal</a>--%>
+
+                        </div>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -330,11 +335,12 @@
                         }
                     %>
                 </ul>
-                <ul class="navbar-nav">
+                <ul class="navbar-nav" style="margin-left: auto;">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= GetUserName() %>
+                            <i class="fa fa-gear"></i>
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="margin-left: -70px;">
                             <a class="dropdown-item" href="UserUpdate.aspx" runat="server">Reset Password</a>
                             <a class="dropdown-item" href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
                         </div>

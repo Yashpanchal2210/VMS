@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -34,113 +35,66 @@ namespace VMS_1
                 string[] rank = Request.Form.GetValues("rank");
                 string[] pno = Request.Form.GetValues("pno");
                 string[] days = Request.Form.GetValues("days");
-                string[] chocolate = Request.Form.GetValues("chocolate");
-                string[] horlicks = Request.Form.GetValues("horlicks");
-                string[] eggs = Request.Form.GetValues("eggs");
-                string[] milk = Request.Form.GetValues("milk");
-                string[] gnut = Request.Form.GetValues("gnut");
-                string[] butter = Request.Form.GetValues("butter");
-                string[] sugar = Request.Form.GetValues("sugar");
+                string[] itemnameId = Request.Form.GetValues("itemname");
+                string[] qty = Request.Form.GetValues("qty");
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
 
                     // Iterate through each row and insert data into the database
-                    for (int i = 0; i < name.Length; i++)
+                    for (int i = 0; i < itemnameId.Length; i++)
                     {
-                        int dayVal = int.Parse(days[i]);
+                        (string itemName, string denomination) = GetItemNameById(conn, itemnameId[i]);
 
-                        if (chocolate[i] == "Chocolate (50 gms)")
-                        {
-                            double calChoco = dayVal * 0.005;
-                            chocolate[i] = calChoco.ToString();
-                        }
+                        SqlCommand cmd = new SqlCommand("INSERT INTO ExtraIssue (Date, Name, Rank, PNo, Days, ItemId, ItemName, Qty, Type) VALUES (@Date, @Name, @Rank, @PNo, @Days, @ItemId, @ItemName, @Qty, @Type)", conn);
 
-                        if (horlicks[i] == "Complan/ Horlicks (50 gms)")
-                        {
-                            double calHorlicks = dayVal * 0.005;
-                            horlicks[i] = calHorlicks.ToString();
-                        }
-
-                        if (eggs[i] == "Eggs (2 Nos)")
-                        {
-                            double calEggs = dayVal * 2;
-                            eggs[i] = calEggs.ToString();
-                        }
-                        else if (eggs[i] == "Milk Fresh (150 ml)")
-                        {
-                            double calEggs = dayVal * 0.150;
-                            eggs[i] = calEggs.ToString();
-                        }
-                        else if (eggs[i] == "Milk Tinned (55 gms)")
-                        {
-                            double calEggs = dayVal * 0.055;
-                            eggs[i] = calEggs.ToString();
-                        }
-                        else if (eggs[i] == "Milk Powder (20 gms)")
-                        {
-                            double calEggs = dayVal * 0.020;
-                            eggs[i] = calEggs.ToString();
-                        }
-                        else if (eggs[i] == "Cheese Tinned (50 gms)")
-                        {
-                            double calEggs = dayVal * 0.050;
-                            eggs[i] = calEggs.ToString();
-                        }
-
-
-                        if (milk[i] == "Milk Fresh (200 ml)")
-                        {
-                            double calMilk = dayVal * 0.200;
-                            milk[i] = calMilk.ToString();
-                        }
-                        else if (milk[i] == "Milk Tinned (80 gms)")
-                        {
-                            double calMilk = dayVal * 0.08;
-                            milk[i] = calMilk.ToString();
-                        }
-                        else if (milk[i] == "Milk Powder (28 gms)")
-                        {
-                            double calMilk = dayVal * 0.028;
-                            milk[i] = calMilk.ToString();
-                        }
-
-
-                        if (gnut[i] == "Ground-nut (50 gins)")
-                        {
-                            double calGnut = dayVal * 0.05;
-                            gnut[i] = calGnut.ToString();
-                        }
-
-                        if (butter[i] == "Butter Fresh/Tinned (50 gms)")
-                        {
-                            double calButter = dayVal * 0.05;
-                            butter[i] = calButter.ToString();
-                        }
-
-                        if (sugar[i] == "Sugar (50 gms)")
-                        {
-                            double calSugar = dayVal * 0.05;
-                            sugar[i] = calSugar.ToString();
-                        }
-
-                        SqlCommand cmd = new SqlCommand("INSERT INTO ExtraIssue (Name, Rank, PNO, Days, Chocolate, Horlicks, Eggs, Milk, Gnut, Butter, Sugar, Date) VALUES (@Name, @Rank, @PNO, @Days, @Chocolate, @Horlicks, @Eggs, @Milk, @Gnut, @Butter, @Sugar, @Date)", conn);
-
-                        cmd.Parameters.AddWithValue("@Name", name[i]);
-                        cmd.Parameters.AddWithValue("@Rank", rank[i]);
-                        cmd.Parameters.AddWithValue("@PNO", pno[i]);
-                        cmd.Parameters.AddWithValue("@Days", int.Parse(days[i]));
-                        cmd.Parameters.AddWithValue("@Chocolate", chocolate[i]);
-                        cmd.Parameters.AddWithValue("@Horlicks", horlicks[i]);
-                        cmd.Parameters.AddWithValue("@Eggs", eggs[i]);
-                        cmd.Parameters.AddWithValue("@Milk", milk[i]);
-                        cmd.Parameters.AddWithValue("@Gnut", gnut[i]);
-                        cmd.Parameters.AddWithValue("@Butter", butter[i]);
-                        cmd.Parameters.AddWithValue("@Sugar", sugar[i]);
-                        cmd.Parameters.AddWithValue("@Date", date[i]);
+                        cmd.Parameters.AddWithValue("@Date", i < date.Length ? date[i] : date[0]);
+                        cmd.Parameters.AddWithValue("@Name", i < name.Length ? name[i] : name[0]);
+                        cmd.Parameters.AddWithValue("@Rank", i < rank.Length ? rank[i] : rank[0]);
+                        cmd.Parameters.AddWithValue("@PNo", i < pno.Length ? pno[i] : pno[0]);
+                        cmd.Parameters.AddWithValue("@Days", i < days.Length ? days[i] : days[0]);
+                        cmd.Parameters.AddWithValue("@ItemName", itemName);
+                        cmd.Parameters.AddWithValue("@ItemId", itemnameId[i]);
+                        cmd.Parameters.AddWithValue("@Qty", qty[i]);
+                        cmd.Parameters.AddWithValue("@Type", "DiversIssue");
 
                         cmd.ExecuteNonQuery();
+
+
+                        // Update PresentStockMaster table if ItemName exists
+                        SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", itemName);
+                        updatePresentStockCmd.Parameters.AddWithValue("@Denos", denomination);
+                        updatePresentStockCmd.ExecuteNonQuery();
+
+                        SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM MonthEndStockMaster WHERE Date = @Date AND ItemName = @ItemName", conn);
+                        checkCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
+                        checkCmd.Parameters.AddWithValue("@ItemName", itemName);
+                        int count = (int)checkCmd.ExecuteScalar();
+
+                        if (count > 0)
+                        {
+                            // If data exists, update the existing row
+                            SqlCommand updateCmd = new SqlCommand("UPDATE MonthEndStockMaster SET Qty = CASE WHEN Qty - @Quantity >= 0 THEN Qty - @Quantity ELSE Qty END WHERE Date = @Date AND ItemName = @ItemName", conn);
+                            updateCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
+                            updateCmd.Parameters.AddWithValue("@ItemName", itemName);
+                            updateCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty[i]));
+
+                            updateCmd.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            // If no data exists, insert a new row
+                            SqlCommand insertCmd = new SqlCommand("INSERT INTO MonthEndStockMaster (Date, ItemName, Qty, Type) VALUES (@Date, @ItemName, @Quantity, @Type)", conn);
+                            insertCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
+                            insertCmd.Parameters.AddWithValue("@ItemName", itemName);
+                            insertCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty[i]));
+                            insertCmd.Parameters.AddWithValue("@Type", "Issue"); // Set the correct parameter name for Type
+
+                            insertCmd.ExecuteNonQuery();
+                        }
                     }
                 }
                 lblStatus.Text = "Data entered successfully.";
@@ -151,6 +105,57 @@ namespace VMS_1
             {
                 lblStatus.Text = "Error: " + ex.Message;
             }
+        }
+
+        private (string itemName, string denomination) GetItemNameById(SqlConnection conn, string itemId)
+        {
+            string itemName = string.Empty;
+            string denomination = string.Empty;
+            string query = "SELECT ILueItem, iLueDenom FROM BasicLieuItems WHERE Id = @ItemId";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@ItemId", itemId);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        itemName = reader["ILueItem"].ToString();
+                        denomination = reader["iLueDenom"].ToString();
+                    }
+                }
+            }
+
+            return (itemName, denomination);
+        }
+
+        [WebMethod]
+        public static List<object> GetItemNames()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            string query = "SELECT iLueItem, Id FROM BasicLieuItems";
+            DataTable dt = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    conn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                }
+            }
+            var items = new List<object>();
+            foreach (DataRow row in dt.Rows)
+            {
+                items.Add(new
+                {
+                    Text = row["iLueItem"].ToString(),
+                    Value = row["Id"].ToString(),
+                });
+            }
+
+            return items;
         }
 
         private void LoadGridView()

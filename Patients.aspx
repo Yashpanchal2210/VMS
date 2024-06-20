@@ -21,7 +21,7 @@
                                 <input type="date" name="date" class="form-control" />
                             </td>
                             <td>
-                                <select name="itemname" id="itemname" class="form-control">
+                                <select class="form-control" name="itemname" id="itemname" required>
                                     <option value="">Select</option>
                                 </select>
                             </td>
@@ -62,7 +62,7 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            fetchItems('itemname');
+            fetchItems('');
         });
 
         var rowSequence = 0;
@@ -75,7 +75,7 @@
             <input type="date" name="date" class="form-control" value="${selectedDate}" readonly />
         </td>
         <td>
-            <select name="itemname" id="itemname_${rowSequence}" class="form-control">
+             <select class="form-control itemname" name="itemname" id="itemname_${rowSequence}" required>
                 <option value="">Select</option>
             </select>
         </td>
@@ -95,7 +95,7 @@
             <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
         </td>`;
             tableBody.appendChild(newRow);
-            fetchItems('itemname_' + rowSequence);
+            fetchItems(newRow);
             rowSequence++;
         }
 
@@ -104,8 +104,8 @@
             row.parentNode.removeChild(row);
         }
 
-        function fetchItems(dropdownId) {
-            fetch('Patients.aspx/GetItems', {
+        function fetchItems(row) {
+            fetch('Divers_ExtraIssue.aspx/GetItemNames', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -113,21 +113,25 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.d && Array.isArray(data.d)) {
-                        var dropdown = document.getElementById(dropdownId);
-                        dropdown.innerHTML = '<option value="">Select</option>';
+                    if (data.d && data.d.length) {
+                        if (row) {
+                            itemSelect = row.querySelector('.itemname');
+                        } else {
+                            itemSelect = document.getElementById('itemname');
+                        }
+                        // Clear existing options
+                        itemSelect.innerHTML = '<option value="">Select</option>';
+
                         data.d.forEach(function (item) {
                             var option = document.createElement('option');
-                            option.value = item.Text;
+                            option.value = item.Value;
                             option.textContent = item.Text;
-                            dropdown.appendChild(option);
+                            itemSelect.appendChild(option);
                         });
-                    } else {
-                        console.error('Invalid data format:', data.d);
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching items:', error);
+                    console.error('Error fetching item names:', error);
                 });
         }
 

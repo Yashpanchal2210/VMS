@@ -13,23 +13,18 @@
                             <th class="heading">Rank</th>
                             <th class="heading">P.No.</th>
                             <th class="heading">NO. OF DAYS ENTILED</th>
-                            <th class="heading">CHOCOLATE</th>
-                            <th class="heading">HORLICKS</th>
-                            <th class="heading">EGGS</th>
-                            <th class="heading">MILK</th>
-                            <th class="heading">G/NUT</th>
-                            <th class="heading">BUTTER</th>
-                            <th class="heading">SUGAR</th>
+                            <th class="heading">Item</th>
+                            <th class="heading">Qty</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" runat="server">
                         <tr>
                             <td>
-                                <input type="date" class="form-control" name="date" required />
+                                <input type="date" class="form-control" id="dateVal" name="date" required />
                             </td>
                             <td style="width: 10%;">
-                                <input type="text" class="form-control" name="name" required style="text-transform: capitalize;" />
+                                <input type="text" class="form-control" id="nameVal" name="name" required style="text-transform: capitalize;" />
                             </td>
                             <td>
                                 <select class="form-control rank" id="rank" name="rank" width="200px" required>
@@ -53,60 +48,19 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control pno" name="pno" required style="text-transform: capitalize;" />
+                                <input type="text" class="form-control pno" id="pno" name="pno" required style="text-transform: capitalize;" />
                             </td>
                             <td>
                                 <input type="text" class="form-control days" id="days" name="days" required />
                             </td>
                             <td>
-                                <select class="form-control chocolate" id="chocolate" name="chocolate" required>
-                                    <option value="" selected>Select</option>
-                                    <option value="Chocolate (50 gms)">Chocolate (50 gms)</option>
+                                <select class="form-control" name="itemname" id="itemname" required>
+                                    <option value="">Select</option>
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control horlicks" id="horlicks" name="horlicks" required>
-                                    <option value="" selected>Select</option>
-                                    <option value="Complan/ Horlicks (50 gms)" selected>Complan/ Horlicks (50 gms)</option>
-                                </select>
+                                <input type="number" class="form-control" id="qty" name="qty" required />
                             </td>
-                            <td>
-                                <select class="form-control eggs" id="eggs" name="eggs" required>
-                                    <option value="" selected>Select</option>
-                                    <option value="Eggs (2 Nos)">Eggs (2 Nos)</option>
-                                    <option value="Milk Fresh (150 ml)">Milk Fresh (150 ml)</option>
-                                    <option value="Milk Tinned (55 gms)">Milk Tinned (55 gms)</option>
-                                    <option value="Milk Powder (20 gms)">Milk Powder (20 gms)</option>
-                                    <option value="Cheese Tinned (50 gms)">Cheese Tinned (50 gms)</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control milk" id="milk" name="milk" required>
-                                    <option value="" selected>Select</option>
-                                    <option value="Milk Fresh (200 ml)">Milk Fresh (200 ml)</option>
-                                    <option value="Milk Tinned (80 gms)">Milk Tinned (80 gms)</option>
-                                    <option value="Milk Powder (28 gms)">Milk Powder (28 gms)</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control gnut" id="gnut" name="gnut" required>
-                                    <option value="" selected>Select</option>
-                                    <option value="Ground-nut (50 gins)">Ground-nut (50 gins)</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control butter" id="butter" name="butter" required>
-                                    <option value="" selected>Select</option>
-                                    <option value="Butter Fresh/Tinned (50 gms)">Butter Fresh/Tinned 50 gms</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control sugar" id="sugar" name="sugar" required>
-                                    <option value="" selected>Select</option>
-                                    <option value="Sugar (50 gms)">Sugar (50 gms)</option>
-                                </select>
-                            </td>
-
                             <%--<td>
                     <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>--%>
                         </tr>
@@ -130,101 +84,102 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+        $(document).ready(function () {
+            fetchItems('');
+        });
         var rowSequence = 0;
         function addRow() {
             var tableBody = document.getElementById("MainContent_tableBody");
             var newRow = document.createElement("tr");
+            var selectedDate = document.getElementById("dateVal").value;
+            var selectedName = document.getElementById("nameVal").value;
+            var selectedRank = document.getElementById("rank").value;
+            var selectedPno = document.getElementById("pno").value;
+            var selectedDays = document.getElementById("days").value;
             newRow.innerHTML = `
                         <td>
-                            <input type="date" class="form-control" name="date" required />
+                            <input type="date" class="form-control" name="date" value="${selectedDate}" required disabled />
                         </td>
                          <td>
-                             <input type="text" class="form-control" name="name" required style="text-transform: capitalize;" />
+                             <input type="text" class="form-control" name="name" value="${selectedName}" required style="text-transform: capitalize;" disabled />
                          </td>
                          <td>
-                             <select class="form-control rank" id="rank" name="rank" width="130px" required>
-                                 <option value="">Select</option>
-                                 <option value="Sub Lieutenant">Sub Lieutenant</option>
-                                 <option value="Lieutenant">Lieutenant</option>
-                                 <option value="Lieutenant Commander">Lieutenant Commander</option>
-                                 <option value="Commander">Commander</option>
-                                 <option value="Captain">Captain</option>
-                                 <option value="Commodore">Commodore</option>
-                                 <option value="Rear Admiral">Rear Admiral</option>
-                                 <option value="Vice Admiral">Vice Admiral</option>
-                                 <option value="Admiral">Admiral</option>
-                                 <option value="Seaman 2nd Class">Seaman 2nd Class</option>
-                                 <option value="Seaman Ist Class">Seaman Ist Class</option>
-                                 <option value="Leading Rate">Leading</option>
-                                 <option value="Petty Officer">Petty Officer</option>
-                                 <option value="Chief Petty Officer">Chief Petty Officer</option>
-                                 <option value="Master Chief Petty Officer IInd Class">Master Chief Petty Officer IInd Class</option>
-                                 <option value="Master Chief Petty Officer Ist Class">Master Chief Petty Officer Ist Class</option>
+                             <select class="form-control rank" id="rank" name="rank" value="${selectedRank}" width="130px" required disabled>
+                                  <option value="">Select</option>
+                                  <option value="Sub Lieutenant" ${selectedRank === "Sub Lieutenant" ? "selected" : ""}>Sub Lieutenant</option>
+                                  <option value="Lieutenant" ${selectedRank === "Lieutenant" ? "selected" : ""}>Lieutenant</option>
+                                  <option value="Lieutenant Commander" ${selectedRank === "Lieutenant Commander" ? "selected" : ""}>Lieutenant Commander</option>
+                                  <option value="Commander" ${selectedRank === "Commander" ? "selected" : ""}>Commander</option>
+                                  <option value="Captain" ${selectedRank === "Captain" ? "selected" : ""}>Captain</option>
+                                  <option value="Commodore" ${selectedRank === "Commodore" ? "selected" : ""}>Commodore</option>
+                                  <option value="Rear Admiral" ${selectedRank === "Rear Admiral" ? "selected" : ""}>Rear Admiral</option>
+                                  <option value="Vice Admiral" ${selectedRank === "Vice Admiral" ? "selected" : ""}>Vice Admiral</option>
+                                  <option value="Admiral" ${selectedRank === "Admiral" ? "selected" : ""}>Admiral</option>
+                                  <option value="Seaman 2nd Class" ${selectedRank === "Seaman 2nd Class" ? "selected" : ""}>Seaman 2nd Class</option>
+                                  <option value="Seaman Ist Class" ${selectedRank === "Seaman Ist Class" ? "selected" : ""}>Seaman Ist Class</option>
+                                  <option value="Leading Rate" ${selectedRank === "Leading Rate" ? "selected" : ""}>Leading</option>
+                                  <option value="Petty Officer" ${selectedRank === "Petty Officer" ? "selected" : ""}>Petty Officer</option>
+                                  <option value="Chief Petty Officer" ${selectedRank === "Chief Petty Officer" ? "selected" : ""}>Chief Petty Officer</option>
+                                  <option value="Master Chief Petty Officer IInd Class" ${selectedRank === "Master Chief Petty Officer IInd Class" ? "selected" : ""}>Master Chief Petty Officer IInd Class</option>
+                                  <option value="Master Chief Petty Officer Ist Class" ${selectedRank === "Master Chief Petty Officer Ist Class" ? "selected" : ""}>Master Chief Petty Officer Ist Class</option>
                              </select>
                          </td>
                          <td>
-                             <input type="text" class="form-control pno" name="pno" required style="text-transform: capitalize;" />
+                             <input type="text" class="form-control pno" name="pno" value="${selectedPno}" required style="text-transform: capitalize;" disabled/>
                          </td>
                          <td>
-                            <input type="text" class="form-control days" id="days" name="days" required />
+                            <input type="text" class="form-control days" id="days" value="${selectedDays}" name="days" required disabled/>
                         </td>
-                          <td>
-                             <select class="form-control chocolate" id="chocolate_${rowSequence}" name="chocolate" required>
-                                 <option value="" selected>Select</option>
-                                 <option value="Chocolate (50 gms)">Chocolate (50 gms)</option>
-                             </select>
-                         </td>
                          <td>
-                             <select class="form-control horlicks" id="horlicks_${rowSequence}" name="horlicks" required>
-                                 <option value="" selected>Select</option>
-                                 <option value="Complan/ Horlicks (50 gms)" selected>Complan/ Horlicks (50 gms)</option>
-                             </select>
-                         </td>
-                         <td>
-                             <select class="form-control eggs" id="eggs_${rowSequence}" name="eggs" required>
-                                 <option value="" selected>Select</option>
-                                 <option value="Eggs (2 Nos)">Eggs (2 Nos)</option>
-                                 <option value="Milk Fresh (150 ml)">Milk Fresh (150 ml)</option>
-                                 <option value="Milk Tinned (55 gms)">Milk Tinned (55 gms)</option>
-                                 <option value="Milk Powder (20 gms)">Milk Powder (20 gms)</option>
-                                 <option value="Cheese Tinned (50 gms)">Cheese Tinned (50 gms)</option>
-                             </select>
-                         </td>
-                         <td>
-                             <select class="form-control milk" id="milk_${rowSequence}" name="milk" required>
-                                 <option value="" selected>Select</option>
-                                 <option value="Milk Fresh (200 ml)">Milk Fresh (200 ml)</option>
-                                 <option value="Milk Tinned (80 gms)">Milk Tinned (80 gms)</option>
-                                 <option value="Milk Powder (28 gms)">Milk Powder (28 gms)</option>
-                             </select>
-                         </td>
-                         <td>
-                             <select class="form-control gnut" id="gnut_${rowSequence}" name="gnut" required>
-                                 <option value="" selected>Select</option>
-                                 <option value="Ground-nut (50 gins)">Ground-nut (50 gins)</option>
-                             </select>
-                         </td>
-                         <td>
-                             <select class="form-control butter" id="butter_${rowSequence}" name="butter" required>
-                                 <option value="" selected>Select</option>
-                                 <option value="Butter Fresh/Tinned (50 gms)">Butter Fresh/Tinned 50 gms</option>
-                             </select>
-                         </td>
-                         <td>
-                             <select class="form-control sugar" id="sugar_${rowSequence}" name="sugar" required>
-                                 <option value="" selected>Select</option>
-                                 <option value="Sugar (50 gms)">Sugar (50 gms)</option>
-                             </select>
-                         </td>
+                            <select class="form-control itemname" name="itemname" id="itemname_${rowSequence}" required>
+                                <option value="">Select</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" id="qty" name="qty" required />
+                        </td>
                         <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
-
+            fetchItems(newRow);
             rowSequence++;
         }
 
         function deleteRow(button) {
             var row = button.parentNode.parentNode;
             row.parentNode.removeChild(row);
+        }
+
+        function fetchItems(row) {
+            fetch('Divers_ExtraIssue.aspx/GetItemNames', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.d && data.d.length) {
+                        if (row) {
+                            itemSelect = row.querySelector('.itemname');
+                        } else {
+                            itemSelect = document.getElementById('itemname');
+                        }
+
+
+                        // Clear existing options
+                        itemSelect.innerHTML = '<option value="">Select</option>';
+
+                        data.d.forEach(function (item) {
+                            var option = document.createElement('option');
+                            option.value = item.Value;
+                            option.textContent = item.Text;
+                            itemSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching item names:', error);
+                });
         }
 
 

@@ -297,7 +297,7 @@ namespace VMS_1
             {
                 lblMessage.Text = "An error occurred: " + ex.Message;
             }
-            //ScriptManager.RegisterStartupScript(this, GetType(), "refreshPage", "window.location.href=window.location.href;", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "refreshPage", "window.location.href=window.location.href;", true);
             LoadGridView();
         }
 

@@ -27,27 +27,18 @@
                     <tbody id="tableBody" runat="server">
                         <tr>
                             <td>
-                                <input type="text" class="form-control" name="ref" required />
+                                <input type="text" class="form-control" name="ref" />
                             </td>
                             <td>
-                                <select class="form-control itemname js-states" id="itemname" name="itemname" required>
+                                <select class="form-control itemname js-states" id="itemname" name="itemname">
                                     <option value="">Select</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="qty" required pattern="^\d+(\.\d+)?$" />
+                                <input type="text" class="form-control" name="qty" pattern="^\d+(\.\d+)?$" />
                             </td>
-                            <%--<td>
-                                <select class="form-control" name="denom" required>
-                                    <option value="">Select Denom</option>
-                                    <option value="Kgs">Kgs</option>
-                                    <option value="Ltr">Ltr</option>
-                                    <option value="Nos">Nos</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </td>--%>
                             <td>
-                                <select class="form-control" name="rcvdfrom" required onchange="checkReceivedFrom(this)">
+                                <select class="form-control" name="rcvdfrom" onchange="checkReceivedFrom(this)">
                                     <option value="">Select </option>
                                     <option value="BV Yard">BV Yard</option>
                                     <option value="Local Purchase">Local Purchase</option>
@@ -57,7 +48,7 @@
                             </td>
 
                             <td>
-                                <input type="date" class="form-control" name="date" required />
+                                <input type="date" class="form-control" name="date" />
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
@@ -67,7 +58,14 @@
                 </table>
             </div>
             <div class="text-left">
-                <button class="btn btn-primary">Upload CRV</button>
+                <h5>Upload CRV</h5>
+                <label class="col-form-label" for="fileDate">Date</label>
+                <input type="month" class="form-control " name="fileDate" id="fileDate" style="width:auto;"/>
+
+                <label class="col-form-label" for="FileUpload1">File</label>
+                <asp:FileUpload CssClass="form-control mt-2" Width="20%" ID="FileUpload1" runat="server" ToolTip="Select Only Excel File" />
+
+                <asp:Button CssClass="btn btn-dark mt-2" Width="10%" ID="Button1" runat="server" Text="Upload" onclick="UploadFileButton_Click" />
             </div>
             <div>
                 <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
@@ -155,7 +153,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js"></script>
-     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
             loadItemNamesForRow('');

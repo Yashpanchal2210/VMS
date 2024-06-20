@@ -20,7 +20,7 @@ namespace VMS_1
             {
                 FormsAuthentication.RedirectToLoginPage();
             }
-            GetItems();
+            GetItemNames();
             LoadGridView();
         }
 
@@ -31,7 +31,7 @@ namespace VMS_1
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
                 string[] date = Request.Form.GetValues("date");
-                string[] itemname = Request.Form.GetValues("itemname");
+                string[] itemnameId = Request.Form.GetValues("itemname");
                 string[] denom = Request.Form.GetValues("denom");
                 string[] qty = Request.Form.GetValues("qty");
 
@@ -42,10 +42,12 @@ namespace VMS_1
                     // Iterate through each row and insert data into the database
                     for (int i = 0; i < date.Length; i++)
                     {
+                        (string itemName, string denomination) = GetItemNameById(conn, itemnameId[i]);
+
                         SqlCommand cmd = new SqlCommand("INSERT INTO patients (Date, Itemname, Denom, Qty) VALUES (@Date, @Itemname, @Denom, @Qty)", conn);
 
                         cmd.Parameters.AddWithValue("@Date", date[i]);
-                        cmd.Parameters.AddWithValue("@Itemname", itemname[i]);
+                        cmd.Parameters.AddWithValue("@Itemname", itemName);
                         cmd.Parameters.AddWithValue("@Denom", denom[i]);
                         cmd.Parameters.AddWithValue("@Qty", qty[i]);
 
@@ -53,14 +55,14 @@ namespace VMS_1
 
                         // Update PresentStockMaster table if ItemName exists
                         SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
-                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemname[i]);
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemName);
                         updatePresentStockCmd.Parameters.AddWithValue("@Quantity", qty[i]);
                         updatePresentStockCmd.Parameters.AddWithValue("@Denos", denom[i]);
                         updatePresentStockCmd.ExecuteNonQuery();
 
                         SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM MonthEndStockMaster WHERE Date = @Date AND ItemName = @ItemName", conn);
                         checkCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
-                        checkCmd.Parameters.AddWithValue("@ItemName", itemname[i]);
+                        checkCmd.Parameters.AddWithValue("@ItemName", itemName);
                         int count = (int)checkCmd.ExecuteScalar();
 
                         if (count > 0)
@@ -68,7 +70,7 @@ namespace VMS_1
                             // If data exists, update the existing row
                             SqlCommand updateCmd = new SqlCommand("UPDATE MonthEndStockMaster SET Qty = CASE WHEN Qty - @Quantity >= 0 THEN Qty - @Quantity ELSE Qty END WHERE Date = @Date AND ItemName = @ItemName", conn);
                             updateCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
-                            updateCmd.Parameters.AddWithValue("@ItemName", itemname[i]);
+                            updateCmd.Parameters.AddWithValue("@ItemName", itemName);
                             updateCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty[i]));
 
                             updateCmd.ExecuteNonQuery();
@@ -78,7 +80,7 @@ namespace VMS_1
                             // If no data exists, insert a new row
                             SqlCommand insertCmd = new SqlCommand("INSERT INTO MonthEndStockMaster (Date, ItemName, Qty, Type) VALUES (@Date, @ItemName, @Quantity, @Type)", conn);
                             insertCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
-                            insertCmd.Parameters.AddWithValue("@ItemName", itemname[i]);
+                            insertCmd.Parameters.AddWithValue("@ItemName", itemName);
                             insertCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty[i]));
                             insertCmd.Parameters.AddWithValue("@Type", "Issue"); // Set the correct parameter name for Type
 
@@ -94,6 +96,28 @@ namespace VMS_1
             {
                 lblStatus.Text = "Error: " + ex.Message;
             }
+        }
+
+        private (string itemName, string denomination) GetItemNameById(SqlConnection conn, string itemId)
+        {
+            string itemName = string.Empty;
+            string denomination = string.Empty;
+            string query = "SELECT ILueItem, iLueDenom FROM BasicLieuItems WHERE Id = @ItemId";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@ItemId", itemId);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        itemName = reader["ILueItem"].ToString();
+                        denomination = reader["iLueDenom"].ToString();
+                    }
+                }
+            }
+
+            return (itemName, denomination);
         }
 
         private void LoadGridView()
@@ -120,10 +144,10 @@ namespace VMS_1
         }
 
         [WebMethod]
-        public static List<object> GetItems()
+        public static List<object> GetItemNames()
         {
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT * FROM RationScale";
+            string query = "SELECT iLueItem, Id FROM BasicLieuItems";
             DataTable dt = new DataTable();
 
             using (SqlConnection conn = new SqlConnection(connStr))
@@ -140,8 +164,8 @@ namespace VMS_1
             {
                 items.Add(new
                 {
-                    Text = row["ItemName"].ToString(),
-                    Value = row["ItemId"].ToString(),
+                    Text = row["iLueItem"].ToString(),
+                    Value = row["Id"].ToString(),
                 });
             }
 

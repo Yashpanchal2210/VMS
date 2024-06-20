@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
-        <h2 class="mt-4">Ration Scale</h2>
+        <h2 class="mt-4">Item Price</h2>
 
         <form id="itemMasterForm" runat="server">
             <%--<div class="text-right">
@@ -141,7 +141,7 @@
 
                         data.d.forEach(function (item) {
                             var option = document.createElement('option');
-                            option.value = item.Text;
+                            option.value = item.Value;
                             option.textContent = item.Text;
                             itemSelect.appendChild(option);
                         });

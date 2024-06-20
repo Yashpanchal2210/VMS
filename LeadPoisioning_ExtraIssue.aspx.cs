@@ -36,21 +36,68 @@ namespace VMS_1
                 {
                     conn.Open();
 
+                    int itemId = 0;
+                    string query = "SELECT Id FROM BasicLieuItems WHERE IlueItem = @ItemName";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                itemId = Convert.ToInt32(reader["Id"]);
+                            }
+                        }
+                    }
+
                     // Iterate through each row and insert data into the database
                     for (int i = 0; i < date.Length; i++)
                     {
-                        SqlCommand cmd = new SqlCommand("INSERT INTO ExtraIssueCategory (Date, Strength, Tea, Milk, Sugar, LimeFresh, LimeJuice, Type) VALUES (@Date, @Strength, @Tea, @Milk, @Sugar, @LimeFresh, @LimeJuice, @Type)", conn);
+                        SqlCommand cmd = new SqlCommand("INSERT INTO ExtraIssueCategory (Date, Strength, ItemId, ItemName, Type, Qty) VALUES (@Date, @Strength, @ItemId, @ItemName, @Type, @Qty)", conn);
 
                         cmd.Parameters.AddWithValue("@Date", date[i]);
                         cmd.Parameters.AddWithValue("@Strength", strength[i]);
-                        cmd.Parameters.AddWithValue("@Tea", "0");
-                        cmd.Parameters.AddWithValue("@Milk", milk[i]);
-                        cmd.Parameters.AddWithValue("@Sugar", "0");
-                        cmd.Parameters.AddWithValue("@LimeFresh", "0");
-                        cmd.Parameters.AddWithValue("@LimeJuice", "0");
+                        cmd.Parameters.AddWithValue("@ItemId", itemId);
+                        cmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
                         cmd.Parameters.AddWithValue("@Type", "LeadPoisioning");
+                        cmd.Parameters.AddWithValue("@Qty", milk[i]);
 
                         cmd.ExecuteNonQuery();
+
+                        // Update PresentStockMaster table if ItemName exists
+                        SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", milk[i]);
+                        updatePresentStockCmd.Parameters.AddWithValue("@Denos", "Ltr");
+                        updatePresentStockCmd.ExecuteNonQuery();
+
+                        SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM MonthEndStockMaster WHERE Date = @Date AND ItemName = @ItemName", conn);
+                        checkCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
+                        checkCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+                        int count = (int)checkCmd.ExecuteScalar();
+
+                        if (count > 0)
+                        {
+                            // If data exists, update the existing row
+                            SqlCommand updateCmd = new SqlCommand("UPDATE MonthEndStockMaster SET Qty = CASE WHEN Qty - @Quantity >= 0 THEN Qty - @Quantity ELSE Qty END WHERE Date = @Date AND ItemName = @ItemName", conn);
+                            updateCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
+                            updateCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+                            updateCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(milk[i]));
+
+                            updateCmd.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            // If no data exists, insert a new row
+                            SqlCommand insertCmd = new SqlCommand("INSERT INTO MonthEndStockMaster (Date, ItemName, Qty, Type) VALUES (@Date, @ItemName, @Quantity, @Type)", conn);
+                            insertCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
+                            insertCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+                            insertCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(milk[i]));
+                            insertCmd.Parameters.AddWithValue("@Type", "Issue"); // Set the correct parameter name for Type
+
+                            insertCmd.ExecuteNonQuery();
+                        }
                     }
                 }
                 lblStatus.Text = "Data entered successfully.";
@@ -72,7 +119,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory where Type = 'LeadPoisioning'", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

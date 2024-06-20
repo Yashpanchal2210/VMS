@@ -61,16 +61,16 @@ namespace VMS_1
                         }
                         else
                         {
-                            SqlCommand cmd = new SqlCommand("INSERT INTO RationScale (ItemId, ItemName, Rate) VALUES (@ItemId, @ItemName, @Rate)", conn);
-                            cmd.CommandType = CommandType.Text;
+                            //SqlCommand cmd = new SqlCommand("INSERT INTO RationScale (ItemId, ItemName, Rate) VALUES (@ItemId, @ItemName, @Rate)", conn);
+                            //cmd.CommandType = CommandType.Text;
 
-                            int itemId = GetItemIdByName(itemname[i]); // Implement this method to get the ItemId by ItemName
+                            //int itemId = GetItemIdByName(itemname[i]); // Implement this method to get the ItemId by ItemName
 
-                            cmd.Parameters.AddWithValue("@ItemId", itemId);
-                            cmd.Parameters.AddWithValue("@ItemName", itemname[i]);
-                            cmd.Parameters.AddWithValue("@Rate", decimal.Parse(rate[i]));
+                            //cmd.Parameters.AddWithValue("@ItemId", itemId);
+                            //cmd.Parameters.AddWithValue("@ItemName", itemname[i]);
+                            //cmd.Parameters.AddWithValue("@Rate", decimal.Parse(rate[i]));
 
-                            cmd.ExecuteNonQuery();
+                            //cmd.ExecuteNonQuery();
                         }
                     }
                 }
@@ -86,29 +86,27 @@ namespace VMS_1
             }
         }
 
-        private int GetItemIdByName(string itemName)
-        {
-            int itemId = 0;
+        //private GetItemNameById(SqlConnection conn, string itemId)
+        //{
+        //    string itemName = string.Empty;
+        //    string denomination = string.Empty;
+        //    string query = "SELECT ILueItem, iLueDenom FROM BasicLieuItems WHERE Id = @ItemId";
 
-            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //    using (SqlCommand cmd = new SqlCommand(query, conn))
+        //    {
+        //        cmd.Parameters.AddWithValue("@ItemId", itemId);
+        //        using (SqlDataReader reader = cmd.ExecuteReader())
+        //        {
+        //            if (reader.Read())
+        //            {
+        //                itemName = reader["ILueItem"].ToString();
+        //                denomination = reader["iLueDenom"].ToString();
+        //            }
+        //        }
+        //    }
 
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                conn.Open();
-
-                string query = "SELECT AltItemID FROM AlternateItem WHERE AltItemName = @ItemName";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@ItemName", itemName);
-
-                object result = cmd.ExecuteScalar();
-                if (result != null && result != DBNull.Value)
-                {
-                    itemId = Convert.ToInt32(result);
-                }
-            }
-
-            return itemId;
-        }
+        //    return (itemName, denomination);
+        //}
 
         [WebMethod]
         public static List<object> GetItemNames()

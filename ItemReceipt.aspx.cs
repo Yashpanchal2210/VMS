@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Services;
@@ -221,6 +222,64 @@ namespace VMS_1
             }
         }
 
+        protected void UploadFileButton_Click(object sender, EventArgs e)
+        {
+            if (FileUpload1.HasFile)
+            {
+                string fileName = Path.GetFileName(FileUpload1.FileName);
+                string fileDateString = Request.Form["fileDate"];  // Assuming fileDateTextBox is the ID of your input element for date selection
+                DateTime fileDate;
+
+                if (DateTime.TryParse(fileDateString, out fileDate))
+                {
+                    // Successfully parsed the date
+                    // Proceed with your logic
+                    lblStatus.Text = "File date: " + fileDate.ToString("MMMM yyyy");
+                }
+                else
+                {
+                    // Handle invalid date format
+                    lblStatus.Text = "Invalid date format.";
+                }
+
+                // Save the file to the database
+                SaveFileToDatabase(FileUpload1.PostedFile.InputStream, fileName, fileDate);
+            }
+            else
+            {
+                lblStatus.Text = "Please select a file to upload.";
+            }
+        }
+
+        private void SaveFileToDatabase(Stream fileStream, string fileName, DateTime fileDate)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    BinaryReader br = new BinaryReader(fileStream);
+                    Byte[] bytes = br.ReadBytes((Int32)fileStream.Length);
+
+                    string query = "INSERT INTO PDFFiles (Name, type, Date, Data) VALUES (@Name, @type, @FileDate, @Data)";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.Add("@Name", SqlDbType.VarChar).Value = fileName;
+                    cmd.Parameters.Add("@type", "ReceiptCRV");
+                    cmd.Parameters.Add("@FileDate", SqlDbType.VarChar).Value = fileDate;
+                    cmd.Parameters.Add("@Data", SqlDbType.Binary).Value = bytes;
+
+                    cmd.ExecuteNonQuery();
+                }
+                lblStatus.Text = "File uploaded successfully.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while uploading the file: " + ex.Message;
+            }
+        }
 
 
         [WebMethod]

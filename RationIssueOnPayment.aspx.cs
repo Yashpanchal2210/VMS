@@ -196,27 +196,27 @@ namespace VMS_1
                     }
                 }
 
-                string itemName;
-                using (SqlCommand itemNameCmd = new SqlCommand(itemNameQuery, conn))
-                {
-                    itemNameCmd.Parameters.AddWithValue("@ItemId", Id);
-                    itemName = itemNameCmd.ExecuteScalar()?.ToString();
-                }
+                //string itemName;
+                //using (SqlCommand itemNameCmd = new SqlCommand(itemNameQuery, conn))
+                //{
+                //    itemNameCmd.Parameters.AddWithValue("@ItemId", Id);
+                //    itemName = itemNameCmd.ExecuteScalar()?.ToString();
+                //}
 
-                if (!string.IsNullOrEmpty(itemName))
-                {
-                    using (SqlCommand referenceCmd = new SqlCommand(referenceQuery, conn))
-                    {
-                        referenceCmd.Parameters.AddWithValue("@itemnames", itemName);
-                        using (SqlDataReader referenceReader = referenceCmd.ExecuteReader())
-                        {
-                            while (referenceReader.Read())
-                            {
-                                itemData.ReferenceNos.Add(referenceReader["referenceNos"].ToString());
-                            }
-                        }
-                    }
-                }
+                //if (!string.IsNullOrEmpty(itemName))
+                //{
+                //    using (SqlCommand referenceCmd = new SqlCommand(referenceQuery, conn))
+                //    {
+                //        referenceCmd.Parameters.AddWithValue("@itemnames", itemName);
+                //        using (SqlDataReader referenceReader = referenceCmd.ExecuteReader())
+                //        {
+                //            while (referenceReader.Read())
+                //            {
+                //                itemData.ReferenceNos.Add(referenceReader["referenceNos"].ToString());
+                //            }
+                //        }
+                //    }
+                //}
             }
 
             return JsonConvert.SerializeObject(itemData);

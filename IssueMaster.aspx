@@ -320,7 +320,7 @@
         }
 
         $(document).on('change', 'input[name="Strength"]', function () {
-            var scaleAmount = $('#scaleAmount').val();
+            var scaleAmount = parseFloat($('#scaleAmount').val()).toFixed(4);
             var strengthValue = parseFloat($(this).val());
 
             if (!isNaN(strengthValue)) {
