@@ -330,6 +330,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AddBasicandLieuItems.aspx" />
+    <Content Include="Cover.aspx" />
     <Content Include="Dashboard.aspx" />
     <Content Include="Divers_ExtraIssue.aspx" />
     <Content Include="ExportIssueOfficerandSailor.aspx" />
@@ -343,6 +344,7 @@
     <Content Include="LOGIN.aspx" />
     <Content Include="MilkSugarandTea_ExtraIssue.aspx" />
     <Content Include="OtherShips.aspx" />
+    <Content Include="Page2_7Report.aspx" />
     <Content Include="Patients.aspx" />
     <Content Include="PestControl_ExtraIssue.aspx" />
     <Content Include="RationIssueOnPayment.aspx" />
@@ -369,6 +371,13 @@
     </Compile>
     <Compile Include="AddBasicandLieuItems.aspx.designer.cs">
       <DependentUpon>AddBasicandLieuItems.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Cover.aspx.cs">
+      <DependentUpon>Cover.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Cover.aspx.designer.cs">
+      <DependentUpon>Cover.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
@@ -460,6 +469,13 @@
     </Compile>
     <Compile Include="OtherShips.aspx.designer.cs">
       <DependentUpon>OtherShips.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Page2_7Report.aspx.cs">
+      <DependentUpon>Page2_7Report.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Page2_7Report.aspx.designer.cs">
+      <DependentUpon>Page2_7Report.aspx</DependentUpon>
     </Compile>
     <Compile Include="Patients.aspx.cs">
       <DependentUpon>Patients.aspx</DependentUpon>

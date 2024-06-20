@@ -29,7 +29,7 @@ namespace VMS_1
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
                 string[] date = Request.Form.GetValues("date");
-                string[] strength = Request.Form.GetValues("strength");
+                string[] strengths = Request.Form.GetValues("strength");
                 string[] tea = Request.Form.GetValues("tea");
                 string[] milk = Request.Form.GetValues("milk");
                 string[] sugar = Request.Form.GetValues("sugar");
@@ -41,18 +41,13 @@ namespace VMS_1
                     // Iterate through each row and insert data into the database
                     for (int i = 0; i < date.Length; i++)
                     {
-                        SqlCommand cmd = new SqlCommand("INSERT INTO ExtraIssueCategory (Date, Strength, Tea, Milk, Sugar, LimeFresh, LimeJuice, Type) VALUES (@Date, @Strength, @Tea, @Milk, @Sugar, @LimeFresh, @LimeJuice, @Type)", conn);
+                        // Insert Lime Fresh data
+                        InsertItemData(conn, date[i], strengths[i], "Milk", tea[i]);
 
-                        cmd.Parameters.AddWithValue("@Date", date[i]);
-                        cmd.Parameters.AddWithValue("@Strength", strength[i]);
-                        cmd.Parameters.AddWithValue("@Tea", tea[i]);
-                        cmd.Parameters.AddWithValue("@Milk", milk[i]);
-                        cmd.Parameters.AddWithValue("@Sugar", sugar[i]);
-                        cmd.Parameters.AddWithValue("@LimeFresh", "0");
-                        cmd.Parameters.AddWithValue("@LimeJuice", "0");
-                        cmd.Parameters.AddWithValue("@Type", "TeaMilk&Sugar");
-
-                        cmd.ExecuteNonQuery();
+                        // Insert Sugar data
+                        InsertItemData(conn, date[i], strengths[i], "Sugar", milk[i]);
+                        
+                        InsertItemData(conn, date[i], strengths[i], "Tea", sugar[i]);
                     }
                 }
                 lblStatus.Text = "Data entered successfully.";
@@ -63,6 +58,35 @@ namespace VMS_1
             {
                 lblStatus.Text = "Error: " + ex.Message;
             }
+        }
+
+        private void InsertItemData(SqlConnection conn, string date, string strength, string itemName, string qty)
+        {
+            int itemId = 0;
+            string query = "SELECT Id FROM BasicLieuItems WHERE IlueItem = @ItemName";
+
+            using (SqlCommand cmd1 = new SqlCommand(query, conn))
+            {
+                cmd1.Parameters.AddWithValue("@ItemName", itemName);
+                using (SqlDataReader reader = cmd1.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        itemId = Convert.ToInt32(reader["Id"]);
+                    }
+                }
+            }
+
+            SqlCommand cmd = new SqlCommand("INSERT INTO ExtraIssueCategory (Date, Strength, ItemId, ItemName, Type, Qty) VALUES (@Date, @Strength, @ItemId, @ItemName, @Type, @Qty)", conn);
+
+            cmd.Parameters.AddWithValue("@Date", date);
+            cmd.Parameters.AddWithValue("@Strength", strength);
+            cmd.Parameters.AddWithValue("@ItemId", itemId);
+            cmd.Parameters.AddWithValue("@ItemName", itemName);
+            cmd.Parameters.AddWithValue("@Type", "MilkSugarAndTea");
+            cmd.Parameters.AddWithValue("@Qty", qty);
+
+            cmd.ExecuteNonQuery();
         }
 
         private void LoadGridView()
