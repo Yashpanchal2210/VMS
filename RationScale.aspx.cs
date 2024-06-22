@@ -45,8 +45,24 @@ namespace VMS_1
 
                     for (int i = 0; i < itemname.Length; i++)
                     {
+
+                        string itemName = "";
+                        string query = "SELECT iLueItem FROM BasicLieuItems WHERE Id = @ItemId";
+
+                        using (SqlCommand cmd1 = new SqlCommand(query, conn))
+                        {
+                            cmd1.Parameters.AddWithValue("@ItemId", itemname[i]);
+                            using (SqlDataReader reader = cmd1.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    itemName = reader["iLueItem"].ToString();
+                                }
+                            }
+                        }
+
                         SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM RationScale WHERE ItemName = @ItemName", conn);
-                        checkCmd.Parameters.AddWithValue("@ItemName", itemname[i]);
+                        checkCmd.Parameters.AddWithValue("@ItemName", itemName);
 
                         int count = (int)checkCmd.ExecuteScalar();
 
@@ -54,30 +70,27 @@ namespace VMS_1
                         {
                             // Update the existing item
                             SqlCommand updateCmd = new SqlCommand("UPDATE RationScale SET ItemName = @ItemName, Rate = @Rate WHERE ItemName = @ItemName", conn);
-                            updateCmd.Parameters.AddWithValue("@ItemName", itemname[i]);
+                            updateCmd.Parameters.AddWithValue("@ItemName", itemName);
                             updateCmd.Parameters.AddWithValue("@Rate", decimal.Parse(rate[i]));
 
                             updateCmd.ExecuteNonQuery();
                         }
                         else
                         {
-                            //SqlCommand cmd = new SqlCommand("INSERT INTO RationScale (ItemId, ItemName, Rate) VALUES (@ItemId, @ItemName, @Rate)", conn);
-                            //cmd.CommandType = CommandType.Text;
+                            SqlCommand cmd = new SqlCommand("INSERT INTO RationScale (ItemId, ItemName, Rate) VALUES (@ItemId, @ItemName, @Rate)", conn);
+                            cmd.CommandType = CommandType.Text;
 
-                            //int itemId = GetItemIdByName(itemname[i]); // Implement this method to get the ItemId by ItemName
+                            cmd.Parameters.AddWithValue("@ItemId", itemname[i]);
+                            cmd.Parameters.AddWithValue("@ItemName", itemName);
+                            cmd.Parameters.AddWithValue("@Rate", decimal.Parse(rate[i]));
 
-                            //cmd.Parameters.AddWithValue("@ItemId", itemId);
-                            //cmd.Parameters.AddWithValue("@ItemName", itemname[i]);
-                            //cmd.Parameters.AddWithValue("@Rate", decimal.Parse(rate[i]));
-
-                            //cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQuery();
                         }
                     }
                 }
 
                 lblStatus.Text = "Data entered successfully.";
 
-                // Optionally, you can refresh the GridView after data insertion here
                 BindGridView();
             }
             catch (Exception ex)
@@ -85,28 +98,6 @@ namespace VMS_1
                 lblStatus.Text = "An error occurred: " + ex.Message;
             }
         }
-
-        //private GetItemNameById(SqlConnection conn, string itemId)
-        //{
-        //    string itemName = string.Empty;
-        //    string denomination = string.Empty;
-        //    string query = "SELECT ILueItem, iLueDenom FROM BasicLieuItems WHERE Id = @ItemId";
-
-        //    using (SqlCommand cmd = new SqlCommand(query, conn))
-        //    {
-        //        cmd.Parameters.AddWithValue("@ItemId", itemId);
-        //        using (SqlDataReader reader = cmd.ExecuteReader())
-        //        {
-        //            if (reader.Read())
-        //            {
-        //                itemName = reader["ILueItem"].ToString();
-        //                denomination = reader["iLueDenom"].ToString();
-        //            }
-        //        }
-        //    }
-
-        //    return (itemName, denomination);
-        //}
 
         [WebMethod]
         public static List<object> GetItemNames()

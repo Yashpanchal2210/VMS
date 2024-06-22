@@ -4,50 +4,51 @@
 
     <div class="container">
         <h2 class="">Lime Fresh - Extra Issue</h2>
-    </div>
-    <form id="limeFreshForm" runat="server">
-        <div class="table-responsive">
-            <table class="table" id="myTable">
-                <thead>
-                    <tr>
-                        <th class="heading">Date</th>
-                        <th class="heading">Strength</th>
-                        <th class="heading">Lime Fresh</th>
-                        <th class="heading">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody" runat="server">
-                    <tr>
-                        <td>
-                            <input type="date" name="date" class="form-control" />
-                        </td>
-                        <td>
-                            <input type="number" name="strength" id="strength" class="form-control" />
-                        </td>
-                        <td>
-                            <input type="number" name="lime" id="lime" class="form-control" readonly />
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="text-center">
-            <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
-            <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
-        </div>
-        <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
+        <form id="limeFreshForm" runat="server">
+            <div class="table-responsive">
+                <table class="table" id="myTable">
+                    <thead>
+                        <tr>
+                            <th class="heading">Date</th>
+                            <th class="heading">Strength</th>
+                            <th class="heading">Lime Fresh</th>
+                            <th class="heading">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" runat="server">
+                        <tr>
+                            <td>
+                                <input type="date" name="date" class="form-control" />
+                            </td>
+                            <td>
+                                <input type="number" name="strength" id="strength" class="form-control" />
+                            </td>
+                            <td>
+                                <input type="number" name="lime" id="lime" class="form-control" readonly />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
+                <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+            </div>
+            <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
 
-        <div>
-            <h2 class="mt-4">Entered Data</h2>
-        </div>
-        <div>
-            <asp:GridView ID="GridViewExtraIssueCategory4" runat="server" CssClass="table table-bordered table-striped">
-            </asp:GridView>
-        </div>
-    </form>
+            <div>
+                <h2 class="mt-4">Entered Data</h2>
+            </div>
+            <div>
+                <asp:GridView ID="GridViewExtraIssueCategory4" runat="server" CssClass="table table-bordered table-striped">
+                </asp:GridView>
+            </div>
+        </form>
+    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

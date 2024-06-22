@@ -3,7 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h2 class="">Lead Poisioning - Extra Issue</h2>
-        <span class="text-danger">*Only Milk Fresh is to be issued for Lead Poisoning</span>
+        <span class="text-danger">*Only Milk Fresh is entitled for Lead Poisoning</span>
         <form id="leadPoisioningForm" runat="server">
             <div class="table-responsive">
                 <table class="table" id="myTable">

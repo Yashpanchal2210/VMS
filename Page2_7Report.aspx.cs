@@ -63,6 +63,9 @@ namespace VMS_1
             //Fetch ExtraIssue
             DataTable presentExtraIssue = GetExtraIssueData(selectedDate);
 
+            //Fetch Ration Payemnt
+            DataTable presentRationPayement = GetRationPaymentData(selectedDate);
+
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (ExcelPackage excelPackage = new ExcelPackage())
@@ -316,6 +319,29 @@ namespace VMS_1
                             worksheet.Cells[24, dataStartRowExtraIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                         }
                         dataStartRowExtraIssue++;
+                    }
+                }
+
+                //Payment Issue
+                foreach (DataRow rowPayemtnIssue in presentRationPayement.Rows)
+                {
+                    int dataStartRowPayemtnIssue = 4;
+                    foreach (DataRow row in presentStockData.Rows)
+                    {
+                        bool matchFound = false;
+                        if (row["InLieuItem"].Equals(rowPayemtnIssue["ItemName"]))
+                        {
+                            worksheet.Cells[25, dataStartRowPayemtnIssue].Value = Convert.ToDouble(rowPayemtnIssue["Qty"]); // Start from column C
+                            worksheet.Cells[25, dataStartRowPayemtnIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                            matchFound = true;
+                            //break;
+                        }
+                        if (!matchFound)
+                        {
+                            worksheet.Cells[25, dataStartRowPayemtnIssue].Value = 0.00;
+                            worksheet.Cells[25, dataStartRowPayemtnIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                        }
+                        dataStartRowPayemtnIssue++;
                     }
                 }
 
@@ -624,6 +650,22 @@ namespace VMS_1
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 using (SqlCommand cmd = new SqlCommand("SELECT ItemName, SUM(CONVERT(decimal(18, 3), Qty)) AS Qty FROM ExtraIssueCategory WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year GROUP BY ItemName", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        private DataTable GetRationPaymentData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT ItemName, SUM(CONVERT(decimal(18, 3), Qty)) AS Qty FROM RationIssuePayment WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year GROUP BY ItemName", conn))
                 {
                     cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
                     cmd.Parameters.AddWithValue("@Year", selectedDate[0]);

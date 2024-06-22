@@ -215,10 +215,11 @@
             Report Generate <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
-            <a href="ReportsGenerate.aspx">Page1</a>
+            <a href="Page01.aspx">Page1</a>
             <a href="OfficerWorksheet.aspx">Officer Worksheet</a>
             <a href="SailorWorksheet.aspx">Sailor Worksheet</a>
             <a href="Page2_7Report.aspx">Page2-7</a>
+            <a href="Page08.aspx">Page 08</a>
             <a href="ExtraIssueReport.aspx">Extra Issue(Page9)</a>
             <a href="PaymentIssue.aspx">Payment Issue(Page10-11)</a>
             <a href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
@@ -229,6 +230,7 @@
             <a href="Cat-ISchool.aspx">Cat-I School</a>
             <a href="Cat-IISchool.aspx">Cat-II School</a>
             <a href="Overdrawal.aspx">OverDrawal</a>
+            <a href="VictuallingManagement.aspx">Victualling Account Reports</a>
         </div>
 
         <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
@@ -301,10 +303,11 @@
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Report Generate
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="ReportsGenerate.aspx">Page1</a>
+                            <a class="dropdown-item" href="Page01.aspx">Page1</a>
                             <a class="dropdown-item" href="OfficerWorksheet.aspx">Officer Worksheet</a>
                             <a class="dropdown-item" href="SailorWorksheet.aspx">Sailor Worksheet</a>
                             <a class="dropdown-item" href="Page2_7Report.aspx">Page2-7</a>
+                            <a class="dropdown-item" href="Page08.aspx">Page 08</a>
                             <a class="dropdown-item" href="ExtraIssueReport.aspx">Extra Issue(Page9)</a>
                             <a class="dropdown-item" href="PaymentIssue.aspx">Payment Issue(Page10-11)</a>
                             <a class="dropdown-item" href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
@@ -312,6 +315,7 @@
                             <a class="dropdown-item" href="Page14.aspx">Page14</a>
                             <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
                             <a class="dropdown-item" href="DiversReport.aspx">Diver Report</a>
+                            <a class="dropdown-item" href="VictuallingManagement.aspx">Victualling Account Reports</a>
                             <%--<a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>--%>
                             <%--<a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>--%>
                             <%--<a class="dropdown-item" href="Overdrawal.aspx">OverDrawal</a>--%>

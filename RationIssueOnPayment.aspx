@@ -4,68 +4,69 @@
 
     <div class="container">
         <h2 class="">Ration Issue On Payment</h2>
-    </div>
-    <form id="limeFreshForm" runat="server">
-        <div class="table-responsive">
-            <table class="table" id="myTable">
-                <thead>
-                    <tr>
-                        <th class="heading">Date</th>
-                        <th class="heading">Item</th>
-                        <th class="heading">rate</th>
-                        <th class="heading">Qty</th>
-                        <th class="heading">Denom</th>
-                        <th class="heading">Reference No</th>
-                        <th class="heading">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody" runat="server">
-                    <tr>
-                        <td>
-                            <input type="date" name="date" class="form-control" />
-                        </td>
-                        <td>
-                            <select class="form-control item" name="item" id="item" required>
-                                <option value="">Select</option>
-                            </select>
-                        </td>
-                        <td style="width: 10%;">
-                            <input type="text" name="rate" id="rate" class="form-control" readonly />
-                        </td>
-                        <td style="width: 12%;">
-                            <input type="text" name="qty" id="qty" class="form-control" />
-                        </td>
-                        <td>
-                            <select name="denom" id="denom" class="form-control">
-                                <option value="">Select</option>
-                                <option value="Kgs">Kgs</option>
-                                <option value="Ltrs">Ltrs</option>
-                                <option value="Nos">Nos</option>
-                                <option value="Others">Others</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control" name="refno" id="refno" />
-                        </td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="text-center">
-            <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
-            <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
-        </div>
-        <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
+        <form id="limeFreshForm" runat="server">
+            <div class="table-responsive">
+                <table class="table" id="myTable">
+                    <thead>
+                        <tr>
+                            <th class="heading">Date</th>
+                            <th class="heading">Item</th>
+                            <th class="heading">rate</th>
+                            <th class="heading">Qty</th>
+                            <th class="heading">Denom</th>
+                            <th class="heading">Reference No</th>
+                            <th class="heading">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" runat="server">
+                        <tr>
+                            <td>
+                                <input type="date" name="date" class="form-control" />
+                            </td>
+                            <td>
+                                <select class="form-control item" name="item" id="item" required>
+                                    <option value="">Select</option>
+                                </select>
+                            </td>
+                            <td style="width: 10%;">
+                                <input type="text" name="rate" id="rate" class="form-control" readonly />
+                            </td>
+                            <td style="width: 12%;">
+                                <input type="text" name="qty" id="qty" class="form-control" />
+                            </td>
+                            <td>
+                                <select name="denom" id="denom" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Kgs">Kgs</option>
+                                    <option value="Ltrs">Ltrs</option>
+                                    <option value="Nos">Nos</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" name="refno" id="refno" />
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
+                <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+            </div>
+            <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
 
-        <div>
-            <h2 class="mt-4">Entered Data</h2>
-        </div>
-        <div>
-            <asp:GridView ID="GridViewRationPaymentIssue" runat="server" CssClass="table table-bordered table-striped">
-            </asp:GridView>
-        </div>
-    </form>
+            <div>
+                <h2 class="mt-4">Entered Data</h2>
+            </div>
+            <div>
+                <asp:GridView ID="GridViewRationPaymentIssue" runat="server" CssClass="table table-bordered table-striped">
+                </asp:GridView>
+            </div>
+        </form>
+    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

@@ -42,7 +42,7 @@ namespace VMS_1
                     for (int i = 0; i < date.Length; i++)
                     {
                         // Insert Lime Fresh data
-                        InsertItemData(conn, date[i], strengths[i], "Milk", tea[i]);
+                        InsertItemData(conn, date[i], strengths[i], "Milk Fresh", tea[i]);
 
                         // Insert Sugar data
                         InsertItemData(conn, date[i], strengths[i], "Sugar", milk[i]);
@@ -132,7 +132,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory Where Type = 'MilkSugarAndTea'", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

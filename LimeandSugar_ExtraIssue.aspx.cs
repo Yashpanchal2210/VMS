@@ -81,7 +81,7 @@ namespace VMS_1
             cmd.Parameters.AddWithValue("@Strength", strength);
             cmd.Parameters.AddWithValue("@ItemId", itemId);
             cmd.Parameters.AddWithValue("@ItemName", itemName);
-            cmd.Parameters.AddWithValue("@Type", "LimeandSugar");
+            cmd.Parameters.AddWithValue("@Type", "LimeJuiceandSugar");
             cmd.Parameters.AddWithValue("@Qty", qty);
 
             cmd.ExecuteNonQuery();
@@ -95,7 +95,7 @@ namespace VMS_1
 
             SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM MonthEndStockMaster WHERE Date = @Date AND ItemName = @ItemName", conn);
             checkCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date)); // Use current date
-            checkCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+            checkCmd.Parameters.AddWithValue("@ItemName", itemName);
             int count = (int)checkCmd.ExecuteScalar();
 
             if (count > 0)
@@ -132,7 +132,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory Where Type = 'LimeJuiceandSugar'", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

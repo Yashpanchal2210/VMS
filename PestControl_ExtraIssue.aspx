@@ -4,7 +4,7 @@
 
     <div class="container">
         <h2 class="">Pest Control - Extra Issue</h2>
-        <span class="text-danger">*From this only Milk Fresh will be issue</span>
+        <span class="text-danger">*Only Milk Fresh is entitled for Pest Control</span>
         <form id="pestControlForm" runat="server">
             <div class="table-responsive">
                 <table class="table" id="myTable">

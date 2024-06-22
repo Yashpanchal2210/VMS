@@ -184,6 +184,7 @@
                 <asp:ListItem Text="Store Keeper"></asp:ListItem>
                 <asp:ListItem Text="Commanding Officer"></asp:ListItem>
                 <asp:ListItem Text="Logistic Officer"></asp:ListItem>
+                <asp:ListItem Text="Accounting Officer"></asp:ListItem>
             </asp:DropDownList>
         </div>
         <div>
